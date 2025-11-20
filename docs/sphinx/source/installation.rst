@@ -3,21 +3,21 @@
 Installation
 ============
 
-In this section we will provide a step-by-step guide to install the Python package AQUA.
-AQUA is developed and tested with Python 3.12 and it supports Python 3.9 or later (with the exclusions of 3.13).
+In this section we will provide a step-by-step guide to install the Python package AQUA-diagnostics.
+AQUA-diagnostics is developed and tested with Python 3.12 and it supports Python 3.9 or later (with the exclusions of 3.13).
 
 We recommend using Mamba/Conda package manager for the installation process.
 
 .. note ::
-    Soon AQUA will be available on the PyPI repository, so you will be able to install it with pip.
+    Soon AQUA-diagnostics will be available on the PyPI repository, so you will be able to install it with pip.
     The installation process will be updated accordingly.
 
 Prerequisites
 -------------
 
-Before installing AQUA, ensure that you have the following software installed:
+Before installing AQUA-diagnostics, ensure that you have the following software installed:
 
-- `Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_: AQUA is hosted on GitHub, and you will need Git to clone the repository.
+- `Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_: AQUA-diagnostics is hosted on GitHub, and you will need Git to clone the repository.
 - `Miniforge <https://github.com/conda-forge/miniforge>`_ : Miniforge is a package manager for conda-forge, and it is the recommended package manager for the installation process. 
 
 .. _installation-conda:
@@ -25,17 +25,16 @@ Before installing AQUA, ensure that you have the following software installed:
 Installation with Miniforge
 ---------------------------
 
-First, clone the AQUA repository from GitHub:
+First, clone the AQUA-diagnostics repository from GitHub:
 
 .. code-block:: bash
 
-    git clone git@github.com:DestinE-Climate-DT/AQUA.git
-
-Then, navigate to the AQUA directory:
+    git clone git@github.com:DestinE-Climate-DT/AQUA-diagnostics.git
+Then, navigate to the AQUA-diagnostics directory:
 
 .. code-block:: bash
 
-    cd AQUA
+    cd AQUAA-diagnostics
 
 Create a new environment with Mamba.
 An environment file is provided in the repository, so you can create the environment with the following command:
@@ -52,12 +51,12 @@ Finally, activate the environment:
 
     conda activate aqua
 
-At this point, you should have successfully installed the AQUA package and its dependencies 
+At this point, you should have successfully installed the AQUA-diagnostics package and its dependencies 
 in the newly created aqua environment.
 
 .. note ::
     Together with the environment file, a ``pyproject.toml`` file is provided in the repository.
-    This file contains the required dependencies for the AQUA package and allows you to install the package with the pip package manager.
+    This file contains the required dependencies for the AQUA-diagnostics package and allows you to install the package with the pip package manager.
     However, we recommend using Conda to install the package and its dependencies, since some dependencies are not available in the PyPI repository.
     If you want to install the package with pip, please be aware that you may need to install some dependencies manually.
 
@@ -69,14 +68,14 @@ in the newly created aqua environment.
 Update of the environment
 -------------------------
 
-If you want to install AQUA in an existing environment, or if you want to update the environment with the latest version of the package,
+If you want to install AQUA-diagnostics in an existing environment, or if you want to update the environment with the latest version of the package,
 you can install the dependencies with the following command:
 
 .. code-block:: bash
 
     conda env update -n <environment_name> -f environment.yml
 
-Replace ``<environment_name>`` with the name of the existing environment if this is different from ``aqua``.
+Replace ``<environment_name>`` with the name of the existing environment if this is different from ``aqua-diagnostics``.
 
 .. _installation-lumi:
 
@@ -84,26 +83,25 @@ Replace ``<environment_name>`` with the name of the existing environment if this
 HPC Installation
 ----------------
 
-Installation on LUMI HPC
+Installation on LUMI HPC - NOT CURRENTLY AVAILABLE
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 LUMI is currently the main HPC of the DestinE-Climate-DT project, and it is the main platform for the development of AQUA.
 The Lustre filesystem does not support the use of conda environments, so another approach has been developed to install on LUMI,
 based on `container-wrapper <https://docs.lumi-supercomputer.eu/software/installing/container-wrapper/>`_.
 
-First, clone the AQUA repository from GitHub as described in the previous section.
+First, clone the AQUA-diagnostics repository from GitHub as described in the previous section.
 
-For simpler installation, it is recommended to define an ``$AQUA`` environment variable that points to the AQUA directory:
-
-.. code-block:: bash
-
-    export AQUA=/path/to/AQUA
-
-Then, navigate to the AQUA directory and specifically in the ``cli/lumi-install`` directory:
+For simpler installation, it is recommended to define an ``$AQUA_DIAGNOSTICS`` environment variable that points to the AQUA-diagnostics directory:
 
 .. code-block:: bash
 
-    cd $AQUA/cli/lumi-install
+    export AQUA_DIAGNOSTICS=/path/to/AQUA-diagnostics
+Then, navigate to the AQUA-diagnostics directory and specifically in the ``cli/lumi-install`` directory:
+
+.. code-block:: bash
+
+    cd $AQUA_DIAGNOSTICS/cli/lumi-install
 
 Run the installation script:
 
@@ -112,9 +110,9 @@ Run the installation script:
     ./lumi-install.sh
 
 This installs the AQUA environment into a container, and then set up the correct modules
-via a ``load_aqua.sh`` script that is generated and then called from the ``.bash_profile``.
-The script will actually ask the user if they wish to include ``load_aqua.sh`` in ``.bash_profile`` at the end of the installation.
-If you do not agree, you will need to call ``load_aqua.sh`` manually every time you want to use AQUA.
+via a ``load_aqua-diagnostics.sh`` script that is generated and then called from the ``.bash_profile``.
+The script will actually ask the user if they wish to include ``load_aqua-diagnostics.sh`` in ``.bash_profile`` at the end of the installation.
+If you do not agree, you will need to call ``load_aqua-diagnostics.sh`` manually every time you want to use AQUA-diagnostics.
 
 .. note ::
     The installation script is designed to be run on the LUMI cluster, and it may require some adjustments to be run on other systems

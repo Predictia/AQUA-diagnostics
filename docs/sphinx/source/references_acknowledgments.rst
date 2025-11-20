@@ -3,19 +3,19 @@
 References and Acknowledgments
 ==============================
 
-Citing AQUA
+Citing AQUA-diagnostics
 -----------
 
-If you use AQUA in your research or publications, please cite the package using the following format
+If you use AQUA-diagnostics in your research or publications, please cite the package using the following format
 and please include also the following acknowledgements:
 
 .. code-block:: bibtex
 
-  @software{AQUA,
+  @software{AQUA-diagnostics,
   doi = {10.5281/ZENODO.14906075},
   url = {https://zenodo.org/doi/10.5281/zenodo.14906075},
   author = {Nurisso,  Matteo and Caprioli,  Silvia and Davini,  Paolo and von Hardenberg,  Jost and Nazarova,  Natalia and Ghosh,  Supriyo and Ghinassi,  Paolo and Cadau,  Marco and Tovazzi,  Emanuele and Koldunov,  Nikolay and Massonnet,  Fran\c{c}ois and Rajput,  Maqsood Mubarak and Sayed,  Susan and Sharma,  Tamvi and Sunny,  Jaleena and Kluft,  Lukas and Kinoshita,  Bruno and Ortega,  Pablo},
-  title = {AQUA},
+  title = {AQUA-diagnostics},
   publisher = {Zenodo},
   year = {2025},
   copyright = {Apache License 2.0}
