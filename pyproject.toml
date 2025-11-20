@@ -36,7 +36,7 @@ classifiers = [
 ]
 dependencies = [
     "ECmean4==0.1.15",
-    "aqua @ git+https://github.com/DestinE-Climate-DT/AQUA.git" 
+    "aqua-core @ git+https://github.com/DestinE-Climate-DT/AQUA.git@aqua-refactor" 
 ]
 
 [project.optional-dependencies]
