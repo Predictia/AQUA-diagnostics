@@ -63,7 +63,7 @@ all = [
 
 [project.urls]
 homepage = "https://github.com/DestinE-Climate-DT/AQUA-diagnostics/"
-documentation = "https://aqua.readthedocs.io/en/latest/index.html"
+documentation = "https://aqua-diagnostics.readthedocs.io/en/latest/index.html"
 repository = "https://github.com/DestinE-Climate-DT/AQUA-diagnostics/"
 issues = "https://github.com/DestinE-Climate-DT/AQUA-diagnostics/issues/"
 
