@@ -1,0 +1,13 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+
+
+## [Unreleased]
+
+ClimateDT workflow modifications:
+
+AQUA-diagnostics complete list:
+- Added GitHub Issues and PR templates (#1)
+- CHANGELOG, LICENSE and README files added (#2)
