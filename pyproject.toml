@@ -35,11 +35,13 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython"
 ]
 dependencies = [
-    "ECmean4==0.1.15",
-    "aqua-core @ git+https://github.com/DestinE-Climate-DT/AQUA.git@aqua-refactor" 
+    "ECmean4==0.1.15", 
 ]
 
 [project.optional-dependencies]
+core = [
+    "aqua-core @ git+https://github.com/DestinE-Climate-DT/AQUA.git@aqua-refactor"
+]
 docs = [
     "sphinx",
     "sphinx-rtd-theme"
@@ -55,7 +57,16 @@ tests = [
     "coverage",
     "cdo"
 ]
+minimal = [
+    "aqua-diagnostics[core]"
+]
+dev = [
+    "aqua-diagnostics[docs]",
+    "aqua-diagnostics[notebooks]",
+    "aqua-diagnostics[tests]"
+]
 all = [
+    "aqua-diagnostics[core]",
     "aqua-diagnostics[docs]",
     "aqua-diagnostics[notebooks]",
     "aqua-diagnostics[tests]"
