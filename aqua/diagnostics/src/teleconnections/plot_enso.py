@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import xarray as xr
-from aqua.logger import log_configure
-from aqua.graphics import indexes_plot
-from aqua.graphics import plot_maps, plot_single_map
-from aqua.graphics import plot_maps_diff, plot_single_map_diff
+from aqua.core.logger import log_configure
+from aqua.core.graphics import indexes_plot
+from aqua.core.graphics import plot_maps, plot_single_map
+from aqua.core.graphics import plot_maps_diff, plot_single_map_diff
 from .base import PlotBaseMixin, _homogeneize_maps
 
 

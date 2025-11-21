@@ -2,10 +2,10 @@
 
 import os
 import xarray as xr
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from collections import defaultdict
-from aqua.util import load_yaml
-from aqua.configurer import ConfigPath
+from aqua.core.util import load_yaml
+from aqua.core.configurer import ConfigPath
 
 def defaultdict_to_dict(d):
     """ Recursively converts a defaultdict to a normal dict."""

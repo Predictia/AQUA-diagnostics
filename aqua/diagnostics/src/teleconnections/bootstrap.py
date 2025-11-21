@@ -4,7 +4,7 @@ Module to evaluate the confidence intervals of the teleconnections using bootstr
 import numpy as np
 import xarray as xr
 
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.teleconnections import NAO, ENSO
 
 xr.set_options(keep_attrs=True)

@@ -1,4 +1,4 @@
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 import xarray as xr
 
 

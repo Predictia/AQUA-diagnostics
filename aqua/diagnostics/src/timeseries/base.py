@@ -1,9 +1,9 @@
 import os
 import xarray as xr
-from aqua.fixer import EvaluateFormula
-from aqua.logger import log_configure
-from aqua.util import frequency_string_to_pandas, pandas_freq_to_string
-from aqua.util import time_to_string, strlist_to_phrase
+from aqua.core.fixer import EvaluateFormula
+from aqua.core.logger import log_configure
+from aqua.core.util import frequency_string_to_pandas, pandas_freq_to_string
+from aqua.core.util import time_to_string, strlist_to_phrase
 from aqua.diagnostics.core import Diagnostic, start_end_dates, OutputSaver
 
 xr.set_options(keep_attrs=True)

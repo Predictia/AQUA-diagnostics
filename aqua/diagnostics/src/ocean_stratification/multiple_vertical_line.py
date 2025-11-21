@@ -3,9 +3,9 @@ import numpy as np
 import xarray as xr
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from aqua.graphics import ConfigStyle, plot_vertical_lines
-from aqua.logger import log_configure
-from aqua.util import cbar_get_label, evaluate_colorbar_limits, plot_box
+from aqua.core.graphics import ConfigStyle, plot_vertical_lines
+from aqua.core.logger import log_configure
+from aqua.core.util import cbar_get_label, evaluate_colorbar_limits, plot_box
 
 
 def plot_multi_vertical_lines(

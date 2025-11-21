@@ -2,10 +2,10 @@ import xarray as xr
 import numpy as np
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import OutputSaver
-from aqua.graphics import plot_single_map, plot_single_map_diff, plot_maps, plot_vertical_profile_diff
-from aqua.util import get_projection, get_realizations
+from aqua.core.graphics import plot_single_map, plot_single_map_diff, plot_maps, plot_vertical_profile_diff
+from aqua.core.util import get_projection, get_realizations
 from .util import handle_pressure_level
 
 class PlotGlobalBiases: 

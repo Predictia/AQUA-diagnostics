@@ -1,7 +1,7 @@
 import xarray as xr
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import OutputSaver
-from aqua.util import get_realizations
+from aqua.core.util import get_realizations
 import cartopy.crs as ccrs
 
 from .multiple_maps import plot_maps

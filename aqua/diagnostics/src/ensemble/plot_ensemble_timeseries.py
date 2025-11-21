@@ -1,6 +1,6 @@
 import pandas as pd
 import xarray as xr
-from aqua.graphics import plot_timeseries
+from aqua.core.graphics import plot_timeseries
 
 # from aqua.logger import log_configure
 # from aqua.exceptions import NoDataError

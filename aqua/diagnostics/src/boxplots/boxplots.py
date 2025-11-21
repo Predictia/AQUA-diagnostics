@@ -2,9 +2,9 @@
 
 import pandas as pd
 import xarray as xr
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import Diagnostic
-from aqua.util import to_list
+from aqua.core.util import to_list
 
 class Boxplots(Diagnostic):
     """Class for computing and plotting boxplots of field means from climate model datasets.

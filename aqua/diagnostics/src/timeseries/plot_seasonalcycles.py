@@ -1,6 +1,6 @@
 import xarray as xr
-from aqua.graphics import plot_seasonalcycle
-from aqua.util import to_list, get_realizations
+from aqua.core.graphics import plot_seasonalcycle
+from aqua.core.util import to_list, get_realizations
 from .base import PlotBaseMixin
 
 

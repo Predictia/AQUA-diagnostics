@@ -15,10 +15,10 @@ import xarray as xr
 from dask.distributed import Client, LocalCluster
 
 from aqua import __version__ as aquaversion
-from aqua.graphics import plot_single_map
-from aqua.util import load_yaml, get_arg, create_folder
-from aqua.exceptions import NoDataError, NotEnoughDataError
-from aqua.logger import log_configure
+from aqua.core.graphics import plot_single_map
+from aqua.core.util import load_yaml, get_arg, create_folder
+from aqua.core.exceptions import NoDataError, NotEnoughDataError
+from aqua.core.logger import log_configure
 from aqua.diagnostics.teleconnections.bootstrap import bootstrap_teleconnections, build_confidence_mask
 # from aqua.diagnostics.teleconnections.tc_class import Teleconnection
 # from aqua.diagnostics.teleconnections.tools import set_filename

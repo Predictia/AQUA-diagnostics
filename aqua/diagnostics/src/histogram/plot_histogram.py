@@ -1,6 +1,6 @@
-from aqua.graphics import plot_histogram
-from aqua.logger import log_configure
-from aqua.util import to_list, DEFAULT_REALIZATION
+from aqua.core.graphics import plot_histogram
+from aqua.core.logger import log_configure
+from aqua.core.util import to_list, DEFAULT_REALIZATION
 from aqua.diagnostics.core import OutputSaver
 
 

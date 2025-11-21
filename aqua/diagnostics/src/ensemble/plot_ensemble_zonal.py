@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import xarray as xr
-from aqua.exceptions import NoDataError
-from aqua.graphics import plot_vertical_profile
-from aqua.logger import log_configure
+from aqua.core.exceptions import NoDataError
+from aqua.core.graphics import plot_vertical_profile
+from aqua.core.logger import log_configure
 
 from .base import BaseMixin
 

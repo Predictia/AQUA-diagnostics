@@ -1,5 +1,5 @@
 import xarray as xr
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 
 # from aqua.exceptions import NoDataError
 from .base import BaseMixin

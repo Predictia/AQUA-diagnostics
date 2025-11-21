@@ -16,9 +16,9 @@ from aqua.diagnostics.core import (
     open_cluster,
     template_parse_arguments,
 )
-from aqua.logger import log_configure
-from aqua.util import get_arg
-from aqua.version import __version__ as aqua_version
+from aqua.core.logger import log_configure
+from aqua.core.util import get_arg
+from aqua.core.version import __version__ as aqua_version
 
 
 def parse_arguments(args):

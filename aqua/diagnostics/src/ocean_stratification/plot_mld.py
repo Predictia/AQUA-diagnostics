@@ -1,8 +1,8 @@
 import xarray as xr
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import OutputSaver
 import cartopy.crs as ccrs
-from aqua.util import cbar_get_label
+from aqua.core.util import cbar_get_label
 import math
 
 from .mld_profiles import plot_maps

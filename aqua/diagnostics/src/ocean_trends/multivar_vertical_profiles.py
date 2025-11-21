@@ -2,13 +2,13 @@
 Module to plot multiple maps
 
 """
-from aqua.graphics import plot_vertical_profile
+from aqua.core.graphics import plot_vertical_profile
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
-from aqua.logger import log_configure
-from aqua.util import plot_box, evaluate_colorbar_limits, cbar_get_label
-from aqua.graphics.styles import ConfigStyle
+from aqua.core.logger import log_configure
+from aqua.core.util import plot_box, evaluate_colorbar_limits, cbar_get_label
+from aqua.core.graphics.styles import ConfigStyle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_multivars_vertical_profile(

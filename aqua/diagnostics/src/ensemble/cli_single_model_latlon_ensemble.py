@@ -14,9 +14,9 @@ from aqua.diagnostics.core import (
     close_cluster, load_diagnostic_config, merge_config_args,
     open_cluster, template_parse_arguments,
 )
-from aqua.logger import log_configure
-from aqua.util import get_arg
-from aqua.configurer import ConfigPath
+from aqua.core.logger import log_configure
+from aqua.core.util import get_arg
+from aqua.core.configurer import ConfigPath
 # This is no circular import because this is a CLI so far
 from aqua.diagnostics.ensemble import extract_realizations
 

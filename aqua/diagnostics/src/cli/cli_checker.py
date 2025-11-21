@@ -42,9 +42,9 @@ if __name__ == '__main__':
     try:
         from aqua.__init__ import __version__ as aqua_version
         from aqua import Reader
-        from aqua.logger import log_configure
-        from aqua.util import get_arg
-        from aqua.exceptions import NoDataError
+        from aqua.core.logger import log_configure
+        from aqua.core.util import get_arg
+        from aqua.core.exceptions import NoDataError
 
         loglevel = get_arg(args, 'loglevel', 'WARNING')
         logger = log_configure(log_name='Setup check', log_level=loglevel)

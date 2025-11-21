@@ -1,9 +1,9 @@
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import xarray as xr
-from aqua.exceptions import NoDataError
-from aqua.graphics import plot_single_map
-from aqua.util import get_projection
+from aqua.core.exceptions import NoDataError
+from aqua.core.graphics import plot_single_map
+from aqua.core.util import get_projection
 
 from .base import BaseMixin
 

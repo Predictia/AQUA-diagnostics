@@ -1,5 +1,5 @@
 # Dummy script, does nothing, used for tests
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 
 if __name__ == '__main__':
     logger = log_configure(log_level='debug', log_name='Dummy CLI')

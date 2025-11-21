@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import xarray as xr
-from aqua.exceptions import NoDataError
-from aqua.logger import log_configure
+from aqua.core.exceptions import NoDataError
+from aqua.core.logger import log_configure
 
 from .base import BaseMixin
 from .util import compute_statistics

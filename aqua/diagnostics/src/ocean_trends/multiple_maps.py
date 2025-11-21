@@ -1,12 +1,12 @@
 from pyproj import transform
-from aqua.graphics.single_map import plot_single_map
+from aqua.core.graphics.single_map import plot_single_map
 import xarray as xr
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import numpy as np
-from aqua.graphics import ConfigStyle
-from aqua.logger import log_configure
-from aqua.util import evaluate_colorbar_limits, add_cyclic_lon
+from aqua.core.graphics import ConfigStyle
+from aqua.core.logger import log_configure
+from aqua.core.util import evaluate_colorbar_limits, add_cyclic_lon
 
 
 def plot_maps(maps: list[xr.DataArray],

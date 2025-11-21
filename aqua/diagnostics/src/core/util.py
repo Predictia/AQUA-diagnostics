@@ -9,9 +9,9 @@ from dask.base import tokenize
 import dask
 import uuid
 
-from aqua.logger import log_configure
-from aqua.util import load_yaml, get_arg
-from aqua.configurer import ConfigPath
+from aqua.core.logger import log_configure
+from aqua.core.util import load_yaml, get_arg
+from aqua.core.configurer import ConfigPath
 
 # This creates a unique job token for this instance of the module
 # so that all dask keys generated during this run are unique

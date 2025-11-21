@@ -1,9 +1,9 @@
 import xarray as xr
 import matplotlib.pyplot as plt
 from cartopy.crs import NorthPolarStereo
-from aqua.logger import log_configure
-from aqua.graphics import indexes_plot, plot_single_map, plot_single_map_diff
-from aqua.util import apply_circular_window
+from aqua.core.logger import log_configure
+from aqua.core.graphics import indexes_plot, plot_single_map, plot_single_map_diff
+from aqua.core.util import apply_circular_window
 from .base import PlotBaseMixin, _homogeneize_maps
 
 

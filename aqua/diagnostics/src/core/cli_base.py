@@ -1,9 +1,9 @@
 """
 Base class for diagnostic CLI to centralize common operations.
 """
-from aqua.logger import log_configure
-from aqua.util import get_arg
-from aqua.version import __version__ as aqua_version
+from aqua.core.logger import log_configure
+from aqua.core.util import get_arg
+from aqua.core.version import __version__ as aqua_version
 from aqua.diagnostics.core import open_cluster, close_cluster
 from aqua.diagnostics.core import load_diagnostic_config, merge_config_args
 

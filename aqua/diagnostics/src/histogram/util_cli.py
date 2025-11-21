@@ -1,7 +1,7 @@
 """Utility functions for the Histogram CLI."""
 
 from aqua.diagnostics.histogram import Histogram, PlotHistogram
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 
 
 def load_var_config(config_dict, var, diagnostic='histogram'):

@@ -1,6 +1,6 @@
 import calendar
 import xarray as xr
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import Diagnostic
 from .compute_mld import compute_mld_cont
 from .compute_rho import compute_rho

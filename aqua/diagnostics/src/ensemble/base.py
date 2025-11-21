@@ -3,8 +3,8 @@ from collections import Counter
 import pandas as pd
 import xarray as xr
 from aqua.diagnostics.core import Diagnostic, OutputSaver
-from aqua.logger import log_configure
-from aqua.util import pandas_freq_to_string
+from aqua.core.logger import log_configure
+from aqua.core.util import pandas_freq_to_string
 
 xr.set_options(keep_attrs=True)
 

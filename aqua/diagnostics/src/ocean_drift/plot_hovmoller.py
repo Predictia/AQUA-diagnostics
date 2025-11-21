@@ -1,8 +1,8 @@
 import xarray as xr
 import matplotlib.pyplot as plt
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import OutputSaver
-from aqua.util import get_realizations
+from aqua.core.util import get_realizations
 from .multiple_hovmoller import plot_multi_hovmoller
 from .multiple_timeseries import plot_multi_timeseries
 

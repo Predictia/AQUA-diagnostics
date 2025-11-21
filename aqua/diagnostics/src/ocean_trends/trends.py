@@ -2,9 +2,9 @@
 
 import xarray as xr
 import pandas as pd
-from aqua.logger import log_configure
+from aqua.core.logger import log_configure
 from aqua.diagnostics.core import Diagnostic
-from aqua.reader import Trender
+from aqua.core.reader import Trender
 
 xr.set_options(keep_attrs=True)
 

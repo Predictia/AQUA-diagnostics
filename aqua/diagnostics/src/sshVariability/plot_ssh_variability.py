@@ -2,9 +2,9 @@ import healpy as hp
 import numpy as np
 import xarray as xr
 from aqua import Regridder
-from aqua.fldstat import AreaSelection
-from aqua.graphics import plot_single_map
-from aqua.util import get_projection, healpix_resample
+from aqua.core.fldstat import AreaSelection
+from aqua.core.graphics import plot_single_map
+from aqua.core.util import get_projection, healpix_resample
 
 # import matplotlib.pyplot as plt
 # from aqua.exceptions import NoDataError, NoObservationError, NotEnoughDataError

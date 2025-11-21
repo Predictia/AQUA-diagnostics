@@ -9,7 +9,7 @@ single or multiple experiments.
 import argparse
 import sys
 
-from aqua.util import to_list
+from aqua.core.util import to_list
 from aqua.diagnostics.core import template_parse_arguments
 from aqua.diagnostics.ocean_stratification.stratification import Stratification
 from aqua.diagnostics.ocean_stratification import PlotStratification
