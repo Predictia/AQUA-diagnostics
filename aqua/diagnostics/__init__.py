@@ -14,7 +14,9 @@ from .ensemble import reader_retrieve_and_merge, merge_from_data_files, load_pre
 from .ecmean import PerformanceIndices, GlobalMean
 from .seaice import SeaIce, PlotSeaIce, Plot2DSeaIce
 from .sshVariability import sshVariabilityCompute, sshVariabilityPlot
-from .console import DIAGNOSTIC_CONFIG_DIRECTORIES, DIAGNOSTIC_TEMPLATE_DIRECTORIES
+
+DIAGNOSTIC_CONFIG_DIRECTORIS = ["analysis", "diagnostics", "tools"]
+DIAGNOSTIC_TEMPLATE_DIRECTORIES = ["diagnostics"]
 
 __all__ = ["NAO", "ENSO", "MJO",
            "PlotNAO", "PlotENSO", "PlotMJO",
