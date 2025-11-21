@@ -1,7 +1,7 @@
 from aqua.core.logger import log_configure
 from aqua.core.fixer import EvaluateFormula
-from aqua.diagnostics.core import Diagnostic
 from aqua.core.histogram import histogram
+from aqua.diagnostics.core import Diagnostic
 
 class Histogram(Diagnostic):
     """

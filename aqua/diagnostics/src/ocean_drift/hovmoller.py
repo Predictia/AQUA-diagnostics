@@ -1,5 +1,6 @@
-from itertools import product
 import xarray as xr
+from itertools import product
+
 from aqua.core.util import to_list
 from aqua.core.logger import log_configure
 from aqua.diagnostics.core import Diagnostic

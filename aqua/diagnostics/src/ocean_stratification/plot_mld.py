@@ -1,13 +1,13 @@
 import xarray as xr
-from aqua.core.logger import log_configure
-from aqua.diagnostics.core import OutputSaver
-import cartopy.crs as ccrs
-from aqua.core.util import cbar_get_label
 import math
+import cartopy.crs as ccrs
 
+from aqua.core.logger import log_configure
+from aqua.core.util import cbar_get_label
+from aqua.diagnostics.core import OutputSaver
 from .mld_profiles import plot_maps
-
 # from .multivar_vertical_profiles import plot_multivars_vertical_profile
+
 
 xr.set_options(keep_attrs=True)
 

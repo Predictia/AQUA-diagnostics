@@ -2,11 +2,13 @@
 Module to plot multiple maps
 
 """
-from typing import Optional, Tuple
-import cartopy.crs as ccrs
-import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+import cartopy.crs as ccrs
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from typing import Optional, Tuple
+
 from aqua.core.logger import log_configure
 from aqua.core.util import (
     plot_box,
@@ -14,9 +16,8 @@ from aqua.core.util import (
     cbar_get_label,
     generate_colorbar_ticks,
 )
-from aqua import plot_single_map
+from aqua.core.graphics import plot_single_map
 from aqua.core.graphics.styles import ConfigStyle
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def plot_maps(

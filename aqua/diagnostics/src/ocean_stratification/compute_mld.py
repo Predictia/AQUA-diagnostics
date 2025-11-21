@@ -1,5 +1,7 @@
-from aqua.core.logger import log_configure
 import xarray as xr
+
+from aqua.core.logger import log_configure
+
 
 
 def compute_mld_cont(rho, loglevel="WARNING"):

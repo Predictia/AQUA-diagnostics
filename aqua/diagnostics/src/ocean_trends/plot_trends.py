@@ -1,9 +1,9 @@
 import xarray as xr
-from aqua.core.logger import log_configure
-from aqua.diagnostics.core import OutputSaver
-from aqua.core.util import get_realizations
 import cartopy.crs as ccrs
 
+from aqua.core.logger import log_configure
+from aqua.core.util import get_realizations
+from aqua.diagnostics.core import OutputSaver
 from .multiple_maps import plot_maps
 from .multivar_vertical_profiles import plot_multivars_vertical_profile
 

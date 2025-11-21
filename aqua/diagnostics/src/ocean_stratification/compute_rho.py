@@ -1,5 +1,6 @@
-from aqua.core.logger import log_configure
 import xarray as xr
+
+from aqua.core.logger import log_configure
 
 
 def compute_rho(absso, bigthetao, ref_pressure, loglevel="WARNING"):

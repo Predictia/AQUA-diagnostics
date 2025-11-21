@@ -1,8 +1,6 @@
 """Utility functions for the Histogram CLI."""
-
-from aqua.diagnostics.histogram import Histogram, PlotHistogram
 from aqua.core.logger import log_configure
-
+from aqua.diagnostics.histogram import Histogram, PlotHistogram
 
 def load_var_config(config_dict, var, diagnostic='histogram'):
     """Load variable configuration from config dictionary.
@@ -24,7 +22,6 @@ def load_var_config(config_dict, var, diagnostic='histogram'):
     regions = var_config.get('regions', [None])
     
     return var_config, regions
-
 
 def _create_histogram(catalog, model, exp, source, regrid, startdate, enddate,
                       region, lon_limits, lat_limits, bins, range_config, 

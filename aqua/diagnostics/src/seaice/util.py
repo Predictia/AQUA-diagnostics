@@ -2,8 +2,9 @@
 
 import os
 import xarray as xr
-from aqua.core.logger import log_configure
 from collections import defaultdict
+
+from aqua.core.logger import log_configure
 from aqua.core.util import load_yaml
 from aqua.core.configurer import ConfigPath
 

@@ -1,12 +1,12 @@
 """ Seaice doc """
 import xarray as xr
 
-from aqua.diagnostics.core import Diagnostic
 from aqua.core.exceptions import NoDataError
 from aqua.core.logger import log_configure, log_history
 from aqua.core.util import to_list, merge_attrs
-from aqua.diagnostics.seaice.util import ensure_istype
 from aqua.core.fldstat import FldStat
+from aqua.diagnostics.core import Diagnostic
+from aqua.diagnostics.seaice.util import ensure_istype
 
 xr.set_options(keep_attrs=True)
 

@@ -3,14 +3,15 @@ import os
 import xarray as xr
 import cartopy.crs as ccrs
 import matplotlib.colors as mcolors
-from matplotlib import pyplot as plt
-from aqua.diagnostics.core import OutputSaver
+import matplotlib.pyplot as plt
+
 from aqua.core.graphics import plot_single_map, plot_single_map_diff, plot_maps
 from aqua.core.logger import log_configure, log_history
 from aqua.core.configurer import ConfigPath
 from aqua.core.util import get_projection, plot_box, to_list, get_realizations
 from aqua.core.util import evaluate_colorbar_limits, set_map_title, time_to_string
 from aqua.core.util import generate_colorbar_ticks, int_month_name, apply_circular_window
+from aqua.diagnostics.core import OutputSaver
 from .util import extract_dates, _check_list_regions_type
 
 xr.set_options(keep_attrs=True)
