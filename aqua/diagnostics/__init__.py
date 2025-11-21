@@ -15,7 +15,7 @@ from .ecmean import PerformanceIndices, GlobalMean
 from .seaice import SeaIce, PlotSeaIce, Plot2DSeaIce
 from .sshVariability import sshVariabilityCompute, sshVariabilityPlot
 
-DIAGNOSTIC_CONFIG_DIRECTORIS = ["analysis", "diagnostics", "tools"]
+DIAGNOSTIC_CONFIG_DIRECTORIES = ["analysis", "diagnostics", "tools"]
 DIAGNOSTIC_TEMPLATE_DIRECTORIES = ["diagnostics"]
 
 __all__ = ["NAO", "ENSO", "MJO",
