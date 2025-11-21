@@ -14,7 +14,7 @@ from .ensemble import reader_retrieve_and_merge, merge_from_data_files, load_pre
 from .ecmean import PerformanceIndices, GlobalMean
 from .seaice import SeaIce, PlotSeaIce, Plot2DSeaIce
 from .sshVariability import sshVariabilityCompute, sshVariabilityPlot
-from .console import get_install_paths, DIAGNOSTIC_CONFIG_DIRECTORIS, DIAGNOSTIC_TEMPLATE_DIRECTORIES
+from .console import DIAGNOSTIC_CONFIG_DIRECTORIES, DIAGNOSTIC_TEMPLATE_DIRECTORIES
 
 __all__ = ["NAO", "ENSO", "MJO",
            "PlotNAO", "PlotENSO", "PlotMJO",
@@ -31,4 +31,4 @@ __all__ = ["NAO", "ENSO", "MJO",
            "Boxplots", "PlotBoxplots", "extract_realizations",
            "GlobalMean", "PerformanceIndices", "SeaIce", "PlotSeaIce", "Plot2DSeaIce",
            "Boxplots", "PlotBoxplots",
-           "get_install_paths", "DIAGNOSTIC_CONFIG_DIRECTORIS", "DIAGNOSTIC_TEMPLATE_DIRECTORIES"]
+           "DIAGNOSTIC_CONFIG_DIRECTORIES", "DIAGNOSTIC_TEMPLATE_DIRECTORIES"]
