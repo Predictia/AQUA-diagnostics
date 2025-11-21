@@ -78,11 +78,16 @@ documentation = "https://aqua-diagnostics.readthedocs.io/en/latest/index.html"
 repository = "https://github.com/DestinE-Climate-DT/AQUA-diagnostics/"
 issues = "https://github.com/DestinE-Climate-DT/AQUA-diagnostics/issues/"
 
-[tool.setuptools.package-data]
-platforms = ["any"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aqua*"]
 
-[tool.setuptools.package-dir]
-"aqua.diagnostics" = "aqua/diagnostics/src"
+# Include non-Python files inside aqua/config and aqua/templates
+[tool.setuptools.package-data]
+"aqua" = [
+    "diagnostics/config/**/*",
+    "diagnostics/templates/**/*"
+]
 
 [tool.setuptools.dynamic]
 version = {attr = "aqua.diagnostics.version.__version__"}
@@ -108,10 +113,10 @@ markers = [
 [tool.coverage.run]
 branch = true
 command_line = '-m pytest tests'
-source = ["aqua/diagnostics/src"]
+source = ["aqua/diagnostics"]
 omit = [
     "tests/*", 
     "**/__init__.py",
-    "aqua/diagnostics/src/dummy"
+    "aqua/diagnostics/dummy"
     ]
 
