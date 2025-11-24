@@ -22,6 +22,7 @@ dependencies:
   - xesmf # for ECmean
   - intake-esm
   - imagemagick
+  - healpy
   - pip:
     - -e ../AQUA
     - -e ./frontier-diagnostics/tropical_cyclones/ # pip install -e of tropical cyclones
