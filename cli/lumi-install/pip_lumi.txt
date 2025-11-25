@@ -2,13 +2,12 @@
 # Install both aqua-core and aqua-diagnostics in editable mode
 # This allows modifying both repositories
 
-# Install aqua-core in editable mode
-pip install -e $AQUA/[all]
-
 # Install aqua-diagnostics frontier diagnostics in editable mode
 pip install -e $AQUA_DIAGNOSTICS/frontier-diagnostics/tropical_cyclones/
 pip install -e $AQUA_DIAGNOSTICS/frontier-diagnostics/tropical_rainfall/
 
-# Install aqua-diagnostics itself in editable mode
+# Install aqua-diagnostics itself in editable mode (this will pull aqua-core from git as a dependency)
 pip install -e $AQUA_DIAGNOSTICS/[all]
 
+# IMPORTANT: Install aqua-core in editable mode LAST to override the git version
+pip install -e $AQUA/[all]
