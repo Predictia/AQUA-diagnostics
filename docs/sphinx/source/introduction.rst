@@ -14,6 +14,14 @@ diagnostic analyses.
    regridding, etc.), please refer to the documentation of `AQUA-core`, which contains all core 
    functions and base classes.
 
+The main repository for AQUA is the `AQUA-core <https://github.com/DestinE-Climate-DT/AQUA>`_ repository.
+The main repository for AQUA-diagnostics is the `AQUA-diagnostics <https://github.com/DestinE-Climate-DT/AQUA-diagnostics>`_ repository.
+
+The AQUA-diagnostics repository contains the full set of diagnostic tools developed for the Destination Earth Adaptation Climate Digital Twin (ClimateDT).
+It is designed to be used together with the AQUA core framework which provides data access and preprocessing functionalities.
+
+- For more information on AQUA-core, see the AQUA-core documentation here: https://aqua.readthedocs.io/en/latest/.  
+
 Purpose
 -------
 
