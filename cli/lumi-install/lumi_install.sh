@@ -184,10 +184,52 @@ create_aqua_diagnostics_file() {
 
   log_message INFO "export for GSV has been added to load_aqua_diagnostics.sh. Please run 'source $load_aqua_diagnostics_file' to load the new configuration."
 
-  # Install path
-  echo "# AQUA-diagnostics installation path" >>  $load_aqua_diagnostics_file
-  echo 'export PATH="'$INSTALLATION_PATH'/bin:$PATH"' >>  $load_aqua_diagnostics_file
-  log_message INFO "export PATH has been added to load_aqua_diagnostics.sh. Please run 'source $load_aqua_diagnostics_file' to load the new configuration."
+  # Define AQUA installation paths
+  echo "# AQUA installation paths" >>  $load_aqua_diagnostics_file
+  echo 'export AQUA_DIAGNOSTICS_PATH="'$INSTALLATION_PATH'/bin"' >>  $load_aqua_diagnostics_file
+  echo 'export AQUA_CORE_PATH="'$MAMBADIR'/aqua/bin"' >>  $load_aqua_diagnostics_file
+  echo '' >>  $load_aqua_diagnostics_file
+  
+  # Function to switch between AQUA environments
+  echo '# Function to switch between AQUA environments' >>  $load_aqua_diagnostics_file
+  echo '# Usage: switch_aqua [diagnostics|core]' >>  $load_aqua_diagnostics_file
+  echo 'switch_aqua() {' >>  $load_aqua_diagnostics_file
+  echo '  local target="${1:-diagnostics}"' >>  $load_aqua_diagnostics_file
+  echo '  # Remove both aqua paths from PATH' >>  $load_aqua_diagnostics_file
+  echo '  # Split PATH and filter out paths containing aqua-diagnostics or aqua/bin' >>  $load_aqua_diagnostics_file
+  echo '  local cleaned_path=""' >>  $load_aqua_diagnostics_file
+  echo '  IFS=":" read -ra path_components <<< "$PATH"' >>  $load_aqua_diagnostics_file
+  echo '  for component in "${path_components[@]}"; do' >>  $load_aqua_diagnostics_file
+  echo '    if [[ "$component" != *"aqua-diagnostics"* ]] && [[ "$component" != *"aqua/bin"* ]]; then' >>  $load_aqua_diagnostics_file
+  echo '      if [[ -z "$cleaned_path" ]]; then' >>  $load_aqua_diagnostics_file
+  echo '        cleaned_path="$component"' >>  $load_aqua_diagnostics_file
+  echo '      else' >>  $load_aqua_diagnostics_file
+  echo '        cleaned_path="$cleaned_path:$component"' >>  $load_aqua_diagnostics_file
+  echo '      fi' >>  $load_aqua_diagnostics_file
+  echo '    fi' >>  $load_aqua_diagnostics_file
+  echo '  done' >>  $load_aqua_diagnostics_file
+  echo '  export PATH="$cleaned_path"' >>  $load_aqua_diagnostics_file
+  echo '  ' >>  $load_aqua_diagnostics_file
+  echo '  # Add the selected environment to PATH' >>  $load_aqua_diagnostics_file
+  echo '  if [[ "$target" == "diagnostics" ]]; then' >>  $load_aqua_diagnostics_file
+  echo '    export PATH="$AQUA_DIAGNOSTICS_PATH:$PATH"' >>  $load_aqua_diagnostics_file
+  echo '    echo "Switched to AQUA-diagnostics environment"' >>  $load_aqua_diagnostics_file
+  echo '  elif [[ "$target" == "core" ]]; then' >>  $load_aqua_diagnostics_file
+  echo '    export PATH="$AQUA_CORE_PATH:$PATH"' >>  $load_aqua_diagnostics_file
+  echo '    echo "Switched to AQUA-core environment"' >>  $load_aqua_diagnostics_file
+  echo '  else' >>  $load_aqua_diagnostics_file
+  echo '    echo "Usage: switch_aqua [diagnostics|core]"' >>  $load_aqua_diagnostics_file
+  echo '    echo "Current PATH not modified"' >>  $load_aqua_diagnostics_file
+  echo '    return 1' >>  $load_aqua_diagnostics_file
+  echo '  fi' >>  $load_aqua_diagnostics_file
+  echo '}' >>  $load_aqua_diagnostics_file
+  echo '' >>  $load_aqua_diagnostics_file
+  
+  # Default: load AQUA-diagnostics (for backward compatibility)
+  echo '# Default: load AQUA-diagnostics environment' >>  $load_aqua_diagnostics_file
+  echo 'export PATH="$AQUA_DIAGNOSTICS_PATH:$PATH"' >>  $load_aqua_diagnostics_file
+  log_message INFO "AQUA environment switch function and PATH exports have been added to load_aqua_diagnostics.sh. Please run 'source $load_aqua_diagnostics_file' to load the new configuration."
+  log_message INFO "Use 'switch_aqua diagnostics' or 'switch_aqua core' to switch between environments."
 }
 
 # check if load_aqua_diagnostics_file exist and clean it
