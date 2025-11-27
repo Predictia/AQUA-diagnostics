@@ -40,10 +40,10 @@ There are three other classes to produce the plots:
 File structure
 --------------
 
-* The diagnostic is located in the ``src/aqua_diagnostics/timeseries`` directory, which contains both the source code and the command line interface (CLI) script.
-* The configuration files are located in the ``config/diagnostics/timeseries`` directory and contains the default configuration for the diagnostic.
+* The diagnostic is located in the ``aqua/diagnostics/timeseries`` directory, which contains both the source code and the command line interface (CLI) script.
+* The configuration files are located in the ``aqua/diagnostics/config/diagnostics/timeseries`` directory and contains the default configuration for the diagnostic.
 * Notebooks are available in the ``notebooks/diagnostics/timeseries`` directory and contain examples of how to use the diagnostic.
-* A list of available regions is available in the ``config/diagnostics/timeseries/interface/regions.yaml`` file.
+* A list of available regions is available in the ``aqua/diagnostics/config/tools/timeseries/definitions/regions.yaml`` file.
 
 Input variables and datasets
 ----------------------------
@@ -61,7 +61,7 @@ The diagnostic can be run from the command line interface (CLI) by running the f
 
 .. code-block:: bash
 
-    cd $AQUA/src/aqua_diagnostics/timeseries
+    cd $AQUA/aqua/diagnostics/timeseries
     python cli_timeseries.py --config <path_to_config_file>
 
 Three configuration files are provided and run when executing the aqua-analysis (see :ref:`aqua_analysis`).
@@ -201,9 +201,9 @@ Available demo notebooks
 
 Notebooks are stored in the ``notebooks/diagnostics/timeseries`` directory and contain examples of how to use the diagnostic.
 
-* `timeseries.ipynb <https://github.com/DestinE-Climate-DT/AQUA/blob/main/notebooks/diagnostics/timeseries/timeseries.ipynb>`_
-* `seasonalcycles.ipynb <https://github.com/DestinE-Climate-DT/AQUA/blob/main/notebooks/diagnostics/timeseries/seasonalcycles.ipynb>`_
-* `gregory.ipynb <have://github.com/DestinE-Climate-DT/AQUA/blob/main/notebooks/diagnostics/timeseries/gregory.ipynb>`_
+* `timeseries.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/timeseries/timeseries.ipynb>`_
+* `seasonalcycles.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/timeseries/seasonalcycles.ipynb>`_
+* `gregory.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/timeseries/gregory.ipynb>`_
 
 Authors and contributors
 ------------------------
