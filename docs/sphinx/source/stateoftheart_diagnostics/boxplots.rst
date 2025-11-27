@@ -22,9 +22,9 @@ There is one class for the analysis and one for the plotting:
 File structure
 --------------
 
-* The diagnostic is located in the ``src/aqua_diagnostics/boxplots`` directory, which contains 
+* The diagnostic is located in the ``aqua/diagnostics/boxplots`` directory, which contains 
   both the source code and the command line interface (CLI) script.
-* The configuration files are located in the ``config/diagnostics/boxplots`` directory and contain 
+* The configuration files are located in the ``aqua/diagnostics/config/diagnostics/boxplots`` directory and contain
   the default configuration for the diagnostic.
 * Notebooks are available in the ``notebooks/diagnostics/boxplots`` directory and contain examples 
   of how to use the diagnostic.
@@ -76,7 +76,7 @@ The diagnostic can be run from the command line interface (CLI) by running the f
 
 .. code-block:: bash
 
-    cd $AQUA/src/aqua_diagnostics/boxplots
+    cd $AQUA/aqua/diagnostics/boxplots
     python cli_boxplots.py --config_file <path_to_config_file>
 
 Additionally, the CLI can be run with the following optional arguments:
@@ -144,7 +144,7 @@ Available demo notebooks
 
 Notebooks are stored in ``notebooks/diagnostics/boxplots``:
 
-* `boxplots.ipynb <https://github.com/DestinE-Climate-DT/AQUA/blob/main/notebooks/diagnostics/boxplots/boxplots.ipynb>`_ 
+* `boxplots.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/boxplots/boxplots.ipynb>`_ 
 
 Detailed API
 ------------
