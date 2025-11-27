@@ -3,7 +3,7 @@
 Dummy
 ================
 
-Dummy provides an example on how the documentation for diagnostics of the AQUA framework should be organised and written.
+Dummy provides an example on how the documentation for AQUA-diagnostics should be organised and written.
 This documentation provides also guidelines on how a diagnostic developer should write documentation about their diagnostic,
 covering a short description of its contents and of its scientific basis. 
 Please try to adhere to the suggested scheme as far as possible.
