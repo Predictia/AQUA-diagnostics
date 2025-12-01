@@ -14,10 +14,10 @@ Classes
 
 There is one class for the analysis and one for the plotting:
 
-* **Boxplots**: It retrieves the data and prepares it for plotting (e.g., regridding, unit conversion).  
+* **Boxplots**: retrieves the data and prepares it for plotting (e.g., regridding, unit conversion).  
   It also handles the computation of field means, which are saved as class attributes and as NetCDF files.
 
-* **PlotBoxplots**: This class provides methods for plotting the boxplots of the field means computed by the Boxplots class. 
+* **PlotBoxplots**: provides methods for plotting the boxplots of the field means computed by the Boxplots class. 
 
 File structure
 --------------
@@ -27,6 +27,7 @@ File structure
 * A template configuration file is available at ``aqua/diagnostics/templates/diagnostics/config-boxplots.yaml``
 * Notebooks are available in the ``notebooks/diagnostics/boxplots`` directory and contain examples 
   of how to use the diagnostic.
+
 
 Input variables and datasets
 ----------------------------
@@ -76,7 +77,7 @@ The diagnostic can be run from the command line interface (CLI) by running the f
 .. code-block:: bash
 
     cd $AQUA/aqua/diagnostics/boxplots
-    python cli_boxplots.py --config_file <path_to_config_file>
+    python cli_boxplots.py --config <path_to_config_file>
 
 Additionally, the CLI can be run with the following optional arguments:
 
@@ -129,14 +130,14 @@ Example plots
    :align: center
    :width: 100%
    
-   Box plot showing the globally averaged incoming and outgoing TOA radiation of IFS-NEMO historical-1990 with respect to ERA5 and CERES climatologies
+   Box plot showing the globally averaged incoming and outgoing TOA radiation of IFS-NEMO historical-1990 with respect to ERA5 and CERES climatologies.
 
 .. figure:: figures/radiation_boxplot_anomalies.png
    :align: center
    :width: 100%
 
    Box plot showing the anomalies of the globally averaged incoming and outgoing TOA radiation of IFS-NEMO historical-1990 with respect to the ERA5 climatology.
-   The dashed lines indicates the absolute mean values.
+   The dashed lines indicate the absolute mean values.
 
 Available demo notebooks
 ------------------------
@@ -144,6 +145,13 @@ Available demo notebooks
 Notebooks are stored in ``notebooks/diagnostics/boxplots``:
 
 * `boxplots.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/boxplots/boxplots.ipynb>`_ 
+
+Authors and contributors
+------------------------
+
+This diagnostic is maintained by Silvia Caprioli (`@silviacaprioli <https://github.com/silviacaprioli>`_, `silvia.caprioli@polito.it <mailto:silvia.caprioli@polito.it>`_).
+Contributions are welcome — please open an issue or a pull request.
+For questions or suggestions, contact the AQUA team or the maintainers.
 
 Detailed API
 ------------

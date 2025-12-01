@@ -3,7 +3,7 @@
 Dummy
 ================
 
-Dummy Diagnostic provides a template for AQUA diagnostics and includes guidance for developers.
+Dummy diagnostic provides a template for AQUA diagnostics and includes guidance for developers.
 It also explains the scientific motivation for the diagnostic, describes its purpose and
 clarifies the code structure used for generating the associated plots.
 Please try to adhere to the suggested scheme as far as possible.
@@ -32,7 +32,7 @@ Classes:
 * DummyDiagnostic: retrieves data, regrids, aggregates, computes derived variables.
 * PlotDummy: generates plots using data prepared by Dummy.
 
-See diagnostic-class_structure/docs/sphinx/source/new_diagnostics/guidelines/class_structure.rst for design principles.
+See diagnostic-class_structure in /docs/sphinx/source/new_diagnostics/guidelines/class_structure.rst for design principles.
 
 File structure
 -----------
@@ -99,7 +99,7 @@ Common options: ``--model``, ``--exp``, ``--source``, ``--outputdir``, ``--logle
 
 For the complete list, see :ref:`diagnostics-cli-arguments`.
 
-Config file structure
+Configuration file structure
 ---------------------
 
 The configuration file is a YAML file containing dataset details, output directory, and diagnostic settings.
