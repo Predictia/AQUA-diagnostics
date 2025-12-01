@@ -49,7 +49,7 @@ File structure
 --------------
 
 * The diagnostic is located in the ``aqua/diagnostics/seaice`` directory, which contains both the source code and the command line interface (CLI) script `cli_seaice.py`.  
-* The default configuration files are located in ``aqua/diagnostics/config/diagnostics/seaice/``.  
+* A template configuration file is available at ``aqua/diagnostics/templates/diagnostics/config-seaice.yaml``
 * The regional definitions are defined in ``aqua/diagnostics/config/tools/seaice/definitions/regions.yaml``.
 * Notebooks are available in ``notebooks/diagnostics/seaice`` directory and contain examples of how to use the diagnostic.  
 
@@ -113,7 +113,7 @@ The diagnostic can be run from the command line interface (CLI) by running the f
 
 .. code-block:: bash
 
-    cd $AQUA/src/aqua_diagnostics/seaice
+    cd $AQUA/aqua/diagnostics/seaice
     python cli_seaice.py --config <path_to_config_file>
 
 Additionally, the CLI can be run with the following optional arguments:
@@ -130,8 +130,8 @@ A template for the configuration file can be found in ``aqua/diagnostics/templat
 * ``--outputdir``: Output directory for the plots.
 * ``--proj``: Projection type for 2D plots. Choices are 'orthographic' or 'azimuthal_equidistant'. Default is 'orthographic'.
 
-Config file structure 
-----------------------
+Configuration file structure 
+----------------------------
 
 The configuration file is a YAML file that contains the details on the dataset to analyse or use as reference, 
 the output directory and the diagnostic settings.
@@ -270,7 +270,7 @@ The diagnostic produces:
 
 Plots are saved in both PDF and PNG format.
 
-Observations 
+Reference datasets
 ------------
 
 The default reference dataset is OSI-SAF.
