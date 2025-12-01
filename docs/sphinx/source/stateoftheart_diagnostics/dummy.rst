@@ -21,7 +21,7 @@ Example:
     It supports comparative analysis between a climate model and a reference dataset (e.g., ERA5).
 
     The diagnostic provides:
-    - write the diagnostic Diagnostic-specific functionalities
+    - write the diagnostic-specific functionalities
 
 Classes
 -----------
@@ -32,10 +32,17 @@ Classes:
 * DummyDiagnostic: retrieves data, regrids, aggregates, computes derived variables.
 * PlotDummy: generates plots using data prepared by Dummy.
 
-See diagnostic-class_structure in /docs/sphinx/source/new_diagnostics/guidelines/class_structure.rst for design principles.
+(see :ref:`diagnostic-class_structure`) for design principles.
 
 File structure
 -----------
+
+Directory locations:
+
+* Source code and CLI: ``aqua/diagnostics/dummy/``
+* Template configuration file: ``aqua/diagnostics/templates/diagnostics/config-dummy.yaml``
+* Notebooks: ``notebooks/diagnostics/dummy/``
+* Interface files (optional): ``aqua/diagnostics/config/tools/dummy/`` — for custom regions, variable definitions, or other diagnostic-specific settings.
 
 The diagnostic directory consists of the following files:
 
@@ -44,13 +51,6 @@ The diagnostic directory consists of the following files:
 * ``util.py``: a Python file containing utility functions used by the diagnostic classes;
 * ``cli_dummy.py``: a Python file containing the command line interface (CLI) of the diagnostic;
 * ``README.md``: a readme file containing technical information on installation and environment setup.
-
-These files are organized in the following directories:
-
-* Source code and CLI: ``aqua/diagnostics/dummy/``
-* Template configuration file: ``aqua/diagnostics/templates/diagnostics/config-dummy.yaml``
-* Notebooks: ``notebooks/diagnostics/dummy/``
-* Interface files (optional): ``aqua/diagnostics/config/tools/dummy/`` — for custom regions, variable definitions, or other diagnostic-specific settings.
 
 Input variables and datasets
 ------------------------------

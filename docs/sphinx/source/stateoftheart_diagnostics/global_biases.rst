@@ -22,12 +22,11 @@ Classes
 
 There is one class for the analysis and one for the plotting:
 
-* **GlobalBiases**: the main class for the analysis of global biases.  
-  It retrieves the data and prepares it for plotting (e.g., regridding, pressure level selection, unit conversion).  
-  It also handles the computation of mean climatologies, including seasonal climatologies if requested.  
+* **GlobalBiases**: retrieves the data and prepares it for plotting (e.g., regridding, pressure level selection, unit conversion).  
+  It handles the computation of mean climatologies, including seasonal climatologies if requested.  
   Climatologies are saved as class attributes and as NetCDF files.
 
-* **PlotGlobalBiases**: this class provides methods for plotting the global biases, seasonal biases, and vertical profiles.  
+* **PlotGlobalBiases**: provides methods for plotting the global biases, seasonal biases, and vertical profiles.  
   It generates the plots based on the data prepared by the GlobalBiases class.
 
 File structure
@@ -59,7 +58,7 @@ A higher resolution is not necessary for this diagnostic.
 Basic usage
 -----------
 
-The basic usage of this diagnostic is explained with a working example in the notebook provided in the ``notebooks/diagnostics/global_biases`` directory.  
+The basic usage of this diagnostic is explained with a working example in the notebook. 
 The basic structure of the analysis is the following:
 
 .. code-block:: python
@@ -180,7 +179,7 @@ The diagnostic produces four types of plots:
 * Vertical bias profiles (for 3D variables)
 
 Plots are saved in both PDF and PNG format.
-
+Data outputs are saved as NetCDF files.
 
 Reference datasets
 ------------------
@@ -218,8 +217,6 @@ All plots can be reproduced using the notebooks in the ``notebooks`` directory o
 
 Available demo notebooks
 ------------------------
-
-Notebooks are stored in the ``notebooks/diagnostics/global_biases`` directory and contain usage examples.
 
 * `global_biases.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/global_biases/global_biases.ipynb>`_
 
