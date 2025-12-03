@@ -21,6 +21,7 @@ There is one class for the analysis and one for the plotting:
 
 * **PlotBoxplots**: provides methods for plotting the boxplots of the field means computed by the Boxplots class. 
 
+
 File structure
 --------------
 
@@ -50,7 +51,6 @@ degree resolution.
 
     All analyzed variables should share the same units to ensure meaningful comparisons; otherwise, the diagnostic will raise an error.
 
-
 Basic usage
 -----------
 
@@ -77,6 +77,11 @@ The basic structure of the analysis is the following:
 
     plot = PlotBoxplots(diagnostic='radiation')
     plot.plot_boxplots(data=datasets, data_ref=datasets_ref, var=variables)
+
+.. note::
+
+Start/end dates and reference datasets can be customized.
+If not specified otherwise, plots will be saved in PNG and PDF format in the current working directory.
 
 CLI usage
 ---------
@@ -133,9 +138,18 @@ The diagnostic produces a single plot:
   Plots are saved in both PDF and PNG format.
 
 Observations
--------------
+------------
 
-The default reference datasets typically used are ERA5 and CERES, but custom references can be configured.
+This diagnostic can be applied to different variables and datasets, although it is currently used primarily for radiation analyses.
+
+The default reference datasets are:
+
+* ERA5 reanalysis for atmospheric variables
+* CERES EBAF for radiation variables at top of atmosphere
+
+Details are available on the `CERES website <https://ceres.larc.nasa.gov/>`_.
+
+Custom reference datasets can be configured in the configuration file.
 
 Example plots
 -------------

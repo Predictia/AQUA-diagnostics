@@ -35,7 +35,7 @@ It supports time series analysis and seasonal cycle computation with optional st
 
   - **Time-series methods** (compute integrated values over user-defined regions):
 
-    - ``extent``: computes the area of ocean grid cells a configurable sea-ice concentration ``threshold`` (default: 15%). 
+    - ``extent``: computes the area of ocean grid cells with a configurable sea-ice concentration ``threshold`` (default: 15%). 
     - ``volume``: computes the integrated sea-ice thickness across each region.
 
   - **2D spatial methods** (compute monthly climatological maps):
@@ -147,7 +147,7 @@ the output directory and the diagnostic settings.
 Most of the settings are common to all the diagnostics (see :ref:`diagnostics-configuration-files`).
 Here we describe only the specific settings for the sea ice diagnostic.
 
-The sea ice configuration file is organized into several main sections
+The sea ice configuration file is organized into several main sections:
 
 **Dataset Configuration:**
 
@@ -275,29 +275,29 @@ An updated OSI-SAF version is available in the AQUA ``obs`` catalog (``exp=osi-s
 Custom reference datasets can be configured in the configuration file.
 
 Example Plots
----------------
+-------------
 
 All plots can be reproduced using the notebooks in the ``notebooks`` directory on LUMI HPC.
 
 .. figure:: figures/seaice_ts_volume_Arctic_Antarctic.png
    :width: 100%
 
-Time series of sea ice volume for Arctic and Antarctic regions.
+   Time series of sea ice volume for Arctic and Antarctic regions.
 
 .. figure:: figures/seaice_seasonalcycle_extent_Arctic_Antarctic.png
    :width: 100%
 
-Seasonal cycle of sea ice extent for Arctic and Antarctic regions
+   Seasonal cycle of sea ice extent for Arctic and Antarctic regions
 
 .. figure:: figures/seaice_2d_fraction_Arctic_3-9.png
    :width: 100%
 
-2D sea ice fraction maps for the Arctic region (March and September).
+   2D sea ice fraction maps for the Arctic region (March and September).
 
 .. figure:: figures/seaice_2d_thickness_Antarctic_3-9.png
    :width: 100%
 
-2D sea ice thickness maps for the Antarctic region (March and September).
+   2D sea ice thickness maps for the Antarctic region (March and September).
 
 Available demo notebooks
 ------------------------

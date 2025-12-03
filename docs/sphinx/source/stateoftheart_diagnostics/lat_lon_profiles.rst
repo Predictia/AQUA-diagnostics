@@ -1,35 +1,37 @@
+.. _lat_lon_profiles:
+
 LatLonProfiles Diagnostic
 =========================
 
 Description
 -----------
 
-The LatLonProfiles diagnostic computes and plots zonally or meridionally averaged 
+The **LatLonProfiles** diagnostic computes and plots zonally or meridionally averaged 
 profiles of climate variables.
-The diagnostic supports both **zonal means** (averaged over longitude, showing latitude profiles) 
-and **meridional means** (averaged over latitude, showing longitude profiles).
-Time series can be computed as seasonal cycles (DJF, MAM, JJA, SON) or as long-term means over 
-the entire analysis period.
-Profiles can be computed over specific geographic regions, with default regions available or 
-custom regions definable in the configuration file.
+
+LatLonProfiles provides tools to plot:
+
+- Zonal mean profiles (averaged over longitude, showing latitude profiles)
+- Meridional mean profiles (averaged over latitude, showing longitude profiles)
+- Seasonal profiles (4-panel: DJF, MAM, JJA, SON)
+- Long-term mean profiles (single panel)
+
+Profiles can be computed over specific geographic regions, with default regions available or custom regions definable in the configuration file.
+
+The diagnostic is designed with a class that analyzes a single model and generates the NetCDF files, and another class that produces the plots.
 
 Classes
 -------
 
-There are two main classes for computing and plotting latitude-longitude profiles:
+There is one class for the analysis and one for the plotting:
 
-* **LatLonProfiles**: Computes zonally or meridionally averaged profiles of climate variables.
-  
-  - Supports **zonal mean** (average over longitude → latitude profile) and **meridional mean** 
-    (average over latitude → longitude profile)
-  - Computes **seasonal** profiles (DJF, MAM, JJA, SON) and **long-term** means
-  - Optional standard deviation calculation for uncertainty analysis
+* **LatLonProfiles**: retrieves the data and computes zonally or meridionally averaged profiles of climate variables.
+  It handles spatial averaging, temporal averaging (seasonal or long-term), and optional standard deviation calculation for uncertainty analysis.
+  Profiles are saved as class attributes and as NetCDF files.
 
 * **PlotLatLonProfiles**: Produces publication-quality line plots of the computed profiles.
-  
-  - Single-panel plots for long-term means or individual seasons
-  - 4-panel plots showing all four seasons together
-  - Supports multiple model comparison with optional reference data and ±2σ uncertainty bands
+  It generates single-panel plots for long-term means and 4-panel plots for seasonal comparisons.
+  It supports multiple model comparison with optional reference data and ±2σ uncertainty bands.
 
 .. note::
 
@@ -38,35 +40,40 @@ There are two main classes for computing and plotting latitude-longitude profile
 
 
 File structure
----------------
+--------------
 
-* The diagnostic is located in the ``aqua/diagnostics/lat_lon_profiles/`` directory, which contains both the source code and 
+* The diagnostic is located in the ``aqua/diagnostics/lat_lon_profiles`` directory, which contains both the source code and 
   the command line interface (CLI) script.
-* A template configuration file is available at ``aqua/diagnostics/templates/diagnostics/config-lat_lon_profiles.yaml``
-* Region definitions are available in ``config/tools/lat_lon_profiles/definitions/regions.yaml``
-* Notebooks are available in the ``notebooks/diagnostics/lat_lon_profiles/`` directory and contain examples of how to use the diagnostic.
+* A template configuration file is available at ``aqua/diagnostics/templates/diagnostics/config-lat_lon_profiles.yaml``.
+* Regional definitions are available in ``aqua/diagnostics/config/tools/lat_lon_profiles/definitions/regions.yaml``.
+* Notebooks are available in the ``notebooks/diagnostics/lat_lon_profiles`` directory and contain examples of how to use the diagnostic.
 
 
 Input variables and datasets
 ----------------------------
 
-The diagnostic works with climate variables on regular latitude-longitude grids:
+The diagnostic works with climate variables on regular latitude-longitude grids.
 
-* **Direct variables**: ``2t`` (temperature), ``tprate`` (precipitation), ``psl`` (pressure), etc.
-* **Derived variables**: Using ``EvaluateFormula`` syntax (e.g., ``2t - 273.15`` for °C)
+Some of the variables that are typically used in this diagnostic are:
 
-Supported regions include:
+* ``2t`` (2 metre temperature)
+* ``tprate`` (total precipitation rate)
+* ``psl`` (sea level pressure)
 
-``global`` (or ``null``), ``tropics``, ``europe``, ``nh`` (Northern Hemisphere), 
-``sh`` (Southern Hemisphere).
+Derived variables can be computed using the ``EvaluateFormula`` syntax (e.g., ``2t - 273.15`` for temperature in °C).
 
-Custom regions can be defined in ``config/tools/lat_lon_profiles/definitions/regions.yaml``.
+Supported regions include: ``global`` (or ``null``), ``tropics``, ``europe``, ``nh`` (Northern Hemisphere), ``sh`` (Southern Hemisphere).
+Custom regions can be defined in ``aqua/diagnostics/config/tools/lat_lon_profiles/definitions/regions.yaml``.
+
+The diagnostic is designed to work with data from the Low Resolution Archive (LRA), generated by
+the Data Reduction OPerator (DROP) of the AQUA project, which provides monthly data at a 1x1
+degree resolution.
 
 Basic usage
 -----------
 
-The recommended way to use this diagnostic is through the Python API, as shown in the 
-notebooks below.
+The basic usage of this diagnostic is explained with a working example in the notebook.
+The basic structure of the analysis is the following:
 
 .. code-block:: python
 
@@ -89,83 +96,83 @@ notebooks below.
     plot = PlotLatLonProfiles(data=[llp.longterm], data_type='longterm')
     plot.run(outputdir='./')
 
-**For seasonal or multi-model comparisons**, see the demo notebooks below.
+.. note::
+
+    Start/end dates and reference dataset can be customized.
+    If not specified otherwise, plots will be saved in PNG and PDF format in the current working directory.
 
 CLI usage
 ---------
 
-For batch processing or automation, the diagnostic can be run via CLI using a configuration file:
+The diagnostic can be run from the command line interface (CLI) by running the following command:
 
 .. code-block:: bash
 
-    # Copy and customize the template
-    cp templates/diagnostics/config-lat_lon_profiles.yaml my_config.yaml
-    
-    # Run diagnostic
-    python aqua/diagnostics/lat_lon_profiles/cli_lat_lon_profiles.py \
-        --config my_config.yaml \
-        --model ICON \
-        --exp historical-1990 \
-        --loglevel INFO
+    cd $AQUA/aqua/diagnostics/lat_lon_profiles
+    python cli_lat_lon_profiles.py --config <path_to_config_file>
 
-**Key CLI arguments:**
+Additionally, the CLI can be run with the following optional arguments:
 
-``--config``, ``--model``, ``--exp``, ``--catalog``, ``--source``, ``--regrid``, 
-``--realization``, ``--outputdir``, ``--startdate``, ``--enddate``, ``--loglevel``, ``--nworkers``
-
-For the complete list of arguments, run:
-
-.. code-block:: bash
-
-    python aqua/diagnostics/lat_lon_profiles/cli_lat_lon_profiles.py --help
+- ``--config``, ``-c``: Path to the configuration file.
+- ``--nworkers``, ``-n``: Number of workers to use for parallel processing.
+- ``--cluster``: Cluster to use for parallel processing. By default a local cluster is used.
+- ``--loglevel``, ``-l``: Logging level. Default is ``WARNING``.
+- ``--catalog``: Catalog to use for the analysis. Can be defined in the config file.
+- ``--model``: Model to analyse. Can be defined in the config file.
+- ``--exp``: Experiment to analyse. Can be defined in the config file.
+- ``--source``: Source to analyse. Can be defined in the config file.
+- ``--outputdir``: Output directory for the plots.
+- ``--startdate``: Start date for the analysis.
+- ``--enddate``: End date for the analysis.
 
 .. note::
 
-    **Suggested worflow**: Copy the template 
-    (``cp templates/diagnostics/config-lat_lon_profiles.yaml my_config.yaml``), customize it with 
-    your parameters, and run with ``--config my_config.yaml``.
-    
-    **Quick testing**: CLI arguments (``--model``, ``--exp``, etc.) can override config file 
-    values without editing the file, useful for rapid experimentation.
-    
-    For most use cases, we recommend the **programmatic approach** (notebooks) rather than CLI.
+    CLI arguments (``--model``, ``--exp``, etc.) override config file values, useful for rapid experimentation.
+    For the complete list of arguments, run ``python cli_lat_lon_profiles.py --help``.
+
 
 Configuration file structure
 ----------------------------
 
-The template (``templates/diagnostics/config-lat_lon_profiles.yaml``) defines datasets, 
-reference data, and diagnostic parameters:
+The configuration file is a YAML file that contains the details on the dataset to analyse or use as reference, the output directory and the diagnostic settings.
+Most of the settings are common to all the diagnostics (see :ref:`diagnostics-configuration-files`).
+Here we describe only the specific settings for the lat_lon_profiles diagnostic.
 
-**Basic structure:**
+* ``lat_lon_profiles``: a block (nested in the ``diagnostics`` block) containing options for the LatLonProfiles diagnostic.
+  Variable-specific parameters override the defaults.
+
+    * ``run``: enable/disable the diagnostic.
+    * ``diagnostic_name``: name of the diagnostic.
+    * ``mean_type``: type of spatial averaging (``zonal`` or ``meridional``).
+    * ``seasonal``: enable seasonal profiles computation.
+    * ``longterm``: enable long-term mean computation.
+    * ``center_time``: center the time axis.
+    * ``exclude_incomplete``: exclude incomplete time periods.
+    * ``box_brd``: enable box borders in plots.
+    * ``variables``: list of variables to analyse with their regions.
+    * ``formulae``: list of derived variables using formulas.
+
+
+Configuration file structure
+----------------------------
+
+The configuration file is a YAML file that contains the details on the dataset to analyse or use as reference, the output directory and the diagnostic settings.
+Most of the settings are common to all the diagnostics (see :ref:`diagnostics-configuration-files`).
+Here we describe only the specific settings for the lat_lon_profiles diagnostic.
+
+* ``lat_lon_profiles``: a block (nested in the ``diagnostics`` block) containing options for the LatLonProfiles diagnostic.
+  Variable-specific parameters override the defaults.
+
+    * ``run``: enable/disable the diagnostic.
+    * ``diagnostic_name``: name of the diagnostic.
+    * ``mean_type``: type of spatial averaging (``zonal`` or ``meridional``).
+    * ``seasonal``: enable seasonal profiles computation.
+    * ``longterm``: enable long-term mean computation.
+    * ``variables``: list of variables to analyse with their regions.
+    * ``formulae``: list of derived variables using formulas.
 
 .. code-block:: yaml
 
-    # Dataset(s) to analyze
-    datasets:
-      - catalog: 'climatedt-phase1'
-        model: 'ICON'
-        exp: 'historical-1990'
-        source: 'lra-r100-monthly'
-        startdate: '1990-01-01'
-        enddate: '1999-12-31'
-    
-    # Reference dataset (optional)
-    references:
-      - catalog: 'obs'
-        model: 'ERA5'
-        exp: 'era5'
-        source: 'monthly'
-        std_startdate: '1990-01-01'  # Period for std calculation
-        std_enddate: '1999-12-31'
-    
-    # Output settings
-    output:
-      outputdir: "./"
-      save_pdf: true
-      save_png: true
-      dpi: 300
-    
-    # Diagnostic configuration
     diagnostics:
       lat_lon_profiles:
         run: true
@@ -176,7 +183,7 @@ reference data, and diagnostic parameters:
           - name: 'tprate'
             regions: ['global', 'tropics']
 
-**Multiple datasets example** (for multi-model comparison):
+For multi-model comparison, multiple datasets can be specified:
 
 .. code-block:: yaml
 
@@ -195,72 +202,55 @@ reference data, and diagnostic parameters:
         startdate: '1990-01-01'
         enddate: '1999-12-31'
 
-**Derived variables** (using formulas):
+    references:
+      - catalog: 'obs'
+        model: 'ERA5'
+        exp: 'era5'
+        source: 'monthly'
+        std_startdate: '1990-01-01'
+        std_enddate: '1999-12-31'
 
-.. code-block:: yaml
+.. note::
 
-    diagnostics:
-      lat_lon_profiles:
-        variables:
-          - name: '2t'
-            regions: ['global']
-        
-        formulae:
-          - name: 'temp_celsius'
-            formula: '2t - 273.15'
-            units: '°C'
-            long_name: 'Temperature in Celsius'
-            regions: ['global', 'tropics']
-
-For the complete template with all available options, see 
-``templates/diagnostics/config-lat_lon_profiles.yaml``.
+    A template configuration file is available at ``aqua/diagnostics/templates/diagnostics/config-lat_lon_profiles.yaml``.
+    Copy it and customize with your parameters.
 
 Output
 ------
 
-The diagnostic generates:
+The diagnostic produces two types of plots:
 
-📊 **Plots** (PDF and/or PNG):
+* Long-term profiles (single panel)
+* Seasonal profiles (4-panel: DJF, MAM, JJA, SON)
 
-  - Long-term profiles (single panel)
-  - Seasonal profiles (4-panel: DJF, MAM, JJA, SON)
-  - Multi-model comparisons with uncertainty bands
-
-📁 **NetCDF files**:
-
-  - Processed profiles for each frequency and region
-  - Standard deviation files (if computed)
-
-**Naming convention:**
-
-``<diagnostic>_<mean_type>_profile_<freq>_<var>_<region>_<model>_<exp>.<format>``
-
-**Example:**
-
-``lat_lon_profiles_zonal_profile_longterm_tprate_tropics_ICON_historical-1990.png``
-
+Plots are saved in both PDF and PNG format.
+Data outputs are saved as NetCDF files. 
 
 Observations
 ------------
 
-Common reference datasets:
+The default reference datasets typically used are:
 
-* **ERA5**: ECMWF's fifth generation reanalysis for global climate
-* **MSWEP**: Multi-Source Weighted-Ensemble Precipitation dataset
-* **BERKELEY-EARTH**: Berkeley Earth Surface Temperature dataset
+* ERA5 reanalysis for atmospheric variables
+* MSWEP for precipitation data
+* BERKELEY-EARTH for surface temperature
+
+Details are available on the `MSWEP website <https://www.gloh2o.org/mswep/>`_.
 
 Standard deviation can be computed over a custom period using ``std_startdate`` and 
 ``std_enddate`` to provide ±2σ uncertainty bands in plots.
 
+Custom reference datasets can be configured in the configuration file.
 
 Example plots
 -------------
 
+All plots can be reproduced using the notebooks in the ``notebooks`` directory on LUMI HPC.
+
 .. figure:: figures/lat_lon_profiles_zonal_profile_longterm_tprate_Tropics.png
    :width: 100%
 
-   Long-term zonal mean precipitation rate profile for the Tropics region, showing ICON model 
-   output compared to ERA5 reference data with ±2σ uncertainty bands.
+   Long-term zonal mean precipitation rate profile for the Tropics region, showing ICON model output compared to ERA5 reference data with ±2σ uncertainty bands.
 
 .. figure:: figures/lat_lon_profiles_zonal_profile_seasonal_tprate_Tropics.png
    :width: 100%
@@ -276,23 +266,10 @@ Example plots
 Available demo notebooks
 ------------------------
 
-📓 **Single-model analysis** → `single_line_profiles.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/lat_lon_profiles/single_line_profiles.ipynb>`_
+Notebooks are stored in ``notebooks/diagnostics/lat_lon_profiles``:
 
-   Learn the basics: compute profiles, compare with observations, create seasonal plots
-
-📓 **Multi-model comparison** → `multiple_lines_profiles.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/lat_lon_profiles/multiple_lines_profiles.ipynb>`_
-
-   Advanced usage: compare different models, historical vs future scenarios, batch processing
-
-**Key concepts covered:**
-
-- Zonal vs meridional profiles: ``mean_type='zonal'`` or ``'meridional'``
-- Seasonal indexing: ``seasonal[0]`` (DJF), ``seasonal[1]`` (MAM), ``seasonal[2]`` (JJA), 
-  ``seasonal[3]`` (SON)
-- Plot types: ``data_type='longterm'`` (single panel) vs ``'seasonal'`` (4 panels)
-- Uncertainty bands: ``ref_data`` and ``ref_std_data`` parameters
-- Regional selection and custom regions
-
+* `single_line_profiles.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/lat_lon_profiles/single_line_profiles.ipynb>`_
+* `multiple_lines_profiles.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/lat_lon_profiles/multiple_lines_profiles.ipynb>`_
 
 Authors and contributors
 ------------------------
@@ -300,7 +277,6 @@ Authors and contributors
 This diagnostic is maintained by Marco Cadau (`@mcadau <https://github.com/mcadau>`_, `marco.cadau@polito.it <mailto:marco.cadau@polito.it>`_).  
 Contributions are welcome — please open an issue or a pull request.  
 For questions or suggestions, contact the AQUA team or the maintainers.
-
 
 Developer Notes
 ---------------
@@ -370,7 +346,7 @@ Detailed API
 ------------
 
 This section provides a detailed reference for the Application Programming Interface (API) of the ``lat_lon_profiles`` diagnostic,  
-generated from the function docstrings.
+generated from the diagnostic function docstrings.
 
 .. automodule:: aqua.diagnostics.lat_lon_profiles
     :members:

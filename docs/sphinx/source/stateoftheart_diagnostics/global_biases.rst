@@ -17,8 +17,6 @@ GlobalBiases provides tools to plot:
 - Seasonal bias maps
 - Vertical profiles to assess biases across pressure levels
 
-The diagnostic is designed with a class that analyzes a single model and generates the NetCDF files, and another class that produces the plots.
-
 Classes
 -------
 
@@ -49,6 +47,7 @@ Some of the variables that are typically used in this diagnostic are:
 
 * ``2t`` (2 metre temperature)
 * ``tprate`` (total precipitation rate)
+* ``msl`` (mean sea level pressure)
 * ``u``, ``v`` (zonal and meridional wind)
 * ``q`` (specific humidity)
 
@@ -67,8 +66,19 @@ The basic structure of the analysis is the following:
 
     from aqua.diagnostics import GlobalBiases, PlotGlobalBiases
 
-    biases_ifs_nemo = GlobalBiases(model='IFS-NEMO', exp='historical-1990', source='lra-r100-monthly', loglevel="DEBUG")
-    biases_era5 = GlobalBiases(model='ERA5', exp='era5', source='monthly', startdate="1990-01-01", enddate="1999-12-31", loglevel="DEBUG")
+    biases_ifs_nemo = GlobalBiases(
+        model='IFS-NEMO', 
+        exp='historical-1990', 
+        source='lra-r100-monthly',
+        loglevel="DEBUG"
+    )
+    
+    biases_era5 = GlobalBiases(
+        model='ERA5', 
+        exp='era5', 
+        source='monthly', 
+        loglevel="DEBUG"
+    )
 
     biases_ifs_nemo.retrieve(var='q')
     biases_ifs_nemo.compute_climatology(seasonal=True)
@@ -184,9 +194,13 @@ Plots are saved in both PDF and PNG format.
 Data outputs are saved as NetCDF files.
 
 Observations
--------------
+------------
 
-The default reference dataset is ERA5, but custom references can be configured.
+The default reference dataset is ERA5 reanalysis, provided by ECMWF.
+
+The diagnostic uses ERA5 monthly averages at 1x1 degree resolution from the AQUA ``obs`` catalog (``model=ERA5``, ``exp=era5``, ``source=monthly``).
+
+Custom reference datasets can be configured in the configuration file.
 
 Example Plots
 -------------
