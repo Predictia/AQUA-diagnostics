@@ -73,7 +73,7 @@ class Timeseries(BaseMixin):
             center_time (bool): If True, the time will be centered.
             box_brd (bool): choose if coordinates are comprised or not in area selection.
             outputdir (str): The directory to save the data.
-            rebuild (bool): If True, rebuild the data from the original files.
+            rebuild (bool): Ixf True, rebuild the data from the original files.
             reader_kwargs (dict): Additional keyword arguments for the Reader. Default is an empty dictionary.
             create_catalog_entry (bool): If True, create a catalog entry for the data. Default is False.
         """
@@ -163,10 +163,14 @@ class Timeseries(BaseMixin):
             center_time (bool): If True, the time will be centered.
         """
         if freq == 'monthly' or freq == 'annual':
+
             class_startdate = round_startdate(pd.Timestamp(self.plt_startdate))
             class_enddate = round_enddate(pd.Timestamp(self.plt_enddate))
+            self.logger.debug(f"Start date of class: {class_startdate}, End date of class: {class_enddate}")
+            self.logger.debug(f"Start date of data: {data.time[0].values}, End date of data: {data.time[-1].values}")
             start_date = round_startdate(pd.Timestamp(data.time[0].values) if data is not None else None)
             end_date = round_enddate(pd.Timestamp(data.time[-1].values) if data is not None else None)
+            self.logger.debug(f"Start date of data: {start_date}, End date of data: {end_date}")
 
             # Extend the data if needed
             if class_startdate < start_date:

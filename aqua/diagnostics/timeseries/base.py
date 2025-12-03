@@ -1,6 +1,7 @@
 """Base classes for Timeseries diagnostics."""
 
 import xarray as xr
+import pandas as pd
 from aqua.core.fixer import EvaluateFormula
 from aqua.core.logger import log_configure
 from aqua.core.util import frequency_string_to_pandas, pandas_freq_to_string
@@ -56,8 +57,9 @@ class BaseMixin(Diagnostic):
         self.std_startdate = self.startdate if std_startdate is None else std_startdate
         self.std_enddate = self.enddate if std_enddate is None else std_enddate
         # Finally we need to set the start and end dates of the data
-        self.plt_startdate = startdate
-        self.plt_enddate = enddate
+        # tentative fix for timestamp
+        self.plt_startdate = pd.Timestamp(startdate) if startdate is not None else None
+        self.plt_enddate = pd.Timestamp(enddate) if enddate is not None else None
         self.logger.debug(f"Retrieve start date: {self.startdate}, End date: {self.enddate}")
         self.logger.debug(f"Plot start date: {self.plt_startdate}, End date: {self.plt_enddate}")
         self.logger.debug(f"Std start date: {self.std_startdate}, Std end date: {self.std_enddate}")
