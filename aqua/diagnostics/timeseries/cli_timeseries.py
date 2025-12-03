@@ -205,7 +205,7 @@ if __name__ == '__main__':
             exclude_incomplete = cli.config_dict['diagnostics']['seasonalcycles'].get('exclude_incomplete', True)
 
             for var in cli.config_dict['diagnostics']['seasonalcycles'].get('variables', []):
-                #try:
+                try:
                     var_config, regions = load_var_config(cli.config_dict, var, diagnostic='seasonalcycles')
                     cli.logger.info(f"Running SeasonalCycles diagnostic for variable {var} with config {var_config}")
 
@@ -268,8 +268,8 @@ if __name__ == '__main__':
                             if cli.save_png:
                                 plot_sc.save_plot(fig, description=description, outputdir=cli.outputdir,
                                                 dpi=cli.dpi, rebuild=cli.rebuild, format='png')
-                #except Exception as e:
-                #    cli.logger.error(f"Error running SeasonalCycles diagnostic for variable {var} in region {region if region else 'global'}: {e}")
+                except Exception as e:
+                    cli.logger.error(f"Error running SeasonalCycles diagnostic for variable {var} in region {region if region else 'global'}: {e}")
 
     if 'gregory' in cli.config_dict['diagnostics']:
         if cli.config_dict['diagnostics']['gregory']['run']:
@@ -277,76 +277,76 @@ if __name__ == '__main__':
 
             diagnostic_name = cli.config_dict['diagnostics']['gregory'].get('diagnostic_name', 'gregory')
 
-            #try:
-            init_args = {'loglevel': cli.loglevel, 'diagnostic_name': diagnostic_name}
-            freq = []
-            if cli.config_dict['diagnostics']['gregory'].get('monthly', False):
-                freq.append('monthly')
-            if cli.config_dict['diagnostics']['gregory'].get('annual', False):
-                freq.append('annual')
-            run_args = {'freq': freq, 't2m_name': cli.config_dict['diagnostics']['gregory'].get('t2m_name', '2t'),
-                        'net_toa_name': cli.config_dict['diagnostics']['gregory'].get('net_toa_name', 'tnlwrf+tnswrf'),
-                        'exclude_incomplete': cli.config_dict['diagnostics']['gregory'].get('exclude_incomplete', True),
-                        'outputdir': cli.outputdir, 'rebuild': cli.rebuild}
+            try:
+                init_args = {'loglevel': cli.loglevel, 'diagnostic_name': diagnostic_name}
+                freq = []
+                if cli.config_dict['diagnostics']['gregory'].get('monthly', False):
+                    freq.append('monthly')
+                if cli.config_dict['diagnostics']['gregory'].get('annual', False):
+                    freq.append('annual')
+                run_args = {'freq': freq, 't2m_name': cli.config_dict['diagnostics']['gregory'].get('t2m_name', '2t'),
+                            'net_toa_name': cli.config_dict['diagnostics']['gregory'].get('net_toa_name', 'tnlwrf+tnswrf'),
+                            'exclude_incomplete': cli.config_dict['diagnostics']['gregory'].get('exclude_incomplete', True),
+                            'outputdir': cli.outputdir, 'rebuild': cli.rebuild}
 
-            # Initialize a list of len from the number of datasets
-            greg = [None] * len(cli.config_dict['datasets'])
-            model_args = {'t2m': True, 'net_toa': True, 'std': False}
-            for i, dataset in enumerate(cli.config_dict['datasets']):
-                cli.logger.info(f'Running dataset: {dataset}')
-                dataset_args = cli.dataset_args(dataset)
-                cli.logger.debug(f"Dataset args: {dataset_args}")
+                # Initialize a list of len from the number of datasets
+                greg = [None] * len(cli.config_dict['datasets'])
+                model_args = {'t2m': True, 'net_toa': True, 'std': False}
+                for i, dataset in enumerate(cli.config_dict['datasets']):
+                    cli.logger.info(f'Running dataset: {dataset}')
+                    dataset_args = cli.dataset_args(dataset)
+                    cli.logger.debug(f"Dataset args: {dataset_args}")
 
-                greg[i] = Gregory(**init_args, **dataset_args)
-                greg[i].run(**run_args, **model_args, reader_kwargs=dataset.get('reader_kwargs') or cli.reader_kwargs)
+                    greg[i] = Gregory(**init_args, **dataset_args)
+                    greg[i].run(**run_args, **model_args, reader_kwargs=dataset.get('reader_kwargs') or cli.reader_kwargs)
 
-            if cli.config_dict['diagnostics']['gregory']['std']:
-                # t2m:
-                dataset_args = {**cli.config_dict['diagnostics']['gregory']['t2m_ref'],
-                                'regrid': cli.regrid,
-                                'startdate': cli.config_dict['diagnostics']['gregory'].get('std_startdate'),
-                                'enddate': cli.config_dict['diagnostics']['gregory'].get('std_enddate')}
-                greg_ref_t2m = Gregory(**init_args, **dataset_args)
-                greg_ref_t2m.run(**run_args, t2m=True, net_toa=False, std=True)
+                if cli.config_dict['diagnostics']['gregory']['std']:
+                    # t2m:
+                    dataset_args = {**cli.config_dict['diagnostics']['gregory']['t2m_ref'],
+                                    'regrid': cli.regrid,
+                                    'startdate': cli.config_dict['diagnostics']['gregory'].get('std_startdate'),
+                                    'enddate': cli.config_dict['diagnostics']['gregory'].get('std_enddate')}
+                    greg_ref_t2m = Gregory(**init_args, **dataset_args)
+                    greg_ref_t2m.run(**run_args, t2m=True, net_toa=False, std=True)
 
-                # net_toa:
-                dataset_args = {**cli.config_dict['diagnostics']['gregory']['net_toa_ref'],
-                                'regrid': cli.regrid,
-                                'startdate': cli.config_dict['diagnostics']['gregory'].get('std_startdate'),
-                                'enddate': cli.config_dict['diagnostics']['gregory'].get('std_enddate')}
-                greg_ref_toa = Gregory(**init_args, **dataset_args)
-                greg_ref_toa.run(**run_args, t2m=False, net_toa=True, std=True)
-            
-            # Plot the gregory
-            if cli.save_pdf or cli.save_png:
-                cli.logger.info("Plotting Gregory diagnostic")
-                plot_args = {'t2m_monthly_data': [t.t2m_monthly for t in greg],
-                            't2m_annual_data': [t.t2m_annual for t in greg],
-                            'net_toa_monthly_data': [t.net_toa_monthly for t in greg],
-                            'net_toa_annual_data': [t.net_toa_annual for t in greg],
-                            't2m_monthly_ref': greg_ref_t2m.t2m_monthly,
-                            't2m_annual_ref': greg_ref_t2m.t2m_annual,
-                            'net_toa_monthly_ref': greg_ref_toa.net_toa_monthly,
-                            'net_toa_annual_ref': greg_ref_toa.net_toa_annual,
-                            't2m_annual_std': greg_ref_t2m.t2m_std,
-                            'net_toa_annual_std': greg_ref_toa.net_toa_std,
-                            'diagnostic_name': diagnostic_name,
-                            'loglevel': cli.loglevel}
+                    # net_toa:
+                    dataset_args = {**cli.config_dict['diagnostics']['gregory']['net_toa_ref'],
+                                    'regrid': cli.regrid,
+                                    'startdate': cli.config_dict['diagnostics']['gregory'].get('std_startdate'),
+                                    'enddate': cli.config_dict['diagnostics']['gregory'].get('std_enddate')}
+                    greg_ref_toa = Gregory(**init_args, **dataset_args)
+                    greg_ref_toa.run(**run_args, t2m=False, net_toa=True, std=True)
                 
-                plot_greg = PlotGregory(**plot_args)
-                title = plot_greg.set_title()
-                data_labels = plot_greg.set_data_labels()
-                ref_label = plot_greg.set_ref_label()
-                fig = plot_greg.plot(data_labels=data_labels, ref_label=ref_label, title=title)
-                description = plot_greg.set_description()
+                # Plot the gregory
+                if cli.save_pdf or cli.save_png:
+                    cli.logger.info("Plotting Gregory diagnostic")
+                    plot_args = {'t2m_monthly_data': [t.t2m_monthly for t in greg],
+                                't2m_annual_data': [t.t2m_annual for t in greg],
+                                'net_toa_monthly_data': [t.net_toa_monthly for t in greg],
+                                'net_toa_annual_data': [t.net_toa_annual for t in greg],
+                                't2m_monthly_ref': greg_ref_t2m.t2m_monthly,
+                                't2m_annual_ref': greg_ref_t2m.t2m_annual,
+                                'net_toa_monthly_ref': greg_ref_toa.net_toa_monthly,
+                                'net_toa_annual_ref': greg_ref_toa.net_toa_annual,
+                                't2m_annual_std': greg_ref_t2m.t2m_std,
+                                'net_toa_annual_std': greg_ref_toa.net_toa_std,
+                                'diagnostic_name': diagnostic_name,
+                                'loglevel': cli.loglevel}
+                    
+                    plot_greg = PlotGregory(**plot_args)
+                    title = plot_greg.set_title()
+                    data_labels = plot_greg.set_data_labels()
+                    ref_label = plot_greg.set_ref_label()
+                    fig = plot_greg.plot(data_labels=data_labels, ref_label=ref_label, title=title)
+                    description = plot_greg.set_description()
 
-                if cli.save_pdf:
-                    plot_greg.save_plot(fig, description=description, outputdir=cli.outputdir,
-                                        dpi=cli.dpi, rebuild=cli.rebuild, format='pdf', diagnostic_product='gregory')
-                if cli.save_png:
-                    plot_greg.save_plot(fig, description=description, outputdir=cli.outputdir,
-                                            dpi=cli.dpi, rebuild=cli.rebuild, format='png', diagnostic_product='gregory')
-            #except Exception as e:
-            #    cli.logger.error(f"Error running Gregory diagnostic: {e}")
+                    if cli.save_pdf:
+                        plot_greg.save_plot(fig, description=description, outputdir=cli.outputdir,
+                                            dpi=cli.dpi, rebuild=cli.rebuild, format='pdf', diagnostic_product='gregory')
+                    if cli.save_png:
+                        plot_greg.save_plot(fig, description=description, outputdir=cli.outputdir,
+                                                dpi=cli.dpi, rebuild=cli.rebuild, format='png', diagnostic_product='gregory')
+            except Exception as e:
+                cli.logger.error(f"Error running Gregory diagnostic: {e}")
 
     cli.close_dask_cluster()
