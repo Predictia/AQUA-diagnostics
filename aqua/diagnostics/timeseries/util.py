@@ -41,7 +41,7 @@ def loop_seasonalcycle(data: xr.DataArray, startdate: str, enddate: str,
             enddate = center_timestamp(pd.Timestamp(enddate), freq)
 
     if freq == 'monthly':
-        time_range = pd.date_range(start=startdate, end=enddate, freq='MS', inclusive='left')
+        time_range = pd.date_range(start=startdate, end=enddate, freq='MS')
     
         if len(time_range) == 0:
             base_slice = cycle.isel(month=0)
@@ -55,7 +55,7 @@ def loop_seasonalcycle(data: xr.DataArray, startdate: str, enddate: str,
         data = data.drop_vars('month', errors='ignore')
 
     elif freq == 'annual':
-        time_range = pd.date_range(start=startdate, end=enddate, freq='YS', inclusive='left')
+        time_range = pd.date_range(start=startdate, end=enddate, freq='YS')
 
         if len(time_range) == 0:
             base_slice = cycle
