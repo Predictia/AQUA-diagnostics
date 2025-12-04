@@ -54,7 +54,7 @@ if __name__ == '__main__':
                 var_config, regions = load_var_config(cli.config_dict, var)
                 cli.logger.info(f"Running Timeseries diagnostic for variable {var} with config {var_config} in regions {[region if region else 'global' for region in regions]}") # noqa
                 for region in regions:
-                    #try:
+                    try:
                         cli.logger.info(f"Running Timeseries diagnostic in region {region if region else 'global'}")
 
                         init_args = {'region': region, 'loglevel': cli.loglevel, 'diagnostic_name': diagnostic_name}
@@ -119,8 +119,8 @@ if __name__ == '__main__':
                             if cli.save_png:
                                 plot_ts.save_plot(fig, description=description, outputdir=cli.outputdir,
                                                 dpi=cli.dpi, rebuild=cli.rebuild, format='png')
-                    #except Exception as e:
-                    #    cli.logger.error(f"Error running Timeseries diagnostic for variable {var} in region {region if region else 'global'}: {e}")
+                    except Exception as e:
+                        cli.logger.error(f"Error running Timeseries diagnostic for variable {var} in region {region if region else 'global'}: {e}")
 
             for var in cli.config_dict['diagnostics']['timeseries'].get('formulae', []):
                 var_config, regions = load_var_config(cli.config_dict, var)
@@ -205,7 +205,6 @@ if __name__ == '__main__':
             diagnostic_name = cli.config_dict['diagnostics']['seasonalcycles'].get('diagnostic_name', 'seasonalcycles')
             center_time = cli.config_dict['diagnostics']['seasonalcycles'].get('center_time', True)
             exclude_incomplete = cli.config_dict['diagnostics']['seasonalcycles'].get('exclude_incomplete', True)
-            extend = cli.config_dict['diagnostics']['seasonalcycles'].get('extend', False)
 
             for var in cli.config_dict['diagnostics']['seasonalcycles'].get('variables', []):
                 try:
@@ -219,7 +218,7 @@ if __name__ == '__main__':
                         run_args = {'var': var, 'formula': False, 'long_name': var_config.get('long_name'),
                                     'units': var_config.get('units'), 'short_name': var_config.get('short_name'),
                                     'outputdir': cli.outputdir, 'rebuild': cli.rebuild, 'center_time': center_time,
-                                    'exclude_incomplete': exclude_incomplete, 'extend': extend}
+                                    'exclude_incomplete': exclude_incomplete}
 
                         # Initialize a list of len from the number of datasets
                         sc = [None] * len(cli.config_dict['datasets'])
