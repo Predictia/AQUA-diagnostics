@@ -49,6 +49,7 @@ class Stratification(Diagnostic):
         startdate: str = None,
         enddate: str = None,
         diagnostic_name: str = "stratification",
+        vert_coord: str = "level",
         loglevel: str = "WARNING",
     ):
         super().__init__(
@@ -63,6 +64,7 @@ class Stratification(Diagnostic):
         )
         self.logger = log_configure(log_name="Stratification", log_level=loglevel)
         self.diagnostic_name = diagnostic_name
+        self.vert_coord = vert_coord
 
     def run(
         self,
@@ -113,7 +115,7 @@ class Stratification(Diagnostic):
         self.logger.info("Starting stratification diagnostic run.")
         super().retrieve(var=var, reader_kwargs=reader_kwargs)
         if "lev" in self.data.dims:
-            self.data = self.data.rename({"lev": "level"})
+            self.data = self.data.rename({"lev": self.vert_coord})
         self.logger.debug(
             f"Variables retrieved: {var}, region: {region}, dim_mean: {dim_mean}"
         )
@@ -271,7 +273,7 @@ class Stratification(Diagnostic):
         None
         """
         self.logger.debug("Computing mixed layer depth (MLD) from density.")
-        mld = compute_mld_cont(self.data[["rho"]], loglevel=self.loglevel)
+        mld = compute_mld_cont(self.data[["rho"]], vert_coord=self.vert_coord, loglevel=self.loglevel)
         self.data["mld"] = mld["mld"]
         self.logger.debug("Added 'mld' (mixed layer depth) to dataset.")
 

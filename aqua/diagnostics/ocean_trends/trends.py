@@ -22,6 +22,7 @@ class Trends(Diagnostic):
         startdate: str = None,
         enddate: str = None,
         diagnostic_name: str = "trends",
+        vert_coord: str = "level",
         loglevel: str = "WARNING",
     ):
         """Initialize the Trends class.
@@ -35,6 +36,7 @@ class Trends(Diagnostic):
             startdate (str, optional): Start date for data selection.
             enddate (str, optional): End date for data selection.
             diagnostic_name (str, optional): Name of the diagnostic for filenames. Defaults to "trends".
+            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to "level".
             loglevel (str, optional): Logging level. Default is "WARNING".
         """
         super().__init__(
@@ -49,6 +51,7 @@ class Trends(Diagnostic):
         )
         self.logger = log_configure(log_name="Trends", log_level=loglevel)
         self.diagnostic_name = diagnostic_name
+        self.vert_coord = vert_coord
 
     def run(
         self,

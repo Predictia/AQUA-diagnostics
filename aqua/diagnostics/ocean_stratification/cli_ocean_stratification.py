@@ -62,6 +62,7 @@ if __name__ == "__main__":
                 "diagnostic_name", "ocean_stratification"
             )
             climatologies = stratification_config.get("climatology", None)
+            vert_coord = stratification_config.get("vert_coord", "level")
             for region, climatology in zip(regions, climatologies):
                     logger.info(f"Processing region: {region}, climatology: {climatology}")
                     var = stratification_config.get("var", None)
@@ -72,6 +73,7 @@ if __name__ == "__main__":
                     model_stratification = Stratification(
                         **dataset_args,
                         diagnostic_name=diagnostic_name,
+                        vert_coord=vert_coord,
                         loglevel=cli.loglevel,
                     )
                     model_stratification.run(
@@ -92,6 +94,7 @@ if __name__ == "__main__":
                         obs_stratification = Stratification(
                             **reference_args,
                             diagnostic_name=diagnostic_name,
+                            vert_coord=vert_coord,
                             loglevel=cli.loglevel,
                         )
                         obs_stratification.run(
@@ -114,6 +117,7 @@ if __name__ == "__main__":
                             else None
                         ),
                         diagnostic_name=diagnostic_name,
+                        vert_coord=vert_coord,
                         outputdir=cli.outputdir,
                         loglevel=cli.loglevel,
                     )
@@ -125,6 +129,7 @@ if __name__ == "__main__":
                     model_stratification = Stratification(
                         **dataset_args,
                         diagnostic_name=diagnostic_name,
+                        vert_coord=vert_coord,
                         loglevel=cli.loglevel,
                     )
                     model_stratification.run(
@@ -145,6 +150,7 @@ if __name__ == "__main__":
                         obs_stratification = Stratification(
                             **reference_args,
                             diagnostic_name=diagnostic_name,
+                            vert_coord=vert_coord,
                             loglevel=cli.loglevel,
                         )
                         obs_stratification.run(

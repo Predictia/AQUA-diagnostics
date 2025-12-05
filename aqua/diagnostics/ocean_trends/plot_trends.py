@@ -15,6 +15,7 @@ class PlotTrends:
         self,
         data: xr.Dataset,
         diagnostic_name: str = "trends",
+        vert_coord: str = "level",
         outputdir: str = ".",
         rebuild: bool = True,
         loglevel: str = "WARNING",
@@ -24,6 +25,7 @@ class PlotTrends:
         Args:
             data (xr.Dataset): Input xarray Dataset containing trend data.
             diagnostic_name (str, optional): Name of the diagnostic for filenames. Defaults to "trends".
+            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to "level".
             outputdir (str, optional): Directory to save output plots. Defaults to ".".
             rebuild (bool, optional): Whether to rebuild output files. Defaults to True.
             loglevel (str, optional): Logging level. Default is "WARNING".
@@ -33,6 +35,7 @@ class PlotTrends:
 
         self.data = data
         self.diagnostic_name = diagnostic_name
+        self.vert_coord = vert_coord
         self.outputdir = outputdir
         self.rebuild = rebuild
 
@@ -121,6 +124,7 @@ class PlotTrends:
             maps=self.data_list,
             nrows=self.nrows,
             ncols=self.ncols,
+            vert_coord=self.vert_coord,
             title=self.suptitle,
             titles=self.title_list,
             cbar_labels=self.cbar_labels,
@@ -164,13 +168,13 @@ class PlotTrends:
         """Prepare the list of data arrays to plot."""
         self.data_list = []
         if hasattr(self, "levels") and self.levels:
-            self.data = self.data.interp(level=self.levels)
+            self.data = self.data.interp({self.vert_coord: self.levels})
             for level in self.levels:
                 for var in self.vars:
                     if level == 0:
-                        data_level_var = self.data[var].isel(level=-1)
+                        data_level_var = self.data[var].isel({self.vert_coord: -1})
                     else:
-                        data_level_var = self.data[var].sel(level=level)
+                        data_level_var = self.data[var].sel({self.vert_coord: level})
 
                     if data_level_var.isnull().all():
                         self.logger.warning(f"All values are NaN for {var} at {level}m")

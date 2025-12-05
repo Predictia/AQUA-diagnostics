@@ -17,6 +17,7 @@ def plot_multi_vertical_lines(
     data_label: str = None,
     obs_label: str = None,
     variables: list = None,
+    vert_coord: str = "level",
     fig: plt.Figure = None,
     ax: plt.Axes = None,
     style=None,
@@ -38,6 +39,7 @@ def plot_multi_vertical_lines(
         data_label (str, optional): Label for the main data lines.
         obs_label (str, optional): Label for the reference or observational lines.
         variables (list, optional): List of variable names to plot from each dataset.
+        vert_coord (str, optional): Name of the vertical dimension coordinate. Default is "level".
         fig (plt.Figure, optional): Matplotlib Figure to plot on. If None, a new figure is created.
         ax (plt.Axes, optional): Matplotlib Axes to plot on. If None, new axes are created.
         style (str, optional): Plot style to use (default is AQUA style).
@@ -73,7 +75,7 @@ def plot_multi_vertical_lines(
                 ref_data=ref_data_list[j][var] if ref_data_list else None,
                 labels=data_label,
                 ref_label=obs_label,
-                lev_name="level",
+                lev_name=vert_coord,
                 invert_yaxis=True,
                 title=variables[i],
                 return_fig=True,

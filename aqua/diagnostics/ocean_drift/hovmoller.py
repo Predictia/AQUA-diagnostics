@@ -32,6 +32,7 @@ class Hovmoller(Diagnostic):
         startdate: str = None,
         enddate: str = None,
         diagnostic_name: str = "oceandrift",
+        vert_coord: str = "level",
         loglevel: str = "WARNING",
     ):
         """
@@ -46,6 +47,7 @@ class Hovmoller(Diagnostic):
             startdate (str, optional): Start date for data retrieval.
             enddate (str, optional): End date for data retrieval.
             diagnostic_name (str, optional): Name of the diagnostic for filenames. Defaults to "oceandrift".
+            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to "level".
             loglevel (str, optional): Logging level. Defaults to "WARNING".
         """
         super().__init__(
@@ -60,6 +62,7 @@ class Hovmoller(Diagnostic):
         )
         self.logger = log_configure(log_name="OceanHovmoller", log_level=loglevel)
         self.diagnostic_name = diagnostic_name
+        self.vert_coord = vert_coord
         # Initialize the results list. Elements of the list are dataset with different anomanly ref.
         self.processed_data_list = []
 
@@ -93,9 +96,9 @@ class Hovmoller(Diagnostic):
         # This will populate self.data
         super().retrieve(var=var, reader_kwargs=reader_kwargs, months_required=2)
         # HACK: some LRA datasets have levels in 'NEMO model layers' (also non NEMO models due to multi-IO)
-        if self.data.level.attrs['units']=='NEMO model layers':
-            self.data.level.attrs['units'] = 'm'
-        super()._check_data(data= self.data.level, var='level', units='m' )
+        if self.data[self.vert_coord].attrs['units']=='NEMO model layers':
+            self.data[self.vert_coord].attrs['units'] = 'm'
+        super()._check_data(data=self.data[self.vert_coord], var=self.vert_coord, units='m' )
         self.logger.debug("Data retrieved successfully")
         # If a region is specified, apply area selection to self.data
         if region:
