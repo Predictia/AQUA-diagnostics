@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from aqua.core.logger import log_configure
 from aqua.core.util import get_realizations
+from aqua.diagnostics.base.defaults import DEFAULT_OCEAN_VERT_COORD
 from aqua.diagnostics.base import OutputSaver
 from .multiple_hovmoller import plot_multi_hovmoller
 from .multiple_timeseries import plot_multi_timeseries
@@ -21,7 +22,7 @@ class PlotHovmoller:
     def __init__(self,
                  data: list[xr.Dataset],
                  diagnostic_name: str = "oceandrift",
-                 vert_coord: str = "level",
+                 vert_coord: str = DEFAULT_OCEAN_VERT_COORD,
                  outputdir: str = ".",
                  loglevel: str = "WARNING"):
         """

@@ -4,6 +4,7 @@ from itertools import product
 from aqua.core.util import to_list
 from aqua.core.logger import log_configure
 from aqua.diagnostics.base import Diagnostic
+from aqua.diagnostics.base.defaults import DEFAULT_OCEAN_VERT_COORD
 
 xr.set_options(keep_attrs=True)
 
@@ -32,7 +33,7 @@ class Hovmoller(Diagnostic):
         startdate: str = None,
         enddate: str = None,
         diagnostic_name: str = "oceandrift",
-        vert_coord: str = "level",
+        vert_coord: str = DEFAULT_OCEAN_VERT_COORD,
         loglevel: str = "WARNING",
     ):
         """
@@ -47,7 +48,7 @@ class Hovmoller(Diagnostic):
             startdate (str, optional): Start date for data retrieval.
             enddate (str, optional): End date for data retrieval.
             diagnostic_name (str, optional): Name of the diagnostic for filenames. Defaults to "oceandrift".
-            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to "level".
+            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to DEFAULT_OCEAN_VERT_COORD.
             loglevel (str, optional): Logging level. Defaults to "WARNING".
         """
         super().__init__(

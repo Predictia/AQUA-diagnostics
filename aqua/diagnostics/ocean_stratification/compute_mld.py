@@ -1,10 +1,11 @@
 import xarray as xr
 
 from aqua.core.logger import log_configure
+from aqua.diagnostics.base.defaults import DEFAULT_OCEAN_VERT_COORD
 
 
 
-def compute_mld_cont(rho, vert_coord="level", loglevel="WARNING"):
+def compute_mld_cont(rho, vert_coord=DEFAULT_OCEAN_VERT_COORD, loglevel="WARNING"):
     """
     Compute the Mixed Layer Depth (MLD) from a continuous density profile.
 
@@ -21,7 +22,7 @@ def compute_mld_cont(rho, vert_coord="level", loglevel="WARNING"):
     rho : xarray.DataArray
         Seawater density (sigma0) with dimensions including vertical coordinate (depth).
     vert_coord : str, optional
-        Name of the vertical dimension coordinate. Default is "level".
+        Name of the vertical dimension coordinate. Default is DEFAULT_OCEAN_VERT_COORD.
     loglevel : str, optional
         Logging level (default: "WARNING").
 

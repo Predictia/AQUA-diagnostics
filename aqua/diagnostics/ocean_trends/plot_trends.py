@@ -3,6 +3,7 @@ import cartopy.crs as ccrs
 
 from aqua.core.logger import log_configure
 from aqua.core.util import get_realizations
+from aqua.diagnostics.base.defaults import DEFAULT_OCEAN_VERT_COORD
 from aqua.diagnostics.base import OutputSaver
 from .multiple_maps import plot_maps
 from .multivar_vertical_profiles import plot_multivars_vertical_profile
@@ -15,7 +16,7 @@ class PlotTrends:
         self,
         data: xr.Dataset,
         diagnostic_name: str = "trends",
-        vert_coord: str = "level",
+        vert_coord: str = DEFAULT_OCEAN_VERT_COORD,
         outputdir: str = ".",
         rebuild: bool = True,
         loglevel: str = "WARNING",
@@ -25,7 +26,7 @@ class PlotTrends:
         Args:
             data (xr.Dataset): Input xarray Dataset containing trend data.
             diagnostic_name (str, optional): Name of the diagnostic for filenames. Defaults to "trends".
-            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to "level".
+            vert_coord (str, optional): Name of the vertical dimension coordinate. Defaults to DEFAULT_OCEAN_VERT_COORD.
             outputdir (str, optional): Directory to save output plots. Defaults to ".".
             rebuild (bool, optional): Whether to rebuild output files. Defaults to True.
             loglevel (str, optional): Logging level. Default is "WARNING".

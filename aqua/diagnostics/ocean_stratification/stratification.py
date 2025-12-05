@@ -4,6 +4,7 @@ import xarray as xr
 from aqua.core.logger import log_configure
 from aqua.diagnostics.base import Diagnostic
 from .compute_mld import compute_mld_cont
+from aqua.diagnostics.base.defaults import DEFAULT_OCEAN_VERT_COORD
 from .compute_rho import compute_rho
 from .convert_variables import convert_so, convert_thetao
 
@@ -49,7 +50,7 @@ class Stratification(Diagnostic):
         startdate: str = None,
         enddate: str = None,
         diagnostic_name: str = "stratification",
-        vert_coord: str = "level",
+        vert_coord: str = DEFAULT_OCEAN_VERT_COORD,
         loglevel: str = "WARNING",
     ):
         super().__init__(

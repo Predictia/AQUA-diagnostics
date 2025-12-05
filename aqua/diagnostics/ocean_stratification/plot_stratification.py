@@ -7,6 +7,7 @@ from aqua.core.util import cbar_get_label, get_realizations
 from aqua.diagnostics.base import OutputSaver
 from .mld_profiles import plot_maps
 from .multiple_vertical_line import plot_multi_vertical_lines
+from aqua.diagnostics.base.defaults import DEFAULT_OCEAN_VERT_COORD
 
 xr.set_options(keep_attrs=True)
 
@@ -17,7 +18,7 @@ class PlotStratification:
         data: xr.Dataset,
         obs: xr.Dataset = None,
         diagnostic_name: str = "ocean_stratification",
-        vert_coord: str = "level",
+        vert_coord: str = DEFAULT_OCEAN_VERT_COORD,
         outputdir: str = ".",
         loglevel: str = "WARNING",
     ):
