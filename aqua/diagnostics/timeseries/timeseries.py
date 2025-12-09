@@ -163,39 +163,22 @@ class Timeseries(BaseMixin):
             center_time (bool): If True, the time will be centered.
         """
         if freq == 'monthly' or freq == 'annual':
-            class_startdate = round_startdate(pd.Timestamp(self.plt_startdate))
-            class_enddate = round_enddate(pd.Timestamp(self.plt_enddate))
-            
-            # For annual data, we need to round to the end of YEAR, not month
-            if freq == 'annual':
-                class_startdate = pd.Timestamp(year=class_startdate.year, month=1, day=1, 
-                                               hour=0, minute=0, second=0)
-                class_enddate = pd.Timestamp(year=class_enddate.year, month=12, day=31,
-                                             hour=23, minute=59, second=59)
-            
-            start_date = pd.Timestamp(data.time[0].values) if data is not None else None
-            end_date = pd.Timestamp(data.time[-1].values) if data is not None else None
-            
-            # Round dates based on frequency
-            if freq == 'annual':
-                start_date = pd.Timestamp(year=start_date.year, month=1, day=1,
-                                         hour=0, minute=0, second=0)
-                end_date = pd.Timestamp(year=end_date.year, month=12, day=31,
-                                       hour=23, minute=59, second=59)
-            else:  # monthly
-                start_date = round_startdate(start_date)
-                end_date = round_enddate(end_date)
+            # Use freq parameter for proper rounding
+            class_startdate = round_startdate(pd.Timestamp(self.plt_startdate), freq=freq)
+            class_enddate = round_enddate(pd.Timestamp(self.plt_enddate), freq=freq)
+            start_date = round_startdate(pd.Timestamp(data.time[0].values), freq=freq)
+            end_date = round_enddate(pd.Timestamp(data.time[-1].values), freq=freq)
 
+            self.logger.debug(f'Extension check - Class range: {class_startdate} to {class_enddate}')
+            self.logger.debug(f'Extension check - Data range: {start_date} to {end_date}')
             self.logger.debug(f'Extension check - Data has {len(data.time)} timesteps before extension')
 
             # Extend the data if needed
             if class_startdate < start_date:
                 self.logger.info('Extending back the start date from %s to %s', start_date, class_startdate)
-                # Use start_date - 1 day as enddate to avoid including start_date itself
                 extend_enddate = start_date - pd.Timedelta(days=1)
                 loop = loop_seasonalcycle(data=data, startdate=class_startdate, enddate=extend_enddate,
-                                          freq=freq, center_time=center_time, loglevel=self.loglevel)
-                self.logger.debug(f'Extension - Loop created with {len(loop.time)} timesteps')
+                                        freq=freq, center_time=center_time, loglevel=self.loglevel)
                 data = xr.concat([loop, data], dim='time', coords='different', compat='equals')
                 data = data.sortby('time')
             else:
@@ -203,7 +186,6 @@ class Timeseries(BaseMixin):
 
             if class_enddate > end_date:
                 self.logger.info('Extending the end date from %s to %s', end_date, class_enddate)
-                # Start from next period to avoid duplicating end_date
                 if freq == 'annual':
                     extend_startdate = end_date + pd.DateOffset(years=1)
                 elif freq == 'monthly':
