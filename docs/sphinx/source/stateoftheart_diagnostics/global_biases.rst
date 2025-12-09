@@ -243,7 +243,7 @@ Authors and contributors
 
 This diagnostic is maintained by Silvia Caprioli (`@silviacaprioli <https://github.com/silviacaprioli>`_, `silvia.caprioli@polito.it <mailto:silvia.caprioli@polito.it>`_).  
 Contributions are welcome — please open an issue or a pull request.  
-For questions or suggestions, contact the AQUA team or the maintainers.
+For questions or suggestions, contact the AQUA team or the maintainer.
 
 Detailed API
 ------------

@@ -85,6 +85,7 @@ The basic structure of the analysis is the following:
 
     plot = PlotNAO(indexes=nao.index)
     plot.plot_index()
+    plot.plot_regression()
 
 .. note::
 
@@ -163,16 +164,20 @@ and filled contour map for the difference between the model and the reference re
 Example Plots
 -------------
 
+All plots can be reproduced using the notebooks in the ``notebooks`` directory on LUMI HPC.
++
+ .. figure:: figures/teleconnections.png
++   :align: center
 .. figure:: figures/teleconnections.png
    :width: 100%
 
    ENSO IFS-NEMO ssp370 regression map (avg_tos) compared to ERA5.
    The contour lines are the model regression map and the filled contour map is the difference between the model and the reference regression map (ERA5).
 
-.. _teleconnections_notebooks:
-
 Available demo notebooks
 ------------------------
+
+Notebooks are stored in ``notebooks/diagnostics/teleconnections``:
 
 - `NAO <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/teleconnections/NAO.ipynb>`_
 - `ENSO <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/teleconnections/ENSO.ipynb>`_
@@ -183,13 +188,13 @@ Authors and contributors
 ------------------------
 
 This diagnostic is maintained by Matteo Nurisso (`@mnurisso <https://github.com/mnurisso>`_, `m.nurisso@isac.cnr.it <mailto:m.nurisso@isac.cnr.it>`_).
-Contributions are welcome, please open an issue or a pull request.
-If you have any doubt or suggestion, please contact the AQUA team or the maintainers.
+Contributions are welcome — please open an issue or a pull request.
+If you have any doubt or suggestion, contact the AQUA team or the maintainer.
 
 Detailed API
 ------------
 
-This section provides a detailed reference for the Application Programming Interface (API) of the Teleconnections diagnostic,
+This section provides a detailed reference for the Application Programming Interface (API) of the ``teleconnections`` diagnostic,  
 produced from the diagnostic function docstrings.
 
 .. automodule:: aqua.diagnostics.teleconnections
