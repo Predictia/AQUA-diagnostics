@@ -47,9 +47,11 @@ def round_startdate(startdate, freq='monthly'):
     if freq == 'annual':
         return pd.Timestamp(year=startdate.year, month=1, day=1, 
                            hour=0, minute=0, second=0)
-    else:  # monthly (default)
+    elif freq == 'monthly':
         return pd.Timestamp(year=startdate.year, month=startdate.month, day=1,
                            hour=0, minute=0, second=0)
+    else:
+        raise ValueError(f"Unsupported frequency '{freq}'. Only 'monthly' and 'annual' are supported.")
 
 
 def round_enddate(enddate, freq='monthly'):
@@ -66,6 +68,8 @@ def round_enddate(enddate, freq='monthly'):
     if freq == 'annual':
         return pd.Timestamp(year=enddate.year, month=12, day=31,
                            hour=23, minute=59, second=59)
-    else:  # monthly (default)
+    elif freq == 'monthly':
         return pd.Timestamp(year=enddate.year, month=enddate.month, day=1,
                            hour=0, minute=0, second=0) + pd.DateOffset(months=1) - pd.Timedelta(seconds=1)
+    else:
+        raise ValueError(f"Unsupported frequency '{freq}'. Only 'monthly' and 'annual' are supported.")
