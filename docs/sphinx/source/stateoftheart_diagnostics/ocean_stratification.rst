@@ -201,32 +201,19 @@ References
 Example Plots
 -------------
 
-FIGURES NEED TO BE UPDATED!!!
-
 All plots can be reproduced using the notebooks in the ``notebooks`` directory on LUMI HPC.
 
+.. figure:: figures/figures/ocean_stratification.stratification.climatedt-phase1.IFS-NEMO.historical-1990.r1.labrador_sea.png
+    :width: 20cm
+    
+    Vertical stratification profiles of temperature, salinity, and density in the Labrador Sea (January climatology) from IFS-NEMO historical-1990 experiment compared to EN4 observations.
 
-* This is an example of one of the climatological stratification profiles.
 
-.. figure:: figures/IFS-NEMO-historical-1990-lra-r100-monthly_stratification_Feb_clim_labrador_sea-1.jpg
+
+.. figure:: figures/ocean_stratification.mld.climatedt-phase1.IFS-NEMO.historical-1990.r1.labrador_sea.png
     :width: 20cm
 
-
-* This is an example of one of the mixed-layer depth climatologies. Unit is meter. 
-
-.. figure:: figures/IFS-NEMO-historical-1990-lra-r100-monthly_spatial_MLD_Jun-Jul-Aug_weddell_sea-1.jpg
-    :width: 20cm
-
-
-* This is an example of multi-model stratification of two regions. 
-
-.. figure:: figures/Stratification_IFS-NEMO-historical-ssp370-ICON_historical-ssp370.png
-    :width: 20cm
-
-* This is an example of multi-model MLD. 
-
-.. figure:: figures/MLD_IFS-NEMO-historical-ssp370-ICON_historical-ssp370.png
-    :width: 20cm
+    Mixed layer depth spatial distribution for January climatology in the Labrador Sea from IFS-NEMO historical-1990 experiment compared to EN4 observations.
 
 
 
