@@ -180,21 +180,19 @@ Data outputs (containing the computed anomalies over the specified regions) are 
 Example Plots
 -------------
 
-
-FIGURES NEED TO BE UPDATED!!!
-
 All plots can be reproduced using the notebooks in the ``notebooks`` directory on LUMI HPC.
 
-* This is an example of the multipanel plots of the spatially averaged T, S timeseries at different levels
-
-.. figure:: figures/IFS-NEMO-historical-1990-lra-r100-monthly_time_series_atlantic_ocean-1.jpg
+.. figure:: figures/oceandrift.hovmoller.climatedt-phase1.IFS-NEMO.historical-1990.r1.indian_ocean.png
     :width: 18cm
 
-* This is an example of multi-model time series plot. 
+Hovmöller diagrams showing ocean temperature drift in the Indian Ocean. Full values, anomalies relative to initial time and standardized anomalies are shown.
 
-.. figure:: figures/Time_series_IFS-NEMO-historical-ssp370-ICON_historical-ssp370.png
+
+
+.. figure:: figures/oceandrift.timeseries.climatedt-phase1.IFS-NEMO.historical-1990.r1.indian_ocean.png
     :width: 20cm
 
+Timeseries of ocean temperature at multiple depth levels in the Indian Ocean, showing drift patterns from full values, anomalies relative to t0, and standardized anomalies.
 
 
 Available demo notebooks
