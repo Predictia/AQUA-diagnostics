@@ -72,10 +72,11 @@ The basic structure of the analysis is the following:
     from aqua.diagnostics import Stratification, PlotStratification
 
     strat = Stratification(
-    catalog='mn5-phase2',
+    catalog='climatedt-phase1',
     model='IFS-NEMO',
-    exp='control-1990-freeze',
+    exp='historical-1990',
     source='lra-r100-monthly',
+    loglevel='DEBUG'
     startdate='01-01-1991',
     enddate='31-05-1992',
     loglevel='DEBUG'
