@@ -188,10 +188,16 @@ class Timeseries(BaseMixin):
 
             if class_enddate > end_date:
                 self.logger.info('Extending the end date from %s to %s', end_date, class_enddate)
+                # Start extension from the next period after end_date
                 if freq == 'annual':
-                    extend_startdate = end_date + pd.DateOffset(years=1)
+                    # Get the start of next year
+                    extend_startdate = pd.Timestamp(year=end_date.year + 1, month=1, day=1, 
+                                                   hour=0, minute=0, second=0)
                 elif freq == 'monthly':
-                    extend_startdate = end_date + pd.DateOffset(months=1)
+                    # Get the start of next month
+                    next_month = end_date + pd.DateOffset(months=1)
+                    extend_startdate = pd.Timestamp(year=next_month.year, month=next_month.month, day=1,
+                                                   hour=0, minute=0, second=0)
                 
                 self.logger.debug(f'Extension - Creating loop from {extend_startdate} to {class_enddate}')
                 loop = loop_seasonalcycle(data=data, startdate=extend_startdate, enddate=class_enddate,
