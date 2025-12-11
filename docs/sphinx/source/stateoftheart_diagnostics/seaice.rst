@@ -30,8 +30,8 @@ Classes
 There is one class for the analysis and two for the plotting:
 
 * **SeaIce**: performs all core computations for sea ice metrics — ``extent``, ``volume``, ``fraction``, and ``thickness`` metrics — for a single model or reference dataset.
-It manages data loading, regional masking, spatial integration, and statistical processing.
-It supports time series analysis and seasonal cycle computation with optional standard deviation calculations.
+  It manages data loading, regional masking, spatial integration, and statistical processing.
+  It supports time series analysis and seasonal cycle computation with optional standard deviation calculations.
 
   - **Time-series methods** (compute integrated values over user-defined regions):
 
@@ -40,15 +40,15 @@ It supports time series analysis and seasonal cycle computation with optional st
 
   - **2D spatial methods** (compute monthly climatological maps):
 
-     - ``fraction``: returns monthly mean maps of sea-ice concentration (0-1).
-     - ``thickness``: returns monthly mean maps of sea-ice thickness (in meters).  
+    - ``fraction``: returns monthly mean maps of sea-ice concentration (0-1).
+    - ``thickness``: returns monthly mean maps of sea-ice thickness (in meters).
 
 * **PlotSeaIce**: generates time-series and seasonal-cycle visualizations.
-It can receive a ``xarray.DataArray``, a ``xarray.Dataset``, or a list of ``xarray.Dataset`` objects containing sea-ice diagnostics from multiple models and a reference dataset, enabling direct comparisons.
+  It can receive a ``xarray.DataArray``, a ``xarray.Dataset``, or a list of ``xarray.Dataset`` objects containing sea-ice diagnostics from multiple models and a reference dataset, enabling direct comparisons.
 
 * **Plot2DSeaIce**: produces visualizations for 2D spatial climatologies and corresponding biases across all months.
-It supports the same data formats as PlotSeaIce, allowing side-by-side evaluation of multiple models against observations or a chosen reference.
-
+  It supports the same data formats as PlotSeaIce, allowing side-by-side evaluation of multiple models against observations or a chosen reference.
+  
 .. note::
 
     The ``extent`` and ``volume`` methods produce time series data, while ``fraction`` and ``thickness`` methods produce 2D spatial maps.
