@@ -16,7 +16,7 @@ from .seaice import SeaIce, PlotSeaIce, Plot2DSeaIce
 from .sshVariability import sshVariabilityCompute, sshVariabilityPlot
 from .ocean_drift import Hovmoller, PlotHovmoller
 from .ocean_stratification import Stratification, PlotStratification, PlotMLD
-from .ocean_trens import Trends, PlotTrends
+from .ocean_trends import Trends, PlotTrends
 
 
 DIAGNOSTIC_CONFIG_DIRECTORIES = ["analysis", "diagnostics", "tools"]
