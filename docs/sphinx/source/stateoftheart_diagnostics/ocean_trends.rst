@@ -6,9 +6,6 @@ Ocean Trends Diagnostic
 Description
 -----------
 
-Description
------------
-
 The **OceanTrends** diagnostic is a set of tools for the analysis and visualization of linear trends in ocean model outputs over time.  
 It computes temporal trends for ocean variables at different depths and provides spatial representations of these trends.  
 The diagnostic is designed to identify systematic changes in ocean properties, which can indicate climate drift, model bias evolution, or physical climate change signals.
@@ -66,32 +63,30 @@ Basic usage
 The basic usage of this diagnostic is explained with a working example in the notebook. 
 The basic structure of the analysis is the following:
 
-
 .. code-block:: python
+
     from aqua.diagnostics import Trends, PlotTrends
 
-    trends = Trends(
-    catalog='climatedt-phase1',
-    model='IFS-NEMO',
-    exp='historical-1990',
-    source='lra-r100-monthly',
-    startdate='01-01-1991',
-    enddate='31-05-1991',
-    loglevel='INFO)
+    trend = Trends(
+        catalog='climatedt-phase1',
+        model='IFS-NEMO',
+        exp='historical-1990',
+        source='lra-r100-monthly',
+        startdate='01-01-1991',
+        enddate='31-05-1991',
+        loglevel='INFO'
+    )
 
-    trends.run(
-        outputdir= ".",
+    trend.run(
+        outputdir=".",
         var=['thetao', 'so'],
-        region="io")
+        region="io"
+    )
 
     # Generate multi-level spatial maps
     plot_trends = PlotTrends(data = trend.trend_coef)
-    plot_trends.plot_multilevel(
-            levels=[10, 100, 500, 1000, 3000, 5000],
-            save_pdf=True, 
-            save_png=True, 
-            dpi=300
-        )
+    plot_trends.plot_multilevel()
+
 .. note::
 
     Trend coefficients are automatically adjusted based on the detected temporal frequency of the input data.
@@ -105,8 +100,6 @@ The basic structure of the analysis is the following:
     * **1000 m** - Deep intermediate waters
     * **3000 m** - Deep waters
     * **5000 m** - Abyssal waters
-
-
 
 CLI usage
 ---------
@@ -129,6 +122,8 @@ Additionally, the CLI can be run with the following optional arguments:
 - ``--exp``: Experiment to analyse. Can be defined in the config file.
 - ``--source``: Source to analyse. Can be defined in the config file.
 - ``--outputdir``: Output directory for the plots.
+- ``--startdate``: Start date for the analysis.
+- ``--enddate``: End date for the analysis.
 
 Configuration file structure
 ----------------------------
@@ -150,13 +145,12 @@ Here we describe only the specific settings for the ocean trends diagnostic.
 .. code-block:: yaml
 
     diagnostics:
-    ocean_trends:
+      ocean_trends:
         multilevel:
-        diagnostic_name: 'ocean3d'
-        run: true
-        var: ['thetao', 'so']
-        regions: ['io', 'ao', 'so', 'arc_o', 'po', 'go']
-
+          diagnostic_name: 'ocean3d'
+          run: true
+          var: ['thetao', 'so']
+          regions: ['io', 'ao', 'so', 'arc_o', 'po', 'go']
 
 The diagnostic supports analysis over predefined ocean regions. Common regions include:
 
@@ -207,14 +201,12 @@ Notebooks are stored in ``notebooks/diagnostics/ocean_trends``:
 
 * `trends.ipynb <https://github.com/DestinE-Climate-DT/AQUA-diagnostics/tree/main/notebooks/diagnostics/ocean_trends/trends.ipynb>`_
 
-
-
 Authors and contributors
 ------------------------
 
 This diagnostic is maintained by Supriyo Gosh (`@supriyogosh <https://github.com/supriyogosh>`_, `supriyo.ghosh@bsc.es <mailto:supriyo.ghosh@bsc.es>`_).  
 Contributions are welcome — please open an issue or a pull request.  
-For questions or suggestions, contact the AQUA team or the maintainers.
+For questions or suggestions, contact the AQUA team or the maintainer.
 
 
 Detailed API
@@ -223,7 +215,7 @@ Detailed API
 This section provides a detailed reference for the Application Programming Interface (API) of the "ocean3d" diagnostic,
 produced from the diagnostic function docstrings.
 
-.. automodule:: ocean_trends
+.. automodule:: aqua.diagnostics.ocean_trends
     :members:
     :undoc-members:
     :show-inheritance:
