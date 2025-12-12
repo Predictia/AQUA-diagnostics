@@ -39,8 +39,7 @@ html_theme_options = {
     "navigation_depth": 4,
 }
 
-# Add the path to the package to the sys.path
-sys.path.insert(0, os.path.relpath('../../diagnostics'))
-sys.path.insert(0, os.path.relpath('../../diagnostics/teleconnections'))
-sys.path.insert(0, os.path.relpath('../../diagnostics/ocean3d'))
-sys.path.insert(0, os.path.relpath('../../diagnostics/tropical_cyclones'))
+# Add the path to the package root (where 'aqua' folder is located)
+# From: docs/sphinx/source/conf.py
+# To:   root of the project (3 levels up)
+sys.path.insert(0, os.path.abspath('../../../aqua/diagnostics'))
