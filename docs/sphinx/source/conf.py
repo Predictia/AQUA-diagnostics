@@ -26,7 +26,8 @@ autoclass_content = 'both'
 exclude_patterns = []
 
 # Mock imports for modules that are not available during docs build, can be expanded
-autodoc_mock_imports = ["dummy"]
+autodoc_mock_imports = ["dummy", "aqua", "aqua.diagnostics"]
+
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -42,4 +43,4 @@ html_theme_options = {
 # Add the path to the package root (where 'aqua' folder is located)
 # From: docs/sphinx/source/conf.py
 # To:   root of the project (3 levels up)
-sys.path.insert(0, os.path.abspath('../../../aqua/diagnostics'))
+sys.path.insert(0, os.path.abspath('../../..'))
