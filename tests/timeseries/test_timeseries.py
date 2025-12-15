@@ -93,7 +93,7 @@ class TestTimeseries:
 
         ts.retrieve(var=self.var)
 
-        ts.compute(freq='hourly')
+        ts.compute(freq='hourly', extend=False)
         assert ts.hourly.values[0] == pytest.approx(60.145472982004186, rel=approx_rel)
 
         ts.compute(freq='daily')
@@ -109,5 +109,8 @@ class TestTimeseries:
 
         ts.compute(freq='monthly')
         assert ts.monthly.values[0] ==  pytest.approx(117.40372092960037, rel=approx_rel)
-        # Differently from the previous version of the test, there is no extension of the data
         assert ts.monthly.values[-1] == pytest.approx(123.01323353753897, rel=approx_rel)
+        
+        # Test extend with non supported frequency
+        ts.compute(freq='hourly', extend=True)
+        assert ts.hourly is not None
