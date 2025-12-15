@@ -93,7 +93,7 @@ class TestTimeseries:
 
         ts.retrieve(var=self.var)
 
-        ts.compute(freq='hourly', extend=False)
+        ts.compute(freq='hourly')
         assert ts.hourly.values[0] == pytest.approx(60.145472982004186, rel=approx_rel)
 
         ts.compute(freq='daily')
@@ -114,3 +114,50 @@ class TestTimeseries:
         # Test extend with non supported frequency
         ts.compute(freq='hourly', extend=True)
         assert ts.hourly is not None
+
+    def test_extend_edge_cases(self):
+        """Test _extend_data edge cases"""
+        ts = Timeseries(diagnostic_name=self.diagnostic_name,
+                        catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
+                        region=self.region, loglevel=loglevel, startdate='19900101', enddate='19901231',
+                        regrid=self.regrid)
+
+        ts.retrieve(var=self.var)
+        
+        # Test compute with extend=False (no extension)
+        ts.compute(freq='monthly', extend=False)
+        assert ts.monthly is not None
+        
+        # Test annual frequency with extension
+        ts.compute(freq='annual', extend=True, center_time=False)
+        assert ts.annual is not None
+        
+        # Test case where dates match exactly (no extension needed - both else branches)
+        ts_exact = Timeseries(diagnostic_name=self.diagnostic_name,
+                            catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
+                            region=self.region, loglevel=loglevel, 
+                            startdate='19900101', enddate='19900228',
+                            regrid=self.regrid)
+        ts_exact.retrieve(var=self.var)
+        ts_exact.compute(freq='monthly', extend=True)
+        assert len(ts_exact.monthly.time) == 2
+        
+        # Test extension at both start and end (class dates exceed data dates)
+        ts_extended = Timeseries(diagnostic_name=self.diagnostic_name,
+                                catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
+                                region=self.region, loglevel=loglevel,
+                                startdate='19890101', enddate='19911231',  # Extends before AND after available data
+                                regrid=self.regrid)
+        ts_extended.retrieve(var=self.var)
+        ts_extended.compute(freq='monthly', extend=True)
+        # Should have 36 months (3 years) with extension
+        assert len(ts_extended.monthly.time) == 36
+        
+        # Test that retrieve with no data raises ValueError
+        ts_nodata = Timeseries(diagnostic_name=self.diagnostic_name,
+                            catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
+                            region=self.region, loglevel=loglevel, 
+                            startdate='19500101', enddate='19500201',
+                            regrid=self.regrid)
+        with pytest.raises(ValueError, match="No data found"):
+            ts_nodata.retrieve(var=self.var)
