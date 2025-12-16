@@ -319,7 +319,8 @@ class PlotLatLonProfiles():
 
         # Units
         if self.units is not None:
-            description += f'[{self.units}] '
+            units = self.units.replace("**", r"\*\*")
+            description += f'[{units}] '
         
         # Short name in parentheses
         if self.short_name is not None:
