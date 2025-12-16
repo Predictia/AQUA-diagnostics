@@ -142,16 +142,25 @@ class TestTimeseries:
         ts_exact.compute(freq='monthly', extend=True)
         assert len(ts_exact.monthly.time) == 2
         
-        # Test extension at both start and end (class dates exceed data dates)
-        ts_extended = Timeseries(diagnostic_name=self.diagnostic_name,
-                                catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
-                                region=self.region, loglevel=loglevel,
-                                startdate='19890101', enddate='19911231',  # Extends before AND after available data
-                                regrid=self.regrid)
-        ts_extended.retrieve(var=self.var)
-        ts_extended.compute(freq='monthly', extend=True)
-        # Should have 36 months (3 years) with extension
-        assert len(ts_extended.monthly.time) == 36
+        # Test extension only at end (class_enddate > end_date)
+        ts_end = Timeseries(diagnostic_name=self.diagnostic_name,
+                        catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
+                        region=self.region, loglevel=loglevel,
+                        startdate='19900101', enddate='19911231',  # Extends only at end
+                        regrid=self.regrid)
+        ts_end.retrieve(var=self.var)
+        ts_end.compute(freq='monthly', extend=True)
+        assert len(ts_end.monthly.time) == 24  # 2 years
+        
+        # Test extension at both start and end
+        ts_both = Timeseries(diagnostic_name=self.diagnostic_name,
+                            catalog=self.catalog, model=self.model, exp=self.exp, source=self.source,
+                            region=self.region, loglevel=loglevel,
+                            startdate='19890101', enddate='19911231',  # Extends both
+                            regrid=self.regrid)
+        ts_both.retrieve(var=self.var)
+        ts_both.compute(freq='monthly', extend=True)
+        assert len(ts_both.monthly.time) == 36  # 3 years
         
         # Test that retrieve with no data raises ValueError
         ts_nodata = Timeseries(diagnostic_name=self.diagnostic_name,
