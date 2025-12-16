@@ -32,7 +32,7 @@ if __name__ == '__main__':
     
     cli = DiagnosticCLI(args, 
                         diagnostic_name='ocean3d', 
-                        default_config='config_ocean_drift.yaml', 
+                        default_config='config-ocean3d-en4-trend-drift.yaml', 
                         log_name='OceanDrift CLI').prepare()
     cli.open_dask_cluster()
     
@@ -53,7 +53,7 @@ if __name__ == '__main__':
             diagnostic_name = hovmoller_config.get('diagnostic_name', 'ocean_drift')
             var = hovmoller_config.get('var', None)
             dim_mean = hovmoller_config.get('dim_mean', ['lat', 'lon'])
-            vert_coord = hovmoller_config.get('vert_coord', 'level')
+            vert_coord = hovmoller_config.get('vert_coord', None)
             # Add the global region if not present
             # if regions != [None]:
             #    regions.append(None)
