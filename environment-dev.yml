@@ -23,6 +23,10 @@ dependencies:
   - intake-esm
   - imagemagick
   - healpy
+  - gdal
+  - rasterio
+  - regionmask
+  - geopandas
   - pip:
     - -e ../AQUA
     - -e ./frontier-diagnostics/tropical_cyclones/ # pip install -e of tropical cyclones
