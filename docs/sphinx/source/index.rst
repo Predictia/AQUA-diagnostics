@@ -18,6 +18,7 @@ Welcome to AQUA-diagnostics' documentation!
    container
    stateoftheart_diagnostics/index
    frontier_diagnostics/index
+   ensemble/index
    new_diagnostics/index
    cli
    api_reference
