@@ -333,7 +333,7 @@ Detailed API
 This section provides a detailed reference for the Application Programming Interface (API) of the ``sshVariability`` diagnostic,
 produced from the diagnostic function docstrings.
 
-.. automodule:: aqua.diagnostic.sshVariability
+.. automodule:: aqua.diagnostics.sshVariability
     :members:
     :undoc-members:
     :show-inheritance:
