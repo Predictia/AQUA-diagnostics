@@ -33,7 +33,7 @@ The extra dependencies are listed in the ``environment.yml`` file in the reposit
 
     If you need to access data written in a local FDB database (not polytope), you need to install the FDB5 library.
     The FDB5 library is not available in the conda-forge repository, so you need to install it manually.
-    If you are working on a supported HPC, you can check the corresponding section for more information in the :ref:`HPC installation <installation-hpc>` section.
+    If you are working on a supported HPC, you can check the corresponding section for more information in the :ref:`HPC installation <installation-hpc2020>` section.
 
 Once the extra dependencies are installed, you can install AQUA with the following command:
 
@@ -404,7 +404,7 @@ You can later also use ``tykky deactivate`` to deactivate the environment.
 
 .. note ::
 
-    This installs ``aqua-cora`` as a package from pip and ``aqua-diagnostics`` in editable mode. 
+    This installs ``aqua-core`` as a package from pip and ``aqua-diagnostics`` in editable mode. 
     If you are a developer you can also install using the ``hpc2020_install_dev.sh`` script, which will install both in editable mode, creating the tykky environment ``aqua-dev``.
 
 In case you plan to use Visual Studio Code, you can add a kernel pointing to the containerized AQUA by running also the following command:
