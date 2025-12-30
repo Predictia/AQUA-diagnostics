@@ -212,7 +212,7 @@ Notebooks are stored in ``notebooks/diagnostics/ocean_trends``:
 Authors and contributors
 ------------------------
 
-This diagnostic is maintained by Supriyo Gosh (`@supriyogosh <https://github.com/supriyogosh>`_, `supriyo.ghosh@bsc.es <mailto:supriyo.ghosh@bsc.es>`_).  
+This diagnostic is maintained by Supriyo Gosh (`@ghossh <https://github.com/ghossh>`_, `supriyo.ghosh@bsc.es <mailto:supriyo.ghosh@bsc.es>`_).  
 Contributions are welcome — please open an issue or a pull request.  
 For questions or suggestions, contact the AQUA team or the maintainer.
 
