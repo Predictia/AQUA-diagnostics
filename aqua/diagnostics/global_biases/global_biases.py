@@ -114,7 +114,7 @@ class GlobalBiases(Diagnostic):
             self.data.attrs['short_name'] = self.var
 
         self.startdate = pd.Timestamp(self.startdate or self.data.time[0].values).strftime("%Y-%m-%d")
-        self.enddate   = pd.Timestamp(self.enddate   or self.data.time[-1].values).strftime("%Y-%m-%d")
+        self.enddate = pd.Timestamp(self.enddate or self.data.time[-1].values).strftime("%Y-%m-%d")
         if plev is not None:
             self.plev = plev
 
