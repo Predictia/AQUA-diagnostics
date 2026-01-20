@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 Unreleased in the current development version (target v0.22.0):
 
 - Ocean3D: added realization key in plot MLD
+- Add missing netcdf4 dependency in development environment (#104)
 - Add LaTeX units formatting to diagnostic labels (#70)
 - GlobalBiases: few small bugs fixed (#98) 
 - Remove intake-esm dependency (#100) 
