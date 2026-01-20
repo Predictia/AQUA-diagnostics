@@ -4,7 +4,7 @@ import cartopy.crs as ccrs
 
 from aqua.core.logger import log_configure
 from aqua.core.util import cbar_get_label
-from aqua.diagnostics.base import OutputSaver, get_realizations
+from aqua.core.util  import OutputSaver, get_realizations
 from .mld_profiles import plot_maps
 
 
