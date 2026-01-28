@@ -1,0 +1,54 @@
+# Reference data
+data_ref:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily'
+  regrid: False
+  fix: True
+
+# Data to evaluate
+data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'emulator_inference'
+  exp: 'piControl'
+  source: 'e5.3.1p_FT_member1_epoch_69'
+  regrid: False
+  fix: True
+
+# Dates to evaluate
+dates:
+  startdate: '1945-08-01'
+  enddate: '1945-08-15'
+
+# Variables to evaluate
+# For variables with plev provide a list of pressure levels to evaluate
+variables:
+  - name: 'zg'
+    level: [50000]
+  
+  - name: '2t'
+
+# Output figure directory
+outputdir_fig: './figs_variability'
+
+# Figure format (optional, defaults to 'pdf')
+figure_format: 'pdf'
+
+# Plot settings
+plot:
+  # Settings for standard deviation plots (reference and experiment)
+  std:
+    cmap: 'viridis'              # Colormap for std plots
+    vmin: null                   # Minimum value (null for auto)
+    vmax: null                   # Maximum value (null for auto)
+    discrete_colorbar: False     # Use discrete colorbar intervals
+    n_colorbar_levels: 10        # Number of discrete levels if discrete_colorbar is True
+  
+  # Settings for difference plot
+  diff:
+    cmap: 'RdBu_r'               # Colormap for difference plot
+    vmin: null                   # Minimum value (null for auto, symmetric around 0)
+    vmax: null                   # Maximum value (null for auto, symmetric around 0)
+    discrete_colorbar: False     # Use discrete colorbar intervals
+    n_colorbar_levels: 10        # Number of discrete levels if discrete_colorbar is True

@@ -1,0 +1,44 @@
+# Reference data
+data_ref:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily'
+  regrid: False
+  fix: True
+
+# Data to evaluate
+data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'emulator_inference'
+  exp: 'piControl'
+  source: 'e5.3.1p_FT_member1_epoch_69'
+  regrid: False
+  fix: True
+
+# Dates to evaluate
+dates:
+  startdate: '1945-08-01'
+  enddate: '1945-08-15'
+
+# Pairs of variables to evaluate for covariance
+# Each item in the list is a pair
+# Variables can be surface level (no 'level' key) or at a pressure level
+variable_pairs:
+  - var1:
+      name: 'zg'
+      level: 50000
+    var2:
+      name: 'ta'
+      level: 50000
+  - var1:
+      name: '2t'
+    var2:
+      name: 'zg'
+      level: 50000
+
+# Output directory
+outputdir_data: './data_cov'
+
+# Output figure directory
+outputdir_fig: './figs_cov'

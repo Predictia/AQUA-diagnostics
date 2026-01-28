@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ipo"
+version = "0.1.0"
+description = "Interdecadal Pacific Oscillation diagnostic"
+readme = "README.md"
+keywords = ["IPO", "pacific", "oscillation", "diagnostics"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib",
+    "scipy"
+]
+
+[tool.setuptools.packages]
+find = {}

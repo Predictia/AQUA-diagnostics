@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cov"
+version = "0.1.0"
+description = "Covariance diagnostic"
+readme = "README.md"
+keywords = ["covariance", "statistics", "diagnostics"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib"
+]
+
+[tool.setuptools.packages]
+find = {}

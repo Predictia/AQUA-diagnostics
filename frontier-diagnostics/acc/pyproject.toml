@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "acc"
+version = "0.1.0"
+description = "Anomaly Correlation Coefficient diagnostic"
+readme = "README.md"
+keywords = ["anomaly correlation", "verification", "diagnostics"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib"
+]
+
+[tool.setuptools.packages]
+find = {}

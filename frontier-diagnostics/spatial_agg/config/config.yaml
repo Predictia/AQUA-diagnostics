@@ -1,0 +1,56 @@
+# Example configuration for the Spatial Aggregation diagnostic
+
+# Reference data
+data_ref:
+  catalog: "CMIP6_interExtrapolation"
+  model: "CESM2"
+  exp: "piControl"
+  source: "r1i1p1f1"
+  regrid: False
+  areas: False
+  fix: True
+  label: 'Reference'
+
+# Data to evaluate
+data:
+  catalog: "CMIP6_interExtrapolation"
+  model: "auto_emulator_output"
+  exp: "predictions"
+  source: "run_314eb1b3a28446738a4fc5b3cb212530_05143_epoch_34_step_72100_LT280320_SD-1918-01-01T12:00:00"
+  regrid: False
+  areas: False
+  fix: True
+  label: 'Emulator'
+
+# Dates to evaluate
+dates:
+  startdate: '1918-01-02'
+  enddate: '1948-01-01'
+
+# Variables to evaluate
+variables:
+  - name: '2t'
+  - name: 'zg'
+    level: 50000
+  - name: 'tprate'
+  - name: 'tos'
+
+# Plotting options
+plot:
+  cmap: 'RdBu_r'
+  figure_size: [6, 6]
+  projection: 'plate_carree'
+  coastlines: True
+  colorbar_orientation: 'horizontal'
+  discrete_colorbar: True
+  n_colorbar_levels: 30
+  # vmin: null # Set a custom minimum value for the colorbar
+  # vmax: null # Set a custom maximum value for the colorbar
+
+# Output directory for figures
+outputdir_fig: './figs_spatial_agg'
+
+# Figure format
+figure_format: 'pdf'
+
+

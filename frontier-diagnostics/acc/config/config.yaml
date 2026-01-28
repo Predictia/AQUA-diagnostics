@@ -1,0 +1,49 @@
+# Reference data
+data_ref:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily'
+  regrid: False
+  fix: True
+
+# Data to evaluate
+data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'emulator_inference'
+  exp: 'piControl'
+  source: 'e4.3a_member1_epoch_069'
+  regrid: False
+  fix: True
+
+# Data for computing the climatology
+# The mean of this dataset over the specified period will be used
+# to calculate anomalies for both data and data_ref
+climatology_data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily'
+  regrid: False
+  fix: True
+  startdate: '1870-01-01'
+  enddate: '1940-12-31'
+
+# Dates to evaluate (for data and data_ref)
+dates:
+  startdate: '1945-08-01'
+  enddate: '1948-08-01'
+
+# Variables to evaluate
+# For variables with plev provide a list of pressure levels to evaluate
+variables:
+  - name: 'zg'
+    level: [50000]
+  
+  - name: '2t'
+
+# Output directory for data
+outputdir_data: './data_acc'
+
+# Output figure directory
+outputdir_fig: './figs_acc'

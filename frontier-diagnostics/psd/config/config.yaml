@@ -1,0 +1,40 @@
+# Reference data
+data_ref:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily'
+  regrid: False
+  fix: True
+
+# Data to evaluate
+data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'emulator_inference'
+  exp: 'piControl'
+  source: 'e5.3.1p_FT_member1_epoch_69'
+  regrid: False
+  fix: True
+
+# Dates to evaluate
+dates:
+  startdate: '1945-01-01'
+  enddate: '1949-12-31'
+
+# Variables to evaluate
+# For variables with plev provide a list of pressure levels to evaluate
+variables:
+  - name: 'zg'
+    level: [50000]
+  - name: '2t'
+
+# Select which PSD calculations to perform
+psd_calculations:
+  time_averaged_psd: true # Time-averaged PSD
+  psd_of_time_mean: true # PSD of the climatological mean
+
+# Output directory
+outputdir_data: ${DATA_DIR}
+
+# Output figure directory
+outputdir_fig: ${FIG_DIR}

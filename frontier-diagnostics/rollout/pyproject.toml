@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rollout"
+version = "0.1.0"
+description = "Rollout diagnostic for temporal analysis"
+readme = "README.md"
+keywords = ["rollout", "temporal", "diagnostics"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib"
+]
+
+[tool.setuptools.packages]
+find = {}

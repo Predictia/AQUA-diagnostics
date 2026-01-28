@@ -1,0 +1,45 @@
+# Reference data
+data_ref:
+  catalog: "CMIP6_interExtrapolation"
+  model: "UKESM1"
+  exp: "ssp585"
+  source: "r2i1p1f2" 
+  areas: True
+  regrid: False
+  fix: True
+
+# Data to evaluate
+data:
+  catalog: "CMIP6_interExtrapolation"
+  model: "auto_emulator_output"
+  exp: "predictions"
+  source: "run_a9a37091b0cc4024b4f20dde5401307d_43460_epoch_36_step_211240_LT87600_SD-2090-01-01T12:00:00"
+  areas: True
+  regrid: False
+  fix: True
+
+# Dates to evaluate
+dates:
+  startdate: "2090-01-01"
+  enddate: "2099-12-31"
+
+# Variables to evaluate
+variables:
+  - name: "zg"
+    level: [50000]
+  - name: "2t"
+
+# Regions to evaluate
+regions:
+  - name: "global"
+  - name: "tropics"
+    lat: [-20, 20]
+  - name: "north_pacific"
+    lat: [20, 70]
+    lon: [120, 240]
+
+# Output directory for figures
+outputdir_fig: "./figs_seasonal_cycle"
+outputdir_data: "./data_seasonal_cycle"
+figure_format: "pdf"
+

@@ -1,0 +1,35 @@
+# Example configuration for the Rollout diagnostic
+
+data_ref:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily'
+  regrid: False
+  areas: False
+  fix: True
+
+data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'emulator_inference'
+  exp: 'piControl'
+  source: 'e5.3.1p_FT_member1_epoch_69'
+  regrid: False
+  areas: False
+  fix: True
+
+annual: True
+
+dates:
+  startdate: '1945-08-01'
+  enddate: '1945-08-15'
+
+variables:
+  - name: 'zg'
+    level: [50000]
+  - name: '2t'
+
+outputdir_data: './data_rollout'
+outputdir_fig: './figs_rollout'
+figure_format: 'pdf'
+

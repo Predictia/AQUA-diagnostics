@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "variability"
+version = "0.1.0"
+description = "Temporal standard deviation variability diagnostic"
+readme = "README.md"
+keywords = ["variability", "standard deviation", "diagnostics", "climate"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib",
+    "cartopy"
+]
+
+[tool.setuptools.packages]
+find = {}

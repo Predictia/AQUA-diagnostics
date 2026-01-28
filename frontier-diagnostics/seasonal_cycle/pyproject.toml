@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seasonal_cycle"
+version = "0.1.0"
+description = "Seasonal Cycle diagnostic"
+readme = "README.md"
+keywords = ["seasonal", "cycle", "climatology", "diagnostics"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib"
+]
+
+[tool.setuptools.packages]
+find = {}

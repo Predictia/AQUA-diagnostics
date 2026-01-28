@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "psd"
+version = "0.1.0"
+description = "Power Spectral Density diagnostic"
+readme = "README.md"
+keywords = ["power spectral density", "spectrum", "diagnostics"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib",
+    "scipy"
+]
+
+[tool.setuptools.packages]
+find = {}

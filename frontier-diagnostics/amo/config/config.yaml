@@ -1,0 +1,54 @@
+# Dates to evaluate
+dates:
+  startdate: '1950-01-01'
+  enddate: '1979-12-31'
+
+# Reference data
+data_ref:
+  catalog: "CMIP6_interExtrapolation"
+  model: "UKESM1"
+  exp: "historical"
+  source: "r1i1p1f2" 
+  fix: True
+  regrid: False
+
+# Data to evaluate
+# It is possible to pass only this dataset for the AMO computation.
+data:
+  catalog: "CMIP6_interExtrapolation"
+  model: "auto_emulator_output"
+  exp: "predictions"
+  source: "run_a737ebac9f8c497a994601028ae28dbb_36928_epoch_38_step_72150_LT262800_SD-1950-01-01T12:00:00" 
+  fix: True
+  regrid: False
+
+# Field to use for the AMO computation
+field: tos
+
+# AMO-specific configuration
+amo:
+  region:
+    lat: [25, 60]  # North Atlantic: 25N-60N
+    lon: [-75, -7]  # West Atlantic: 75W-7W
+  detrend: False  # Apply detrending to the AMO index
+  detrend_variable: tos  # Variable to use for detrending 
+  smooth: True   # Apply smoothing
+
+# Smoothing configuration
+filter:
+  window: 5 # Years
+
+# Regression and correlation maps configuration
+maps:
+  run: True
+  variables:
+    - tos
+  seasons:
+    - annual
+  save_combined_maps: True
+  save_netcdf: False
+  figure_format: pdf
+  output_subdir: maps
+
+# Output directory for plots
+output_dir: "./figs_amo"

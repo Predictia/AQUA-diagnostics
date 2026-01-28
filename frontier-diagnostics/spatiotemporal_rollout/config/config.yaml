@@ -1,0 +1,56 @@
+# Reference data
+data_ref:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'CESM2_piControl_r1i1p1f1'
+  exp: 'piControl'
+  source: 'daily_r320x160'
+  regrid: false
+  fix: true
+
+# Data to evaluate
+data:
+  catalog: 'CMIP6_F8_phase1'
+  model: 'auto_emulator_output'
+  exp: 'piControl'
+  source: 'run_b2cc1ee8e71c463bb5dae3ebc8a76e9a_epoch_22_step_47380_LT26280_IN-test_SD-1940-01-01T12:00:00'
+  regrid: false
+  fix: true
+
+# Dates to evaluate
+dates:
+  startdate: '1940-01-01'
+  enddate: '1940-02-02'
+
+# Variables to evaluate
+variables:
+  - name: '2t'
+    video: 
+      cmap: 'RdBu_r'
+      figure_size: [14, 6]
+      colorbar_steps: 64
+      fps: 10
+  - name: 'tos'
+    video:
+      cmap: 'RdBu_r'
+      figure_size: [14, 6]
+      colorbar_steps: 64
+      fps: 1
+  - name: 'v'
+    level: [1000, 5000]
+    video:
+      cmap: 'RdBu_r'
+      figure_size: [14, 6]
+      colorbar_steps: 64
+      fps: 5
+      
+# Video settings 
+video:
+  outputdir: './videos'
+  format: 'gif'
+  fps: 10 # Default frames per second
+  dpi: 150 # Default DPI
+  cmap: 'coolwarm' # Default color map
+  projection: 'plate_carree' # Default projection
+  target_label: 'Target' # Default target label
+  prediction_label: 'Prediction' # Default prediction label
+

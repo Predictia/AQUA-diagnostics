@@ -1,0 +1,62 @@
+# Dates to evaluate
+dates:
+  startdate: '1900-01-01'
+  enddate: '1929-12-31'
+
+# Reference data
+data_ref:
+  catalog: "CMIP6_interExtrapolation"
+  model: "UKESM1"
+  exp: "historical"
+  source: "r1i1p1f2" 
+  fix: True
+  regrid: False
+
+# Data to evaluate
+# It is possible only pass this dataset for the IPO computation.
+data:
+  catalog: "CMIP6_interExtrapolation"
+  model: "auto_emulator_output"
+  exp: "predictions"
+  source: "run_ffd2274ba83a4aaf9cf75b3f4f464160_36879_epoch_27_step_103040_LT262800_SD-1900-01-01T12:00:00" 
+  fix: True
+  regrid: False
+
+# Field to use for the IPO computation
+field: tos
+window: 13 # Window (years) for the low-pass filter
+
+# Filter configuration
+# Values for the Chebyshev filter are taken from Henley et al. (2015)
+filter:
+  type: chebyshev  # "chebyshev" or "rolling"
+  cutoff_freq: 0.0064  # Cutoff frequency (cycles per month) (1/(13*12) for 13-year cutoff)
+  order: 6  # Filter order
+  ripple_db: 1.0  # Passband ripple in dB (default)
+
+# Region to compute the IPO index taken from Henley et al. (2015)
+regions:
+  equatorial:
+    lat: [-10, 10]
+    lon: [170, -90] 
+  northwest:
+    lat: [25, 45]
+    lon: [140, -145] 
+  southwest:
+    lat: [-50, -15]
+    lon: [150, -160]
+
+# Maps configuration
+maps:
+  run: True
+  variables:
+    - tos
+  seasons:
+    - annual
+  save_combined_maps: True
+  save_netcdf: False
+  figure_format: pdf
+  output_subdir: maps
+
+# Output directory for plots
+output_dir: "./figs_ipo"
