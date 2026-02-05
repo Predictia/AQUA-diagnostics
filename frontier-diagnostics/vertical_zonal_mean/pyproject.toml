@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vertical_zonal_mean"
+version = "0.1.0"
+description = "Vertical zonal mean diagnostic for comparing emulator and reference model"
+readme = "README.md"
+keywords = ["vertical profile", "zonal mean", "diagnostics", "climate"]
+license = {text = "Private"}
+dependencies = [
+    "xarray",
+    "numpy",
+    "matplotlib",
+    "pyyaml",
+]
+
+[tool.setuptools.packages]
+find = {}

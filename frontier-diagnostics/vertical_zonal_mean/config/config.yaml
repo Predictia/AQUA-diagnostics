@@ -1,0 +1,77 @@
+# Example configuration for the Vertical Zonal Mean diagnostic
+#
+# This diagnostic computes latitude-pressure cross-sections showing the vertical
+# structure of zonal mean fields. It produces three-panel figures comparing
+# reference model data, emulator output, and their difference.
+
+# Reference data (e.g., CESM2, ERA5, or other reference model)
+data_ref:
+  catalog: "CMIP6_interExtrapolation"
+  model: "CESM2"
+  exp: "piControl"
+  source: "r1i1p1f1"
+  regrid: False
+  fix: True
+  label: 'CESM2 Reference'
+
+# Data to evaluate (emulator output)
+data:
+  catalog: "CMIP6_interExtrapolation"
+  model: "auto_emulator_output"
+  exp: "predictions"
+  source: "run_314eb1b3a28446738a4fc5b3cb212530_05143_epoch_34_step_72100_LT280320_SD-1918-01-01T12:00:00"
+  regrid: False
+  fix: True
+  label: 'Emulator'
+
+# Date range to evaluate
+dates:
+  startdate: '1918-01-02'
+  enddate: '1948-01-01'
+
+# Variables to evaluate
+# These should be 3D variables with pressure levels (time, plev, lat, lon)
+# All available pressure levels will be used (common levels between ref and emulator)
+variables:
+  - name: 't'       # Temperature
+
+  - name: 'u'       # Zonal wind component
+
+  - name: 'q'       # Specific humidity
+
+# Temporal aggregation before computing zonal mean
+# This determines what statistic to compute over the time dimension
+aggregation:
+  stat: 'mean'           # Options: 'mean', 'std', 'max', 'min', 'percentile'
+  percentile: 99.9       # Only used when stat='percentile' (0-100 scale)
+
+# Latitude discretization (optional)
+# Set to null for native resolution, or specify number of latitude bins
+# Example: 36 bins = 5-degree resolution, 18 bins = 10-degree resolution
+latitude_bins: null
+
+# Plot settings
+plot:
+  # Settings for reference and emulator panels
+  data:
+    cmap: 'viridis'      # Colormap (e.g., 'viridis', 'RdBu_r', 'coolwarm')
+    vmin: null           # Minimum color limit (null for auto)
+    vmax: null           # Maximum color limit (null for auto)
+
+  # Settings for difference panel (uses symmetric colormap by default)
+  diff:
+    cmap: 'RdBu_r'       # Diverging colormap recommended for differences
+    vmin: null           # Minimum color limit (null for symmetric auto)
+    vmax: null           # Maximum color limit (null for symmetric auto)
+
+  # Display options
+  pressure_unit: 'hPa'   # Unit for y-axis display ('hPa' or 'Pa')
+  figure_size: [18, 6]   # Figure size in inches [width, height]
+  nlevels: 18            # Number of contour levels
+
+# Output directories
+outputdir_fig: './figs_vertical_zonal_mean'
+outputdir_data: './data_vertical_zonal_mean'
+
+# Figure format (pdf, png, svg, etc.)
+figure_format: 'pdf'

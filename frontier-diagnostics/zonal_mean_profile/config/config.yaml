@@ -1,0 +1,65 @@
+# Example configuration for the Zonal Mean Profile diagnostic
+
+# Reference data
+data_ref:
+  catalog: "CMIP6_interExtrapolation"
+  model: "CESM2"
+  exp: "piControl"
+  source: "r1i1p1f1"
+  regrid: False
+  fix: True
+  label: 'CESM2 Reference'
+
+# Data to evaluate
+data:
+  catalog: "CMIP6_interExtrapolation"
+  model: "auto_emulator_output"
+  exp: "predictions"
+  source: "run_314eb1b3a28446738a4fc5b3cb212530_05143_epoch_34_step_72100_LT280320_SD-1918-01-01T12:00:00"
+  regrid: False
+  fix: True
+  label: 'Emulator'
+
+# Dates to evaluate
+dates:
+  startdate: '1918-01-02'
+  enddate: '1948-01-01'
+
+# Variables and formulas to evaluate
+# Each item can be a simple variable or a formula
+variables:
+  # Example of a formula: precipitation minus evaporation
+  - name: 'tprate - e'
+    units: 'mm/day'
+    long_name: 'Precipitation minus Evaporation'
+    standard_name: 'p_minus_e'
+    formula: true
+  
+  # Example of a simple variable
+  - name: '2t'
+    formula: false
+  
+  # Example of another variable
+  - name: 'tprate'
+    formula: false
+
+# Temporal aggregation before computing zonal mean
+# This determines what statistic to compute over the time dimension before averaging over longitude
+aggregation:
+  stat: 'mean'        # Options: 'mean', 'std', 'max', 'min', 'percentile'
+  percentile: 99.9    # Required when stat='percentile' (0-100 scale). For example:
+                      # 99.9 for extreme events, 50.0 for median, etc.
+
+# Plotting options
+plot:
+  figure_size: [10, 6]
+  linewidth: 1.5
+
+# Output directory for figures
+outputdir_fig: './figs_zonal_mean_profile'
+
+# Output directory for data
+outputdir_data: './data_zonal_mean_profile'
+
+# Figure format (pdf or png)
+figure_format: 'pdf'
