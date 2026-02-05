@@ -25,6 +25,9 @@ def parse_arguments(args):
     # Flags for saving outputs
     parser.add_argument('--save-fig', action='store_true',
                         help='Save output figures')
+    
+    parser.add_argument('--save-netcdf', action='store_true',
+                        help='Save output NetCDF data files')
 
     return parser.parse_args(args)
 
@@ -80,7 +83,7 @@ if __name__ == '__main__':
         variability_diagnostic.retrieve()
 
         logger.info("Calculating variability...")
-        variability_diagnostic.compute_variability(save_fig=args.save_fig)
+        variability_diagnostic.compute_variability(save_fig=args.save_fig, save_data=args.save_netcdf)
 
         logger.info('Variability diagnostic finished successfully!')
 

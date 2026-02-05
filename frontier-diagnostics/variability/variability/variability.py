@@ -44,8 +44,10 @@ class Variability:
 
         # Output directories
         self.outputdir_fig = self.config.get('outputdir_fig', './figs_variability')
+        self.outputdir_data = self.config.get('outputdir_data', './data_variability')
         self.figure_format = self._normalise_extension(self.config.get('figure_format', 'pdf'))
         os.makedirs(self.outputdir_fig, exist_ok=True)
+        os.makedirs(self.outputdir_data, exist_ok=True)
 
         # Load plot settings
         self.plot_settings = self._load_plot_settings()
@@ -356,6 +358,59 @@ class Variability:
         except Exception as e:
             self.logger.error(f"Failed to save figure {filename}: {e}", exc_info=True)
 
+    def _save_data(self, std_ref, std_data, std_diff, processed_key):
+        """
+        Saves the computed variability data (standard deviations) to NetCDF.
+
+        Args:
+            std_ref (xr.DataArray): Reference standard deviation field.
+            std_data (xr.DataArray): Experiment standard deviation field.
+            std_diff (xr.DataArray): Difference between experiment and reference std.
+            processed_key (str): The variable key (e.g., 'q_85000', '2t').
+        """
+        # Generate filename using similar pattern to figures
+        data_cfg = self.config.get('data', {})
+        ref_cfg = self.config.get('data_ref', {})
+        dates_cfg = self.config.get('dates', {})
+
+        model = self._sanitize_filename_part(data_cfg.get('model', 'model'))
+        exp = self._sanitize_filename_part(data_cfg.get('exp', 'exp'))
+        source = self._sanitize_filename_part(data_cfg.get('source', 'src'))
+        model_ref = self._sanitize_filename_part(ref_cfg.get('model', 'refmodel'))
+        exp_ref = self._sanitize_filename_part(ref_cfg.get('exp', 'refexp'))
+
+        startdate = self._sanitize_filename_part(dates_cfg.get('startdate', 'nodate'))
+        enddate = self._sanitize_filename_part(dates_cfg.get('enddate', 'nodate'))
+
+        base_name_parts = [model, exp, source,
+                          'vs', model_ref, exp_ref,
+                          processed_key,
+                          startdate, enddate,
+                          'variability']
+
+        base_filename = '_'.join(filter(None, base_name_parts))
+        filepath = os.path.join(self.outputdir_data, f"{base_filename}.nc")
+
+        try:
+            # Create a dataset with all three fields
+            ds = xr.Dataset({
+                'std_experiment': std_data.rename('std_experiment'),
+                'std_reference': std_ref.rename('std_reference'),
+                'std_difference': std_diff.rename('std_difference')
+            })
+            
+            # Add metadata
+            ds.attrs['variable'] = processed_key
+            ds.attrs['startdate'] = str(self.startdate)
+            ds.attrs['enddate'] = str(self.enddate)
+            ds.attrs['model'] = data_cfg.get('model', 'unknown')
+            ds.attrs['model_ref'] = ref_cfg.get('model', 'unknown')
+            
+            ds.to_netcdf(filepath)
+            self.logger.info(f"Data saved to {filepath}")
+        except Exception as e:
+            self.logger.error(f"Failed to save data {filepath}: {e}", exc_info=True)
+
     @staticmethod
     def _parse_processed_key(processed_key):
         """Parses the processed key into base variable name and level."""
@@ -382,7 +437,7 @@ class Variability:
         else:
             return ext
 
-    def compute_variability(self, save_fig: bool = False):
+    def compute_variability(self, save_fig: bool = False, save_data: bool = False):
         """
         Calculates and plots the standard deviation for all variables and levels retrieved.
 
@@ -392,6 +447,8 @@ class Variability:
         Args:
             save_fig (bool, optional): If True, saves the generated figures to the configured
                 output directory. Defaults to False.
+            save_data (bool, optional): If True, saves the computed standard deviation data
+                to NetCDF files. Defaults to False.
 
         Note:
             - The retrieve() method must be called before this method.
@@ -462,6 +519,9 @@ class Variability:
                 if save_fig:
                     self._save_figure(fig, processed_key)
                     plt.close(fig)
+                
+                if save_data:
+                    self._save_data(std_data_ref, std_data, std_diff, processed_key)
 
             except Exception as e:
                 self.logger.error(f"Failed to calculate or plot variability for key {processed_key}: {e}", exc_info=True)
