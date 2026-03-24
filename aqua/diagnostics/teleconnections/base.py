@@ -1,10 +1,11 @@
 import os
 import xarray as xr
+from typing import Union
 from aqua.core.logger import log_configure
 from aqua.core.configurer import ConfigPath
 from aqua.core.util import load_yaml, select_season, to_list
 from aqua.core.util import convert_data_units, get_realizations
-from aqua.diagnostics.base import Diagnostic, OutputSaver
+from aqua.diagnostics.base import Diagnostic, OutputSaver, TitleBuilder, SAVE_FORMAT
 
 xr.set_options(keep_attrs=True)
 
@@ -179,10 +180,7 @@ class PlotBaseMixin():
         We extract the data needed for labels, description etc
         from the data arrays attributes.
 
-        The attributes are:
-        - AQUA_catalog
-        - AQUA_model
-        - AQUA_exp
+        The AQUA attributes are: AQUA_catalog, AQUA_model, AQUA_exp
         """
         if self.indexes is not None:
             self.catalogs = [d.AQUA_catalog for d in self.indexes]
@@ -209,12 +207,22 @@ class PlotBaseMixin():
             diagnostic (str): The name of the diagnostic. Default is None.
         
         Returns:
-            str: The title of the index plot.
+            list: List of titles for each index plot.
         """
-        titles_dataset = [f'{diagnostic} index for {self.models[i]} {self.exps[i]}'
-                          for i in range(self.len_data)]
-        titles_ref = [f'{diagnostic} index for {self.ref_models[i]} {self.ref_exps[i]}'
-                      for i in range(self.len_ref)]
+        titles_dataset = []
+        for i in range(self.len_data):
+            title = TitleBuilder(diagnostic=f"{diagnostic} index" if diagnostic else "index",
+                                 model=self.models[i] if self.models else None,
+                                 exp=self.exps[i] if self.exps else None).generate()
+            titles_dataset.append(title)
+        
+        titles_ref = []
+        for i in range(self.len_ref):
+            title = TitleBuilder(diagnostic=f"{diagnostic} index" if diagnostic else "index",
+                                 model=self.ref_models[i] if self.ref_models else None,
+                                 exp=self.ref_exps[i] if self.ref_exps else None).generate()
+            titles_ref.append(title)
+        
         titles = titles_dataset + titles_ref
 
         return titles
@@ -260,8 +268,8 @@ class PlotBaseMixin():
         return description
 
     def save_plot(self, fig, diagnostic_product: str = None, extra_keys: dict = None,
-                  rebuild: bool = True,
-                  dpi: int = 300, format: str = 'png', metadata: dict = None):
+                  rebuild: bool = True, metadata: dict = None,
+                  dpi: int = 300, format: Union[str, list] = SAVE_FORMAT):
         """
         Save the plot to a file.
 
@@ -271,17 +279,13 @@ class PlotBaseMixin():
             extra_keys (dict): Extra keys to be used for the filename (e.g. season). Default is None.
             rebuild (bool): If True, the output files will be rebuilt. Default is True.
             dpi (int): The dpi of the figure. Default is 300.
-            format (str): The format of the figure. Default is 'png'.
+            format (str or list): Format(s) to save the figure. Default is SAVE_FORMAT.
             metadata (dict): The metadata to be used for the figure. Default is None.
                              They will be complemented with the metadata from the outputsaver.
                              We usually want to add here the description of the figure.
         """
-        if format == 'png':
-            _ = self.outputsaver.save_png(fig, diagnostic_product=diagnostic_product, rebuild=rebuild,
-                                          extra_keys=extra_keys, metadata=metadata, dpi=dpi)
-        elif format == 'pdf':
-            _ = self.outputsaver.save_pdf(fig, diagnostic_product=diagnostic_product, rebuild=rebuild,
-                                          extra_keys=extra_keys, metadata=metadata)
+        _ = self.outputsaver.save_figure(fig, diagnostic_product=diagnostic_product, rebuild=rebuild,
+                                         extra_keys=extra_keys, metadata=metadata, extension=format, dpi=dpi)
 
     def set_map_description(self, maps=None, ref_maps=None, statistic: str = None, telecname: str = None):
         """

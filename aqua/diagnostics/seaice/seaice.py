@@ -206,9 +206,13 @@ class SeaIce(Diagnostic):
 
         # combine the result DataArrays into one Dataset and keep only the attributes common
         self.result = xr.merge(regional_results, combine_attrs='drop_conflicts')
-
+        # propagate catalog/model/exp metadata at Dataset level for downstream plotting utilities
+        self.result.attrs.update({'AQUA_catalog': self.catalog, 'AQUA_model': self.model,'AQUA_exp': self.exp})
+        
         # merge the standard deviation DataArrays if computed
         self.result_std = xr.merge(regional_results_std, combine_attrs='drop_conflicts') if calc_std_freq else None
+        if self.result_std is not None:
+            self.result_std.attrs.update({'AQUA_catalog': self.catalog, 'AQUA_model': self.model, 'AQUA_exp': self.exp})
 
         self.logger.debug("Loading data in memory")
         self.result.load()
@@ -246,7 +250,7 @@ class SeaIce(Diagnostic):
             # areacello, space_coord = self.get_area_cells_and_coords(masked_data)
             # areacello = self.select_region_area_cell(areacello, region)
 
-            masked_data_region = self._select_region(masked_data, region=region, diagnostic='seaice').get('data')
+            masked_data_region = self.select_region(masked_data, region=region, diagnostic='seaice').get('data')
 
             if self.method in ['fraction','thickness']:
                 seaice_2d_result = self._calc_time_stat(masked_data_region, stat=stat, freq=freq)
@@ -259,6 +263,7 @@ class SeaIce(Diagnostic):
 
         # combine the result DataArrays into one Dataset and keep only the attributes common
         self.result = xr.merge(regional_2d_results, combine_attrs='drop_conflicts')
+        self.result.attrs.update({'AQUA_catalog': self.catalog, 'AQUA_model': self.model, 'AQUA_exp': self.exp})
 
         self.logger.debug("Loading data in memory")
         self.result.load()
@@ -360,7 +365,7 @@ class SeaIce(Diagnostic):
             self.logger.error(f"An error occurred: {e}")
 
         # regional selection with lat-lon: use default dict to set dynamic lon bounds found above, and set lat from -90 to 90
-        res_dict = self._select_region(areacello, region=region, diagnostic="seaice", drop=drop,
+        res_dict = self.select_region(areacello, region=region, diagnostic="seaice", drop=drop,
                                        default_coords={"lon_min": lonmin, "lon_max": lonmax, "lat_min": -90, "lat_max": 90})
         areacello = res_dict['data']
 
@@ -381,7 +386,7 @@ class SeaIce(Diagnostic):
         areacello, space_coord = self.get_area_cells_and_coords(masked_data)
         areacello = self.select_region_area_cell(areacello, region)
         
-        masked_data_region = self._select_region(masked_data, region=region, diagnostic='seaice').get('data')
+        masked_data_region = self.select_region(masked_data, region=region, diagnostic='seaice').get('data')
 
         self.logger.info(f'Computing sea ice {self.method} for {region}')
 

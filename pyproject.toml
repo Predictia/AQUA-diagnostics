@@ -36,12 +36,13 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython"
 ]
 dependencies = [
-    "ECmean4==0.1.15", 
+    "ECmean4<=0.1.16", 
+    "cartopy<=0.24.1"
 ]
 
 [project.optional-dependencies]
 core = [
-    "aqua-core>=1.0.0a2"
+    "aqua-core>=1.0.0a4"
 ]
 docs = [
     "sphinx",

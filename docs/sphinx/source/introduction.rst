@@ -79,7 +79,7 @@ Each specific diagnostic class inherits from `Diagnostic` and extends its capabi
 For example, the Global Biases diagnostic in its own class `GlobalBiases` introduces specialized methods like `compute_climatology()` while leveraging the core retrieval and saving functionalities provided by the base class. 
 This inheritance pattern ensures that all diagnostics follow consistent implementation conventions, reducing code redundancy and improving long-term maintainability.
 Additionally, each diagnostic incorporates comparison classes, e.g `PlotGlobalBiases` that handle visualization tasks.
-These classes provide methods for cross-dataset comparisons (such as `plot_bias()` and `plot_seasonal_bias()`) and integrate configurable options including multiple output formats (`save_pdf`, `save_netcdf`).
+These classes provide methods for cross-dataset comparisons (such as `plot_bias()` and `plot_seasonal_bias()`) and integrate configurable options including multiple output formats via a single `save_format` setting (default is SAVE_FORMAT, i.e. `['png', 'pdf', 'svg']`) in addition to `save_netcdf`.
 Where applicable, comparison classes utilize existing AQUA-core plotting functions to maintain visualization consistency across the entire diagnostic suite.
 This structured, modular design enables efficient implementation of new diagnostics with minimal development effort while ensuring scalability and coherence throughout the framework.
 Although this standardization has not yet been fully extended to frontier diagnostics, it establishes a robust foundation for future enhancements.
@@ -94,26 +94,27 @@ AQUA-diagnostics provides three flexible approaches for executing analyses, desi
 
   For users interested in performing targeted analyses—such as examining biases in a specific variable—individual diagnostic modules can be imported directly into Python notebooks or scripts. 
   This approach offers maximum flexibility, allowing users to call specific functions from particular diagnostics and generate customized plots. 
+  Diagnostics tool might have specific configuration files, available in `aqua/diagnostics/config/tools`, which can be adapted to control the behavior of the analysis.
  
 2. **Command-Line Interface with Configuration Files:**
 
    Each diagnostic in AQUA includes a dedicated command-line interface (CLI) that enables execution of the complete diagnostic workflow. 
    Users configure the analysis by providing a configuration file that specifies all necessary parameters, including dataset selection, temporal ranges, spatial domains, and output options.
    Configuration file templates for all available diagnostics are provided in `aqua/diagnostics/templates`, serving as starting points that users can customize according to their specific requirements.
-   This approach ensures reproducibility, as the configuration file documents all analysis settings and can be version-controlled alongside results.Example workflow:
+   This approach ensures reproducibility, as the configuration file documents all analysis settings and can be version-controlled alongside results.
 
-3. **Level 3: Diagnostic Suites via AQUA Analysis Wrapper**
+3. **Level 3: Diagnostic collections via AQUA Analysis Wrapper**
 
-   For comprehensive model evaluation involving multiple diagnostics, AQUA provides the `aqua-analysis` wrapper, which orchestrates the execution of **diagnostic-suites**. 
+   For comprehensive model evaluation involving multiple diagnostics, AQUA provides the `aqua-analysis` wrapper, which orchestrates the execution of **diagnostic-collections**. 
    Users construct a master configuration file that combines multiple diagnostics, defining which analyses to run and how they should be coordinated.
    This approach enables:
 
-   - Thematic evaluation campaigns addressing specific climate system components (e.g. atmosphere, ocean, radiative-balance)
+   - Thematic evaluation addressing specific climate system components (e.g. atmosphere, ocean, radiative-balance)
    - Automated multi-diagnostic workflows with dependency management
    - Coordinated parallel execution optimizing computational resources
    - Integrated result organization consolidating outputs from multiple diagnostics
 
-Examples of diagnostic-suite configuration files are provided in `aqua/diagnostics/config/diagnostics`.
+Examples of diagnostic-collections configuration files are provided in `aqua/diagnostics/config/collections`.
 The aqua-analysis functionality is fully documented at ref:`aqua_analysis`.
  
 

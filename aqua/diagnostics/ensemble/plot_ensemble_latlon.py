@@ -4,6 +4,7 @@ import xarray as xr
 from aqua.core.exceptions import NoDataError
 from aqua.core.graphics import plot_single_map
 from aqua.core.util import get_projection
+from aqua.diagnostics.base import TitleBuilder, SAVE_FORMAT
 
 from .base import BaseMixin
 
@@ -101,8 +102,7 @@ class PlotEnsembleLatLon(BaseMixin):
         dpi=300,
         title_mean=None,
         title_std=None,
-        save_pdf=True,
-        save_png=True,
+        save_format=SAVE_FORMAT,
         vmin_mean=None,
         vmax_mean=None,
         vmin_std=None,
@@ -132,8 +132,7 @@ class PlotEnsembleLatLon(BaseMixin):
             dpi (int, optional): Resolution for saved figures. Default is 300.
             title_mean (str, optional): Title for mean plot. Auto-generated if None.
             title_std (str, optional): Title for standard deviation plot. Auto-generated if None.
-            save_pdf (bool, optional): Whether to save figures as PDF. Default is True.
-            save_png (bool, optional): Whether to save figures as PNG. Default is True.
+            save_format (str or list, optional): Format(s) to save figures in (e.g. 'png', 'pdf', 'svg'). Default is SAVE_FORMAT.
             vmin_mean, vmax_mean (float, optional): Color scale limits for mean plot. Auto-set if None.
             vmin_std, vmax_std (float, optional): Color scale limits for std plot. Auto-set if None.
             proj (str, optional): Map projection. Default is "robinson".
@@ -155,7 +154,7 @@ class PlotEnsembleLatLon(BaseMixin):
 
         Notes:
             - Titles and colorbar labels are automatically generated if not provided.
-            - Uses `self.save_figure` to save PNG and PDF files.
+            - Uses `self.save_figure` to save figures in the formats specified.
             - Handles both xarray.DataArray and Dataset inputs.
             - If vmin_std equals vmax_std, std plot is skipped.
 
@@ -168,30 +167,17 @@ class PlotEnsembleLatLon(BaseMixin):
         self.logger.info("Plotting the ensemble computation")
         if (dataset_mean is None) or (dataset_std is None):
             raise NoDataError("No data given to the plotting function")
-        if units is None:
-            units = dataset_mean.attrs.get("units", None)
-            # units = dataset_mean[var].units
-        if cbar_label is None and units is not None:
-            cbar_label = var + " in " + units
 
-        if isinstance(self.model, list):
-            model_str = " ".join(str(x) for x in self.model)
-        else:
-            model_str = str(self.model)
+        if cbar_label is None:
+            cbar_label = var
+
         if long_name is None:
-            long_name = dataset_mean.attrs.get("long_name", None)
-            if long_name is None:
-                long_name = var
-        if units is not None:
-            if title_mean is None:
-                title_mean = "Ensemble mean of " + model_str + " for " + long_name + " " + units
-            if title_std is None:
-                title_std = "Ensemble standard deviation of " + model_str + " for " + long_name + " " + units
-        else:
-            if title_mean is None:
-                title_mean = "Ensemble mean of " + model_str + " for " + long_name
-            if title_std is None:
-                title_std = "Ensemble standard deviation of " + model_str + " for " + long_name
+            long_name = dataset_mean.attrs.get("long_name") or var
+
+        if title_mean is None:
+            title_mean = TitleBuilder(diagnostic="Ensemble mean",variable=long_name, model=self.model).generate()
+        if title_std is None:
+            title_std = TitleBuilder(diagnostic="Ensemble standard deviation",variable=long_name, model=self.model).generate()
 
         proj = get_projection(proj, **proj_params)
 
@@ -204,6 +190,7 @@ class PlotEnsembleLatLon(BaseMixin):
             vmin_mean = dataset_mean.values.min()
         if vmax_mean is None:
             vmax_mean = dataset_mean.values.max()
+            
         fig1, ax1 = plot_single_map(
             dataset_mean,
             proj=proj,
@@ -252,8 +239,6 @@ class PlotEnsembleLatLon(BaseMixin):
         ax2.set_ylabel("Latitude")
 
         # Saving plots
-        if save_png:
-            self.save_figure(var=var, fig=fig1, fig_std=fig2, description=description, format="png")
-        if save_pdf:
-            self.save_figure(var=var, fig=fig1, fig_std=fig2, description=description, format="pdf")
+        self.save_figure(var=var, fig=fig1, fig_std=fig2,
+                         description=description, format=save_format, dpi=dpi)
         return {"mean_plot": [fig1, ax1], "std_plot": [fig2, ax2]}

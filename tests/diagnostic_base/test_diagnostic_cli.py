@@ -17,6 +17,7 @@ def mock_config_yaml(tmp_path):
                 'model': 'TestModel',
                 'exp': 'test-exp',
                 'source': 'test-source',
+                'reader_kwargs': {'chunks': {'time': 1}}
             }
         ],
         'references': [
@@ -25,13 +26,13 @@ def mock_config_yaml(tmp_path):
                 'model': 'RefModel',
                 'exp': 'ref-exp',
                 'source': 'ref-source',
+                'reader_kwargs': {'chunks': {'time': 1}}
             }
         ],
         'output': {
             'outputdir': os.path.join(str(tmp_path), 'output'),
             'rebuild': False,
-            'save_pdf': True,
-            'save_png': False,
+            'save_format': ['pdf'],
             'save_netcdf': True,
             'dpi': 150,
             'create_catalog_entry': True
@@ -114,12 +115,11 @@ class TestDiagnosticCLI:
         # Verify extracted options match the mock config
         assert cli.outputdir == str(tmp_path / 'output')
         assert cli.rebuild is False
-        assert cli.save_pdf is True
-        assert cli.save_png is False
+        assert cli.save_format == ['pdf']
         assert cli.save_netcdf is True
         assert cli.dpi == 150
         assert cli.create_catalog_entry is True
-        assert cli.reader_kwargs == {}
+        assert cli.reader_kwargs == {'chunks': {'time': 1}}
 
     def test_extract_options_with_realization(self, mock_args, mock_config_yaml):
         """Test that realization is correctly handled."""
@@ -137,7 +137,8 @@ class TestDiagnosticCLI:
         cli._extract_options()
         
         assert cli.realization == 'r1i1p1f1'
-        assert cli.reader_kwargs == {'realization': 'r1i1p1f1'}
+        assert cli.reader_kwargs.get('realization') == 'r1i1p1f1'
+        assert cli.reader_kwargs.get('chunks') == {'time': 1}
 
     def test_dataset_args_returns_correct_mapping(self, mock_args):
         """Test that dataset_args extracts correct dataset arguments."""
@@ -229,9 +230,9 @@ class TestDiagnosticCLI:
             default_config='config_test.yaml'
         )
         
-        cli.prepare(save_pdf=False, dpi=600)
+        cli.prepare(save_format=['png'], dpi=600)
         
-        assert cli.save_pdf is False  # Overridden
+        assert cli.save_format == ['png']  # Overridden
         assert cli.dpi == 600  # Overridden
         assert cli.save_netcdf is True  # Not overridden, from config
 
@@ -353,7 +354,8 @@ class TestDiagnosticCLI:
         assert cli.loglevel == 'DEBUG'
         assert cli.regrid == 'r400'
         assert cli.realization == 'r2i1p1f1'
-        assert cli.reader_kwargs == {'realization': 'r2i1p1f1'}
+        assert cli.reader_kwargs.get('realization') == 'r2i1p1f1'
+        assert cli.reader_kwargs.get('chunks') == {'time': 1}
         assert cli.outputdir == str(tmp_path / 'test_output')
         
         # Test dataset_args with the prepared CLI

@@ -55,7 +55,7 @@ def _create_plot(cli, profiles, profile_ref, freq_type, diagnostic_name):
         ref_data = profile_ref.seasonal if profile_ref else None
         ref_std_data = profile_ref.std_seasonal if profile_ref and profile_ref.std_seasonal else None
     
-    # Create and run plot
+    # Create plot instance
     plot = PlotLatLonProfiles(
         data=data_list,
         ref_data=ref_data,
@@ -65,11 +65,17 @@ def _create_plot(cli, profiles, profile_ref, freq_type, diagnostic_name):
         loglevel=cli.loglevel
     )
     
+    # Save in requested formats using DiagnosticCLI.save_format
+    if not getattr(cli, "save_format", None):
+        cli.logger.debug("No plot output requested, skipping plot generation")
+        return
+
+    cli.logger.info("Saving %s plot(s) with formats: %s", freq_type, cli.save_format)
     plot.run(
         outputdir=cli.outputdir,
         rebuild=cli.rebuild,
         dpi=cli.dpi,
-        format='png' if cli.save_png else 'pdf' if cli.save_pdf else 'png'
+        format=cli.save_format,
     )
 
 def process_variable(cli, var_config, regions, datasets, references,
