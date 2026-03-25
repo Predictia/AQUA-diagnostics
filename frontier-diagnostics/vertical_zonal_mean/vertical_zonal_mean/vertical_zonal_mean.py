@@ -2,6 +2,7 @@ import os
 import xarray as xr
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 from aqua.core.logger import log_configure
 from aqua.core.util import load_yaml
 from aqua.core.reader import Reader
@@ -125,6 +126,12 @@ class VerticalZonalMean:
                 'vmin': None,
                 'vmax': None,
             },
+            'significance': {
+                'show': False,
+                'alpha': 0.05,
+                'hatch_pattern': '....',
+                'invert_mask': False,
+            },
             'pressure_unit': 'hPa',
             'figure_size': [18, 6],
             'nlevels': 18,
@@ -147,6 +154,17 @@ class VerticalZonalMean:
             settings['diff']['vmin'] = float(diff_cfg['vmin'])
         if 'vmax' in diff_cfg and diff_cfg['vmax'] is not None:
             settings['diff']['vmax'] = float(diff_cfg['vmax'])
+
+        # Update significance settings
+        significance_cfg = plot_cfg.get('significance', {})
+        if 'show' in significance_cfg:
+            settings['significance']['show'] = bool(significance_cfg['show'])
+        if 'alpha' in significance_cfg and significance_cfg['alpha'] is not None:
+            settings['significance']['alpha'] = float(significance_cfg['alpha'])
+        if 'hatch_pattern' in significance_cfg:
+            settings['significance']['hatch_pattern'] = str(significance_cfg['hatch_pattern'])
+        if 'invert_mask' in significance_cfg:
+            settings['significance']['invert_mask'] = bool(significance_cfg['invert_mask'])
 
         # Other plot settings
         if 'pressure_unit' in plot_cfg:
@@ -399,6 +417,103 @@ class VerticalZonalMean:
         zonal_mean = data.mean(dim=lon_name)
         return zonal_mean
 
+    def _compute_yearly_temporal_means(self, data):
+        """Compute yearly means over time for significance testing."""
+        return self.timstat.timstat(data, stat='mean', freq='YS')
+
+    @staticmethod
+    def _ttest_at_grid_point(model_vals, ref_vals, min_samples=3):
+        """Perform a two-sample Welch t-test at one grid point."""
+        model_clean = model_vals[np.isfinite(model_vals)]
+        ref_clean = ref_vals[np.isfinite(ref_vals)]
+
+        if len(model_clean) < min_samples or len(ref_clean) < min_samples:
+            return np.nan
+
+        _, p_value = stats.ttest_ind(model_clean, ref_clean, equal_var=False)
+        return p_value
+
+    def _compute_significance_ttest(self, data, data_ref, alpha=0.05, min_samples=3):
+        """Compute statistical significance mask using Welch t-test on yearly means.
+
+        Args:
+            data (xr.DataArray): Emulator data with time dimension.
+            data_ref (xr.DataArray): Reference data with time dimension.
+            alpha (float): Significance level for p-values.
+            min_samples (int): Minimum yearly samples required for each dataset.
+
+        Returns:
+            xr.DataArray: Boolean significance mask on spatial dimensions.
+        """
+        if 'time' not in data.dims or 'time' not in data_ref.dims:
+            raise ValueError("Both data and data_ref must include a 'time' dimension for significance testing.")
+
+        data_yearly = self._compute_yearly_temporal_means(data)
+        data_ref_yearly = self._compute_yearly_temporal_means(data_ref)
+
+        n_samples = int(data_yearly.sizes.get('time', 0))
+        n_samples_ref = int(data_ref_yearly.sizes.get('time', 0))
+        self.logger.info("Significance test yearly samples - model: %s, reference: %s", n_samples, n_samples_ref)
+
+        if n_samples < min_samples or n_samples_ref < min_samples:
+            self.logger.warning(
+                "Insufficient yearly samples for significance test (model=%s, reference=%s, min=%s).",
+                n_samples, n_samples_ref, min_samples
+            )
+            base = data.isel(time=0, drop=True)
+            is_significant = xr.zeros_like(base, dtype=bool)
+            is_significant.attrs.update({
+                'long_name': 'Statistical significance of zonal-mean difference',
+                'description': f'Two-sample Welch t-test with alpha={alpha}',
+                'alpha': alpha,
+                'n_samples_model': n_samples,
+                'n_samples_reference': n_samples_ref,
+                'n_significant_points': 0,
+                'percent_significant': 0.0,
+            })
+            return is_significant
+
+        data_yearly = data_yearly.chunk({'time': -1})
+        data_ref_yearly = data_ref_yearly.chunk({'time': -1})
+
+        time_dim = 'time'
+        time_dim_ref = 'time_ref'
+        data_yearly = data_yearly.rename({time_dim: time_dim})
+        data_ref_yearly = data_ref_yearly.rename({time_dim: time_dim_ref})
+
+        p_values = xr.apply_ufunc(
+            self._ttest_at_grid_point,
+            data_yearly,
+            data_ref_yearly,
+            input_core_dims=[[time_dim], [time_dim_ref]],
+            vectorize=True,
+            dask='parallelized',
+            output_dtypes=[float],
+            kwargs={'min_samples': min_samples},
+        )
+
+        is_significant = (p_values < alpha).fillna(False)
+        is_significant.load()
+
+        n_significant = int(is_significant.sum().values)
+        n_total = int(np.prod(is_significant.shape))
+        pct_significant = 100.0 * n_significant / n_total if n_total > 0 else 0.0
+        self.logger.info(
+            "Significance test complete: %s/%s points (%.1f%%) significant at alpha=%s",
+            n_significant, n_total, pct_significant, alpha
+        )
+
+        is_significant.attrs.update({
+            'long_name': 'Statistical significance of zonal-mean difference',
+            'description': f'Two-sample Welch t-test with alpha={alpha}',
+            'alpha': alpha,
+            'n_samples_model': n_samples,
+            'n_samples_reference': n_samples_ref,
+            'n_significant_points': n_significant,
+            'percent_significant': pct_significant,
+        })
+        return is_significant
+
     def _bin_latitude(self, data, n_bins):
         """Bin data to coarser latitude resolution.
 
@@ -505,7 +620,7 @@ class VerticalZonalMean:
         except Exception as e:
             self.logger.error(f"Failed to save figure {filename}: {e}", exc_info=True)
 
-    def _save_data(self, zm_ref, zm_data, zm_diff, var_name, lev_name):
+    def _save_data(self, zm_ref, zm_data, zm_diff, var_name, lev_name, significance_mask=None):
         """
         Saves the computed zonal mean data to NetCDF.
 
@@ -553,6 +668,8 @@ class VerticalZonalMean:
                 'zonal_mean_emulator': zm_data.rename('zonal_mean_emulator'),
                 'zonal_mean_difference': zm_diff.rename('zonal_mean_difference'),
             })
+            if significance_mask is not None:
+                ds['significance_mask'] = significance_mask.rename('significance_mask')
 
             # Add metadata
             ds.attrs['variable'] = var_name
@@ -565,6 +682,11 @@ class VerticalZonalMean:
                 ds.attrs['percentile'] = self.percentile
             if self.latitude_bins is not None:
                 ds.attrs['latitude_bins'] = self.latitude_bins
+            if significance_mask is not None:
+                ds.attrs['significance_alpha'] = significance_mask.attrs.get('alpha')
+                ds.attrs['significance_n_samples_model'] = significance_mask.attrs.get('n_samples_model')
+                ds.attrs['significance_n_samples_reference'] = significance_mask.attrs.get('n_samples_reference')
+                ds.attrs['significance_percent'] = significance_mask.attrs.get('percent_significant')
 
             ds.to_netcdf(filepath)
             self.logger.info(f"Data saved to {filepath}")
@@ -580,8 +702,45 @@ class VerticalZonalMean:
         else:
             return ext
 
+    def _add_significance_markers(self, ax, significance_mask, lev_name,
+                                  hatch_pattern='....', invert_mask=False, **kwargs):
+        """Add significance hatching on lat-pressure contour plots.
+
+        Uses contourf with hatching so that the overlay interpolates between
+        discrete pressure levels, matching the filled-contour background.
+
+        Args:
+            ax: Matplotlib axes to draw on.
+            significance_mask (xr.DataArray): Boolean mask (True = significant).
+            lev_name (str): Name of the vertical level coordinate.
+            hatch_pattern (str): Matplotlib hatch pattern for significant regions.
+            invert_mask (bool): If True, hatch non-significant regions instead.
+            **kwargs: Accepted for backward compatibility (marker_stride, etc.).
+        """
+        try:
+            lat_name = [dim for dim in significance_mask.dims if 'lat' in dim.lower()][0]
+        except IndexError:
+            raise ValueError("Unable to determine latitude coordinate from significance mask.")
+        if lev_name not in significance_mask.dims:
+            raise ValueError(f"Level coordinate '{lev_name}' not found in significance mask.")
+
+        lat_vals = significance_mask[lat_name].values
+        lev_vals = significance_mask[lev_name].values
+
+        pressure_unit = self.plot_settings['pressure_unit']
+        if pressure_unit == 'hPa' and np.nanmax(lev_vals) > 2000:
+            lev_vals = lev_vals / 100.0
+
+        mask_values = significance_mask.values.astype(float)
+        if invert_mask:
+            mask_values = 1.0 - mask_values
+
+        ax.contourf(lat_vals, lev_vals, mask_values,
+                    levels=[0.5, 1.5], hatches=[hatch_pattern],
+                    colors='none', alpha=0)
+
     def _plot_vertical_zonal_mean(self, zm_ref, zm_data, zm_diff, var_name, units,
-                                   label_ref, label_exp, lev_name):
+                                   label_ref, label_exp, lev_name, significance_mask=None):
         """
         Create a figure with three subplots showing reference, emulator, and difference.
 
@@ -689,6 +848,29 @@ class VerticalZonalMean:
         cbar3 = plt.colorbar(cf3, ax=axes[2], orientation='horizontal', pad=0.12)
         cbar3.set_label(cbar_label)
 
+        significance_cfg = self.plot_settings['significance']
+        if significance_cfg['show'] and significance_mask is not None:
+            self._add_significance_markers(
+                axes[2],
+                significance_mask=significance_mask,
+                lev_name=lev_name,
+                hatch_pattern=significance_cfg['hatch_pattern'],
+                invert_mask=significance_cfg['invert_mask'],
+            )
+            pct_sig = significance_mask.attrs.get('percent_significant', 0.0)
+            n_samples = significance_mask.attrs.get('n_samples_model', 'unknown')
+            alpha = significance_cfg['alpha']
+            hatch_label = "non-significant" if significance_cfg['invert_mask'] else "significant"
+            axes[2].text(
+                0.99, 0.01,
+                f"Hatching: {hatch_label} (p < {alpha})\n"
+                f"Welch t-test, N = {n_samples}\nSignificant: {pct_sig:.1f}%",
+                transform=axes[2].transAxes,
+                ha='right', va='bottom',
+                fontsize=8,
+                bbox=dict(facecolor='white', alpha=0.7, edgecolor='none'),
+            )
+
         # Set overall title
         if self.aggregation_stat == 'percentile':
             stat_label = f"{self.percentile}th percentile"
@@ -780,6 +962,23 @@ class VerticalZonalMean:
                 data, data_ref = self.check_and_convert_coords(data, data_ref)
                 self.logger.debug(f"Coordinates checked/converted for {var_name}")
 
+                significance_mask = None
+                significance_cfg = self.plot_settings['significance']
+                if significance_cfg['show']:
+                    self.logger.info("Computing significance mask for %s", var_name)
+                    zonal_ts_ref = self._compute_zonal_mean(data_ref)
+                    zonal_ts_data = self._compute_zonal_mean(data)
+
+                    if self.latitude_bins is not None:
+                        zonal_ts_ref = self._bin_latitude(zonal_ts_ref, self.latitude_bins)
+                        zonal_ts_data = self._bin_latitude(zonal_ts_data, self.latitude_bins)
+
+                    significance_mask = self._compute_significance_ttest(
+                        zonal_ts_data,
+                        zonal_ts_ref,
+                        alpha=significance_cfg['alpha'],
+                    )
+
                 # Compute temporal aggregation
                 temporal_ref = self._compute_temporal_aggregation(data_ref)
                 temporal_data = self._compute_temporal_aggregation(data)
@@ -808,11 +1007,14 @@ class VerticalZonalMean:
                 zm_ref = zm_ref.transpose(lev_name, lat_name)
                 zm_data = zm_data.transpose(lev_name, lat_name)
                 zm_diff = zm_diff.transpose(lev_name, lat_name)
+                if significance_mask is not None:
+                    significance_mask = significance_mask.transpose(lev_name, lat_name)
 
                 # Plotting
                 fig = self._plot_vertical_zonal_mean(zm_ref, zm_data, zm_diff,
                                                       long_name, units,
-                                                      label_ref, label_exp, lev_name)
+                                                      label_ref, label_exp, lev_name,
+                                                      significance_mask=significance_mask)
 
                 self.logger.info(f"Vertical zonal mean profile plot generated for {var_name}")
 
@@ -824,7 +1026,7 @@ class VerticalZonalMean:
                     plt.close(fig)
 
                 if save_data:
-                    self._save_data(zm_ref, zm_data, zm_diff, var_name, lev_name)
+                    self._save_data(zm_ref, zm_data, zm_diff, var_name, lev_name, significance_mask=significance_mask)
 
             except Exception as e:
                 self.logger.error(f"Failed to calculate or plot vertical zonal mean for {var_name}: {e}", exc_info=True)

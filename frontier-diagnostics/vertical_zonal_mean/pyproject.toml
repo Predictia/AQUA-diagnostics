@@ -13,6 +13,7 @@ dependencies = [
     "xarray",
     "numpy",
     "matplotlib",
+    "scipy",
     "pyyaml",
 ]
 

@@ -69,6 +69,15 @@ plot:
   figure_size: [18, 6]   # Figure size in inches [width, height]
   nlevels: 18            # Number of contour levels
 
+  # Statistical significance markers on difference panel
+  significance:
+    show: false          # If true, mark significant points on panel 3
+    alpha: 0.05          # p-value threshold for Welch t-test on yearly means
+    marker_stride: 3     # Plot every Nth point in lat/level to reduce clutter
+    marker_size: 2.0     # Marker size for significance points
+    marker_color: 'black'
+    invert_mask: false   # If true, mark non-significant points instead
+
 # Output directories
 outputdir_fig: './figs_vertical_zonal_mean'
 outputdir_data: './data_vertical_zonal_mean'
