@@ -171,16 +171,6 @@ class PlotLatLonProfiles:
         self.logger.debug(f"Extracted realizations: {self.realizations}")
         self.logger.debug(f"Extracted region: {self.region}")
 
-        # Handle std dates. ref_std_data may be a single DataArray (longterm)
-        # or a list of DataArrays (seasonal, one per season).
-        if self.ref_std_data is not None:
-            ref_std_item = self.ref_std_data[0] if isinstance(self.ref_std_data, list) else self.ref_std_data
-            self.std_startdate = getattr(ref_std_item, "AQUA_std_startdate", None) if ref_std_item is not None else None
-            self.std_enddate = getattr(ref_std_item, "AQUA_std_enddate", None) if ref_std_item is not None else None
-        else:
-            self.std_startdate = None
-            self.std_enddate = None
-
     def plot(self, data_labels=None, ref_label=None, title=None, style=None):
         """
         Unified plotting method that handles all plotting scenarios based on data_type.
@@ -383,6 +373,12 @@ class PlotLatLonProfiles:
         else:
             ref_item = None
 
+        # ref_std_data may be a single DataArray (longterm) or a list of DataArrays (seasonal, one per season)
+        if isinstance(self.ref_std_data, list):
+            ref_std_item = self.ref_std_data[0] if self.ref_std_data else None
+        else:
+            ref_std_item = self.ref_std_data
+
         # Smart date display: show dates only once if they are the same.
         # Format according to data frequency before comparing so that equivalent
         # dates at display granularity are condensed.
@@ -395,9 +391,8 @@ class PlotLatLonProfiles:
             self._fmt_date(getattr(ref_item, "AQUA_enddate", None)),
         )
         std_pair = (
-            (self._fmt_date(self.std_startdate), self._fmt_date(self.std_enddate))
-            if self.ref_std_data is not None
-            else (None, None)
+            self._fmt_date(getattr(ref_std_item, "AQUA_std_startdate", None)),
+            self._fmt_date(getattr(ref_std_item, "AQUA_std_enddate", None)),
         )
 
         if data_pair == ref_pair == std_pair and data_pair != (None, None):
