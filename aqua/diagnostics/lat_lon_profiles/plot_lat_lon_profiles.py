@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from aqua.core.graphics import plot_lat_lon_profiles, plot_seasonal_lat_lon_profiles
 from aqua.core.logger import log_configure
-from aqua.core.util import DEFAULT_REALIZATION, time_to_string, to_list
+from aqua.core.util import DEFAULT_REALIZATION, strlist_to_phrase, time_to_string, to_list
 from aqua.diagnostics.base import SAVE_FORMAT, OutputSaver, TitleBuilder
 
 
@@ -316,7 +316,7 @@ class PlotLatLonProfiles:
         """Format a date string for display, truncating to year-month when the
         source data frequency is coarser than daily.
 
-        Returns None if date is None, so (None, None) pairs stay detectable.
+        Returns None if date is None.
         """
         if date is None:
             return None
@@ -330,34 +330,33 @@ class PlotLatLonProfiles:
         """
         # Start with data_type info for seasonal plots
         if self.data_type == "seasonal":
-            description = "Seasonal "
+            description = f"Seasonal {self.mean_type.lower()} profile "
         else:
-            description = ""
-
-        # Mean type (zonal/meridional) and variable name
-        description += f"{self.mean_type} profile of "
+            description = f"Climatological {self.mean_type.lower()} profile "
 
         # Variable name
         for name in [self.long_name, self.standard_name, self.short_name]:
             if name is not None:
-                description += f"{name} "
+                description += f"of {name.lower()} "
                 break
 
-        # Units
-        if self.units is not None:
-            description += f"[{self.units}]"
-
-        # Short name in parentheses (if different from what was already used)
-        if self.short_name is not None and self.long_name is not None:
+        # Short name in parentheses
+        if self.short_name is not None:
             description += f"({self.short_name}) "
 
         # Region - only if not Global
         if self.region is not None and self.region.lower() != "global":
             description += f"over {self.region} "
 
-        # Get first items to extract dates for comparison.
-        # Seasonal data may come flat [DJF_da, MAM_da, ...]
-        # or nested [[DJF_m1, DJF_m2, ...], ...]
+        # Dataset info
+        num_items = min(len(self.catalogs), len(self.models), len(self.exps)) if hasattr(self, "catalogs") else 0
+
+        description += "for "
+        dataset_names = [f"{self.models[i]} {self.exps[i]}" for i in range(min(self.len_data, num_items))]
+        description += strlist_to_phrase(items=dataset_names)
+
+        # Extract data/ref/std items (architecture: dates live on DataArray attrs).
+        # Seasonal data may come flat [DJF_da, MAM_da, ...] or nested [[DJF_m1, DJF_m2, ...], ...]
         data_item = None
         if self.data:
             first = self.data[0]
@@ -366,50 +365,59 @@ class PlotLatLonProfiles:
             else:
                 data_item = first
 
-        if self.data_type == "longterm":
-            ref_item = self.ref_data
-        elif self.data_type == "seasonal" and self.ref_data:
-            ref_item = self.ref_data[0] if isinstance(self.ref_data, list) else None
+        if self.ref_data is not None:
+            if self.data_type == "seasonal" and isinstance(self.ref_data, list):
+                ref_item = self.ref_data[0] if self.ref_data else None
+            else:
+                ref_item = self.ref_data
         else:
             ref_item = None
 
-        # ref_std_data may be a single DataArray (longterm) or a list of DataArrays (seasonal, one per season)
+        # ref_std_data may be a single DataArray (longterm) or a list (seasonal, one per season)
         if isinstance(self.ref_std_data, list):
             ref_std_item = self.ref_std_data[0] if self.ref_std_data else None
         else:
             ref_std_item = self.ref_std_data
 
-        # Smart date display: show dates only once if they are the same.
-        # Format according to data frequency before comparing so that equivalent
-        # dates at display granularity are condensed.
+        # Build the three formatted date pairs upfront so they can be compared
         data_pair = (
-            self._fmt_date(getattr(data_item, "AQUA_startdate", None)),
-            self._fmt_date(getattr(data_item, "AQUA_enddate", None)),
+            self._fmt_date(getattr(data_item, "AQUA_startdate", None)) if data_item is not None else None,
+            self._fmt_date(getattr(data_item, "AQUA_enddate", None)) if data_item is not None else None,
         )
         ref_pair = (
-            self._fmt_date(getattr(ref_item, "AQUA_startdate", None)),
-            self._fmt_date(getattr(ref_item, "AQUA_enddate", None)),
+            self._fmt_date(getattr(ref_item, "AQUA_startdate", None)) if ref_item is not None else None,
+            self._fmt_date(getattr(ref_item, "AQUA_enddate", None)) if ref_item is not None else None,
         )
         std_pair = (
-            self._fmt_date(getattr(ref_std_item, "AQUA_std_startdate", None)),
-            self._fmt_date(getattr(ref_std_item, "AQUA_std_enddate", None)),
+            self._fmt_date(getattr(ref_std_item, "AQUA_std_startdate", None)) if ref_std_item is not None else None,
+            self._fmt_date(getattr(ref_std_item, "AQUA_std_enddate", None)) if ref_std_item is not None else None,
         )
 
-        if data_pair == ref_pair == std_pair and data_pair != (None, None):
-            description += (
-                f"for {self.models[0]}/{self.exps[0]} from {data_pair[0]} to {data_pair[1]} with ±2σ uncertainty bands"
-            )
-        else:
-            # Standard case: list all date ranges
-            if data_pair != (None, None):
-                description += f" from {data_pair[0]} to {data_pair[1]}"
-            if ref_pair != (None, None) and ref_pair != data_pair:
-                description += f", reference from {ref_pair[0]} to {ref_pair[1]}"
+        # Data dates
+        if data_pair != (None, None):
+            description += f" from {data_pair[0]} to {data_pair[1]}"
+
+        # Reference data description
+        if self.len_ref > 0 and ref_item is not None:
+            ref_model = None
+            ref_exp = None
+            if hasattr(ref_item, "AQUA_model"):
+                ref_model = ref_item.AQUA_model
+                ref_exp = ref_item.AQUA_exp
+
+            if ref_model and ref_exp:
+                description += f" compared to {ref_model} {ref_exp}"
+                # Show ref dates explicitly if they differ from both data and std
+                if ref_pair != (None, None) and ref_pair != data_pair and ref_pair != std_pair:
+                    description += f" (from {ref_pair[0]} to {ref_pair[1]})"
+
+        # Standard deviation info
+        if self.ref_std_data is not None:
+            description += " with ±2σ uncertainty bands"
             if std_pair != (None, None):
-                description += f" with ±2σ uncertainty bands computed over {std_pair[0]} to {std_pair[1]}"
+                description += f" (from {std_pair[0]} to {std_pair[1]})"
 
         description += "."
-
         self.logger.info("Description: %s", description)
         return description
 
