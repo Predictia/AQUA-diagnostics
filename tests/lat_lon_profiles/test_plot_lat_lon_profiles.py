@@ -239,29 +239,31 @@ class TestPlotLatLonProfilesRealization:
 
 @pytest.mark.diagnostics
 class TestPlotLatLonProfilesDescription:
-    """Test description generation with smart date handling"""
+    """Test description generation (operational-style format)"""
 
     @pytest.mark.parametrize(
         "data_dates,ref_dates,std_dates,expected_pattern",
         [
-            # Case 1: All dates identical - should appear once
+            # Case 1: All dates identical - data dates shown once, ref dates suppressed,
+            # std dates shown in parens after the uncertainty bands.
             (
                 ("2020-01-01", "2029-12-31"),
                 ("2020-01-01", "2029-12-31"),
                 ("2020-01-01", "2029-12-31"),
-                r"from 2020-01-01 to 2029-12-31 with ±2σ uncertainty bands\.",
+                r"from 2020-01-01 to 2029-12-31 compared to .* with ±2σ uncertainty bands \(from 2020-01-01 to 2029-12-31\)\.",
             ),
-            # Case 2: All different - show all three
+            # Case 2: All different - data, ref, and std dates all shown
             (
                 ("2050-01-01", "2059-12-31"),
                 ("1990-01-01", "1999-12-31"),
                 ("1850-01-01", "2014-12-31"),
-                r"from 2050-01-01 to 2059-12-31.*from 1990-01-01 to 1999-12-31.*computed over 1850-01-01 to 2014-12-31",
+                r"from 2050-01-01 to 2059-12-31.*compared to .*\(from 1990-01-01 to 1999-12-31\)"
+                r".*with ±2σ uncertainty bands \(from 1850-01-01 to 2014-12-31\)",
             ),
         ],
     )
     def test_date_display(self, sample_lat_lon_data, data_dates, ref_dates, std_dates, expected_pattern):
-        """Test that duplicate dates are smartly condensed in descriptions"""
+        """Test that data/ref/std dates are rendered in the operational-style format."""
         import re
 
         # Create data with specific dates
