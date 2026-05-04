@@ -4,11 +4,12 @@ Module to plot multiple maps
 """
 
 import cartopy.crs as ccrs
-import matplotlib.pyplot as plt
 import matplotlib.path as mpath
+import matplotlib.pyplot as plt
+import numpy as np
 import xarray as xr
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-import numpy as np
+
 from aqua.core.graphics import plot_single_map
 from aqua.core.graphics.styles import ConfigStyle
 from aqua.core.logger import log_configure

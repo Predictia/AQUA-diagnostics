@@ -1,14 +1,15 @@
-from matplotlib import ticker
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
+from matplotlib import ticker
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from aqua.core.graphics import ConfigStyle
 from aqua.core.graphics.single_map import plot_single_map
 from aqua.core.logger import log_configure
-from aqua.core.util import evaluate_colorbar_limits, generate_colorbar_ticks, add_cyclic_lon
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+from aqua.core.util import add_cyclic_lon, evaluate_colorbar_limits, generate_colorbar_ticks
+
 
 def plot_maps(
     maps: list[xr.DataArray],
