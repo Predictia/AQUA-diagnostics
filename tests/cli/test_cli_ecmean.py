@@ -7,60 +7,55 @@ import pytest
 import xarray as xr
 
 from aqua.core.exceptions import NoDataError, NotEnoughDataError
-from aqua.diagnostics.ecmean.cli_ecmean import data_check, main, parse_arguments, reader_data, set_title, time_check
+from aqua.core.util import load_yaml
+from aqua.diagnostics.ecmean.cli_ecmean import (
+    data_check,
+    main,
+    parse_arguments,
+    reader_data,
+    set_description,
+    set_title,
+    time_check,
+)
 
 CLI_MODULE = "aqua.diagnostics.ecmean.cli_ecmean"
 
 pytestmark = [pytest.mark.aqua, pytest.mark.diagnostics]
 
 
-def _base_config(save_format=None):
-    return {
-        "diagnostics": {
-            "ecmean": {
-                "nprocs": 2,
-                "interface_file": "interface.yaml",
-                "config_file": "ecmean-default.yaml",
-                "global_mean": {
-                    "diagnostic_name": "ecmean_gm",
-                    "atm_vars": ["2t"],
-                    "oce_vars": ["tos"],
-                    "regions": ["Global"],
-                    "year1": 2000,
-                    "year2": 2001,
-                },
-                "performance_indices": {
-                    "diagnostic_name": "ecmean_pi",
-                    "atm_vars": ["2t"],
-                    "oce_vars": ["tos"],
-                    "regions": ["Global"],
-                    "year1": 2000,
-                    "year2": 2001,
-                },
-            }
-        },
-        "datasets": [
-            {
-                "catalog": "test-catalog",
-                "model": "TestModel",
-                "exp": "test-exp",
-                "source": "test-source",
-            }
-        ],
-        "output": {
-            "outputdir": "/tmp/ecmean-out",
-            "rebuild": False,
-            "save_format": save_format if save_format is not None else [],
-        },
-    }
+BASE_ECMEAN = {
+    "nprocs": 2,
+    "interface_file": "interface.yaml",
+    "config_file": "ecmean-default.yaml",
+    "global_mean": {
+        "diagnostic_name": "ecmean_gm",
+        "atm_vars": ["2t"],
+        "oce_vars": ["tos"],
+        "regions": ["Global"],
+        "year1": 2000,
+        "year2": 2001,
+    },
+    "performance_indices": {
+        "diagnostic_name": "ecmean_pi",
+        "atm_vars": ["2t"],
+        "oce_vars": ["tos"],
+        "regions": ["Global"],
+        "year1": 2000,
+        "year2": 2001,
+    },
+}
 
 
 def _tools_config():
     return {"dirs": {}, "global_mean": {"regions": ["Global"]}, "performance_indices": {"regions": ["Global"]}}
 
 
-def _prepare_config_load(mock_ecmean, *, save_format=None, catalog="test-catalog"):
-    config_dict = _base_config(save_format=save_format)
+def _prepare_config_load(mock_ecmean, build_config, *, save_format=None, catalog="test-catalog"):
+    config_file = build_config(
+        {"ecmean": BASE_ECMEAN},
+        output_overrides={"save_format": save_format if save_format is not None else []},
+    )
+    config_dict = load_yaml(config_file)
     config_dict["datasets"][0]["catalog"] = catalog
     mock_ecmean["load"].side_effect = [config_dict, _tools_config()]
 
@@ -102,9 +97,9 @@ class TestMainExecutionFlow:
             "global_mean": mock_gm,
         }
 
-    def test_main_runs_both_ecmean_diagnostics(self, mock_ecmean):
+    def test_main_runs_both_ecmean_diagnostics(self, mock_ecmean, build_config):
         """Verify both global_mean and performance_indices are executed end-to-end."""
-        _prepare_config_load(mock_ecmean, save_format=[])
+        _prepare_config_load(mock_ecmean, build_config, save_format=[])
 
         main(["--config", "dummy.yaml", "--loglevel", "WARNING"])
 
@@ -119,17 +114,17 @@ class TestMainExecutionFlow:
         # No save_figure calls when save_format is empty.
         assert mock_ecmean["outputsaver"].return_value.save_figure.call_count == 0
 
-    def test_main_saves_figures_when_save_format_is_set(self, mock_ecmean):
+    def test_main_saves_figures_when_save_format_is_set(self, mock_ecmean, build_config):
         """When output.save_format is non-empty, figures are saved for both diagnostics."""
-        _prepare_config_load(mock_ecmean, save_format=["png"])
+        _prepare_config_load(mock_ecmean, build_config, save_format=["png"])
 
         main(["--config", "dummy.yaml", "--loglevel", "WARNING"])
 
         assert mock_ecmean["outputsaver"].return_value.save_figure.call_count == 2
 
-    def test_main_uses_catalog_fallback_when_missing(self, mock_ecmean):
+    def test_main_uses_catalog_fallback_when_missing(self, mock_ecmean, build_config):
         """If dataset catalog is missing, ConfigPath fallback should provide it."""
-        _prepare_config_load(mock_ecmean, save_format=[], catalog=None)
+        _prepare_config_load(mock_ecmean, build_config, save_format=[], catalog=None)
         catalog_obj = MagicMock()
         catalog_obj.name = "fallback-catalog"
         mock_ecmean["configpath"].return_value.deliver_intake_catalog.return_value = (catalog_obj, None, None)
@@ -140,9 +135,9 @@ class TestMainExecutionFlow:
         first_outputsaver_call = mock_ecmean["outputsaver"].call_args_list[0]
         assert first_outputsaver_call.kwargs["catalog"] == "fallback-catalog"
 
-    def test_main_applies_realization_source_oce_and_dates_overrides(self, mock_ecmean):
+    def test_main_applies_realization_source_oce_and_dates_overrides(self, mock_ecmean, build_config):
         """CLI overrides should flow into reader_data and diagnostic constructor years."""
-        _prepare_config_load(mock_ecmean, save_format=[])
+        _prepare_config_load(mock_ecmean, build_config, save_format=[])
 
         main(
             [
@@ -185,6 +180,16 @@ def test_set_title_rejects_unknown_diagnostic():
     """Unknown diagnostic names should fail fast during title generation."""
     with pytest.raises(ValueError):
         set_title("unknown_diag", "Model", "exp", 2000, 2001)
+
+
+def test_set_description_global_mean():
+    """Description text includes core context fields for known diagnostics."""
+    config = {"global_mean": {"regions": ["Global", "NH"]}}
+    description = set_description("global_mean", "IFS", "hist", 2000, 2001, config)
+
+    assert "IFS hist from 2000-01-01 to 2001-12-31" in description
+    assert "Global (90°S-90°N)" in description
+    assert "NH (20°N-90°N)" in description
 
 
 def test_time_check_infers_years_and_validates_minimum_months():

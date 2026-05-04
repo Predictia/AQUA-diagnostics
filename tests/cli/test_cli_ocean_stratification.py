@@ -6,13 +6,15 @@ from aqua.diagnostics.ocean_stratification.cli_ocean_stratification import main,
 
 CLI_MODULE = "aqua.diagnostics.ocean_stratification.cli_ocean_stratification"
 
-BASE_BLOCK = {
-    "run": True,
-    "regions": ["global_ocean"],
-    "climatology": ["annual"],
-    "diagnostic_name": "ocean_stratification",
-    "var": ["thetao", "so"],
-    "vert_coord": "lev",
+BASE_STRAT = {
+    "stratification": {
+        "run": True,
+        "regions": ["global_ocean"],
+        "climatology": ["annual"],
+        "diagnostic_name": "ocean_stratification",
+        "var": ["thetao", "so"],
+        "vert_coord": "lev",
+    }
 }
 
 pytestmark = [pytest.mark.aqua, pytest.mark.diagnostics]
