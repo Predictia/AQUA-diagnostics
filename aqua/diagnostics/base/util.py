@@ -153,6 +153,58 @@ def load_diagnostic_config(
     return load_yaml(filename)
 
 
+def load_var_config(
+    config_dict: dict,
+    var,
+    diagnostic: str,
+    prepend_global: bool = False,
+    collapse_freq_keys: tuple | None = None,
+) -> tuple:
+    """
+    Build the variable-specific configuration for a diagnostic CLI.
+    Merge precedence: params.default < params.<var_name> < inline dict.
+
+    Args:
+        config_dict (dict): full configuration dictionary.
+        var (str | dict): variable name or inline variable configuration.
+        diagnostic (str): key under ``config_dict["diagnostics"]`` to read from.
+        prepend_global (bool): if True, always prepend ``None`` to the regions list (deduped).
+        collapse_freq_keys (tuple | None): if set, pop these boolean flags and combine the True ones into a ``freq`` list.
+
+    Returns:
+        tuple: ``(var_config, regions)``; ``regions`` is always popped from ``var_config``.
+    """
+    diag_block = config_dict.get("diagnostics", {}).get(diagnostic, {}) or {}
+    params = diag_block.get("params", {}) or {}
+    default_params = params.get("default", {}) or {}
+
+    if isinstance(var, dict):
+        var_name = var.get("name")
+        var_specific = (params.get(var_name, {}) or {}) if var_name else {}
+        var_config = {**default_params, **var_specific, **var}
+    else:
+        var_name = var
+        var_specific = params.get(var_name, {}) or {}
+        var_config = {**default_params, **var_specific}
+        var_config.setdefault("name", var_name)
+
+    if collapse_freq_keys:
+        freq = [key for key in collapse_freq_keys if var_config.get(key)]
+        for key in collapse_freq_keys:
+            var_config.pop(key, None)
+        var_config["freq"] = freq
+
+    regions_in_config = var_config.pop("regions", None)
+    if prepend_global:
+        regions = [None]
+        if regions_in_config:
+            regions.extend(r for r in regions_in_config if r is not None)
+    else:
+        regions = list(regions_in_config) if regions_in_config else [None]
+
+    return var_config, regions
+
+
 def merge_config_args(config: dict, args: argparse.Namespace, loglevel: str = "WARNING") -> dict:
     """
     Merge the configuration dictionary with the arguments of the CLI.
