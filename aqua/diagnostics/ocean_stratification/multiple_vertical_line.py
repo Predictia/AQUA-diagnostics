@@ -1,3 +1,5 @@
+"""Module for plotting multiple vertical line profiles in a grid layout."""
+
 import matplotlib.pyplot as plt
 import xarray as xr
 
@@ -25,8 +27,7 @@ def plot_multi_vertical_lines(
     loglevel="WARNING",
     **kwargs,
 ):
-    """
-    Plot multiple vertical line profiles in a grid layout.
+    """Plot multiple vertical line profiles in a grid layout.
 
     Args:
         data_list (list): List of xarray datasets containing the data to be plotted.
@@ -49,6 +50,7 @@ def plot_multi_vertical_lines(
 
     Returns:
         matplotlib.figure.Figure or None: The matplotlib Figure object if return_fig is True, otherwise None.
+
     """
     logger = log_configure(loglevel, "plot_multi_hovmoller")
     ConfigStyle(style=style, loglevel=loglevel)

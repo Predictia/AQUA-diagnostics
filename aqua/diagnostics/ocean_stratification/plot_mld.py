@@ -1,3 +1,5 @@
+"""Module for plotting Mixed Layer Depth (MLD) maps."""
+
 import math
 from typing import Union
 
@@ -14,6 +16,8 @@ xr.set_options(keep_attrs=True)
 
 
 class PlotMLD:
+    """Class for plotting Mixed Layer Depth (MLD) maps."""
+
     def __init__(
         self,
         data: xr.Dataset,
@@ -22,8 +26,7 @@ class PlotMLD:
         outputdir: str = ".",
         loglevel: str = "WARNING",
     ):
-        """
-        Class to plot Mixed Layer Depth (MLD) maps.
+        """Class to plot Mixed Layer Depth (MLD) maps.
 
         Args:
             data (xr.Dataset): Dataset containing the MLD data to be plotted.
@@ -32,6 +35,7 @@ class PlotMLD:
             diagnostic_name (str, optional): Name of the diagnostic. Default is "ocean_stratification".
             outputdir (str, optional): Directory to save the output plots. Default is the current directory.
             loglevel (str, optional): Logging level. Default is "WARNING".
+
         """
         self.data = data
         self.obs = obs
@@ -73,10 +77,21 @@ class PlotMLD:
         save_format: Union[str, list] = SAVE_FORMAT,
         dpi: int = 300,
     ):
+        """Generate and save the MLD map plot.
+
+        Args:
+            rebuild (bool, optional): If True, rebuild existing output files. Default is True.
+            region (str, optional): Region name to override the dataset's default. Default is None.
+            proj_name (str, optional): Cartopy projection name. Default is "PlateCarree".
+            extent (list, optional): Map extent as [lonmin, lonmax, latmin, latmax]. Default is None.
+            save_format (str or list, optional): Format(s) to save the figure. Default is SAVE_FORMAT.
+            dpi (int, optional): Resolution of the saved figure. Default is 300.
+
+        """
         self.diagnostic_product = "mld"
         self.clim_time = self.data.attrs.get("AQUA_stratification_climatology", "Total")
         self.region = region if region else self.region
-        self.extent = extent 
+        self.extent = extent
         self.data_list = [self.data, self.obs] if self.obs else [self.data]
         self.set_central_lat_lon()
         self.set_proj(proj_name=proj_name)
@@ -123,6 +138,7 @@ class PlotMLD:
         )
 
     def set_figsize(self):
+        """Set the figure size based on the number of rows and columns."""
         self.figsize = (9 * self.ncols, 8 * self.nrows)
 
         # lon_span = abs(self.data.lon.max() - self.data.lon.min())
@@ -140,6 +156,7 @@ class PlotMLD:
         # self.figsize = (base_width * aspect_ratio, base_height)
 
     def set_nrowcol(self):
+        """Set the number of rows and columns for the subplot grid."""
         if hasattr(self, "levels") and self.levels:
             self.nrows = len(self.levels)
         else:
@@ -149,6 +166,7 @@ class PlotMLD:
             self.ncols = self.ncols * 2
 
     def set_ytext(self):
+        """Set the y-axis text labels for each subplot."""
         self.ytext = []
         if hasattr(self, "levels") and self.levels:
             for level in self.levels:
@@ -159,6 +177,7 @@ class PlotMLD:
                         self.ytext.append(None)
 
     def set_extent(self):
+        """Set the map extent based on the data's coordinate range and region."""
         lonmin = self.data.lon.min().values
         lonmax = self.data.lon.max().values
 
@@ -175,6 +194,7 @@ class PlotMLD:
         self.logger.debug(f"Map extent set to: {self.extent}")
 
     def set_central_lat_lon(self):
+        """Set the central latitude and longitude for the map projection."""
         if self.region == "arctic":
             self.central_longitude = 0
             self.central_latitude = 90
@@ -184,8 +204,14 @@ class PlotMLD:
         else:
             self.central_longitude = self.data.lon.mean().values
             self.central_latitude = self.data.lat.mean().values
-            
+
     def set_proj(self, proj_name: str = "PlateCarree"):
+        """Set the Cartopy map projection.
+
+        Args:
+            proj_name (str, optional): Projection name ('PlateCarree' or 'Orthographic'). Default is 'PlateCarree'.
+
+        """
         if proj_name == "PlateCarree":
             self.proj = ccrs.PlateCarree(central_longitude=self.central_longitude)
         elif proj_name == "Orthographic":
@@ -193,8 +219,9 @@ class PlotMLD:
         else:
             raise ValueError(f"Unknown projection name: {proj_name}")
         self.logger.debug(f"Projection set to: {proj_name}")
-       
+
     def set_data_map_list(self):
+        """Build the list of DataArrays to be plotted as maps."""
         self.data_map_list = []
         for data in self.data_list:
             if hasattr(self, "levels") and self.levels:
@@ -214,6 +241,12 @@ class PlotMLD:
                     self.data_map_list.append(data_var)
 
     def set_cbar_labels(self, var: str = None):
+        """Set the colorbar label for the given variable.
+
+        Args:
+            var (str, optional): Variable name to derive the colorbar label from.
+
+        """
         self.cbar_label = cbar_get_label(data=self.data[var], cbar_label=None, loglevel=self.loglevel)
 
     def set_convert_lon(self, data=None):
@@ -251,6 +284,7 @@ class PlotMLD:
             return math.ceil(value / 100) * 100  # Round up to next 100
 
     def set_cbar_limits(self):
+        """Set the colorbar limits and number of levels for MLD plots."""
         self.vmin = 0.0
         if self.obs:
             self.vmax = max(self.obs["mld"].max(), self.obs["mld"].max())
@@ -278,10 +312,7 @@ class PlotMLD:
         self.logger.debug(f"Suptitle set to: {self.suptitle}")
 
     def set_title(self):
-        """
-        Set the title for the Hovmoller plot.
-        This method can be extended to set specific titles based on the data.
-        """
+        """Set the title for each subplot panel."""
         self.title_list = []
         for j in range(len(self.data_map_list)):
             attrs = self.data_map_list[j].attrs
@@ -295,18 +326,28 @@ class PlotMLD:
         self.logger.debug("Title list set to: %s", self.title_list)
 
     def set_description(self):
+        """Build the figure description string including model and observation date ranges."""
         model_startdate = self.data.attrs.get("startdate", None)
-        model_enddate = self.data.attrs.get("enddate", None)    
-        self.description = f"{self.clim_time} climatology of mixed layer depth in the {self.region} region for {self.model} {self.exp}"
+        model_enddate = self.data.attrs.get("enddate", None)
+        self.description = (
+            f"{self.clim_time} climatology of mixed layer depth"
+            f" in the {self.region} region for {self.model} {self.exp}"
+        )
         if model_startdate and model_enddate:
-            self.description += f" (from {time_to_string(model_startdate, format='%Y-%m')} to {time_to_string(model_enddate, format='%Y-%m')})"
+            self.description += (
+                f" (from {time_to_string(model_startdate, format='%Y-%m')}"
+                f" to {time_to_string(model_enddate, format='%Y-%m')})"
+            )
         if self.obs:
             obs_startdate = self.obs.attrs.get("startdate", None)
             obs_enddate = self.obs.attrs.get("enddate", None)
             self.description += f" with reference {self.obs_model} {self.obs_exp}"
             if obs_startdate and obs_enddate:
-                self.description += f" (from {time_to_string(obs_startdate, format='%Y-%m')} to {time_to_string(obs_enddate, format='%Y-%m')})"
-        
+                self.description += (
+                    f" (from {time_to_string(obs_startdate, format='%Y-%m')}"
+                    f" to {time_to_string(obs_enddate, format='%Y-%m')})"
+                )
+
         self.description += "."
 
     def save_plot(
@@ -319,8 +360,7 @@ class PlotMLD:
         format: str = SAVE_FORMAT,
         metadata: dict = None,
     ):
-        """
-        Save the plot to a file.
+        """Save the plot to a file.
 
         Args:
             fig (matplotlib.figure.Figure): The figure to be saved.
@@ -332,6 +372,7 @@ class PlotMLD:
             metadata (dict): The metadata to be used for the figure. Default is None.
                              They will be complemented with the metadata from the outputsaver.
                              We usually want to add here the description of the figure.
+
         """
         self.outputsaver.save_figure(
             fig,

@@ -1,7 +1,4 @@
-"""
-Module to plot multiple maps
-
-"""
+"""Module to plot multiple maps."""
 
 import cartopy.crs as ccrs
 import matplotlib.path as mpath
@@ -46,11 +43,11 @@ def plot_maps(
     loglevel="WARNING",
     **kwargs,
 ):
-    """
-    Plot multiple maps.
+    """Plot multiple maps.
+
     This is supposed to be used for maps to be compared together.
     A list of xarray.DataArray objects is expected
-    and a map is plotted for each of them
+    and a map is plotted for each of them.
 
     Args:
         maps (list):          list of xarray.DataArray objects
@@ -60,15 +57,19 @@ def plot_maps(
         extent (list,opt):    extent of the map, default is None
         style (str,opt):      style for the plot, default is the AQUA style
         figsize (tuple,opt):  figure size, default is (6,6) for each map. Here the full figure size is set.
+        nrows (int,opt):      number of rows in the subplot grid, default is None (auto)
+        ncols (int,opt):      number of columns in the subplot grid, default is None (auto)
         vmin (float,opt):     minimum value for the colorbar, default is None
         vmax (float,opt):     maximum value for the colorbar, default is None
         nlevels (int,opt):    number of levels for the colorbar, default is 11
         title (str,opt):      super title for the figure
         titles (list,opt):    list of titles for the maps
         cmap (str,opt):       colormap, default is 'RdBu_r'
+        cbar_number (str,opt): 'single' for one shared colorbar, 'separate' for per-map colorbars
         cbar_label (str,opt): colorbar label
         transform_first (bool, optional): If True, transform the data before plotting. Defaults to False.
         cyclic_lon (bool,opt): add cyclic longitude, default is True
+        ytext (list,opt):     list of y-axis text labels for each subplot, default is None
         return_fig (bool,opt): return the figure, default is False
         loglevel (str,opt):   log level, default is 'WARNING'
         **kwargs:             Keyword arguments for plot_single_map
@@ -76,8 +77,9 @@ def plot_maps(
     Raises:
         ValueError: if nothing to plot, i.e. maps is None or not a list of xarray.DataArray
 
-    Return:
-        fig     if more manipulations on the figure are needed, if return_fig=True
+    Returns:
+        fig: the matplotlib Figure object if return_fig=True, otherwise None.
+
     """
     logger = log_configure(loglevel, "plot_maps")
     ConfigStyle(style=style, loglevel=loglevel)
@@ -144,7 +146,7 @@ def plot_maps(
             gridlines=False,
             **kwargs,
         )
-        
+
         if proj.__class__ == ccrs.Orthographic:
             theta = np.linspace(0, 2 * np.pi, 100)
             verts = np.vstack([np.sin(theta), np.cos(theta)]).T
@@ -178,7 +180,7 @@ def plot_maps(
             #             transform=ccrs.PlateCarree(),
             #             fontsize=8, color='gray', ha='center',# va='bottom',
             #             zorder=10)
-                
+
         else:
             gl = ax.gridlines(draw_labels=True, linewidth=0.5, color='gray', alpha=0.3)
             gl.xlabel_style = {'color': 'gray'}
@@ -192,7 +194,7 @@ def plot_maps(
                 gl.left_labels = True
             gl.bottom_labels = True
 
-        
+
         ax.set_facecolor("lightgray")
         if ytext:
             logger.debug("Adding text in the plot: %s", ytext[i])

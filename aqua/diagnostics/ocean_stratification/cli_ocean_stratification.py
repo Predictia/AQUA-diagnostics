@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Command-line interface for Ocean stratification diagnostic.
+"""Command-line interface for Ocean stratification diagnostic.
 
 This CLI allows to run the stratification, OceanStratification diagnostics.
 Details of the run are defined in a yaml configuration file for a
@@ -21,6 +20,7 @@ def parse_arguments(args):
 
     Args:
         args (list): list of command-line arguments to parse.
+
     """
     parser = argparse.ArgumentParser(description="OceanStratification CLI")
     parser = template_parse_arguments(parser)
@@ -28,6 +28,7 @@ def parse_arguments(args):
 
 
 def main(argv=None):
+    """Run the OceanStratification diagnostic CLI."""
     args = parse_arguments(argv if argv is not None else sys.argv[1:])
 
     cli = DiagnosticCLI(
@@ -113,7 +114,7 @@ def main(argv=None):
                     loglevel=cli.loglevel,
                 )
                 strat_plot.plot_stratification(save_format=cli.save_format, dpi=cli.dpi)
-                
+
     if "mld" in config_dict["diagnostics"]["ocean_stratification"]:
         mld_config = config_dict["diagnostics"]["ocean_stratification"]["mld"]
         logger.info(f"Stratification diagnostic is set to {mld_config['run']}")

@@ -1,3 +1,5 @@
+"""Module for computing ocean stratification diagnostics."""
+
 import calendar
 
 import xarray as xr
@@ -14,8 +16,7 @@ xr.set_options(keep_attrs=True)
 
 
 class Stratification(Diagnostic):
-    """
-    Diagnostic class for analyzing ocean stratification.
+    """Diagnostic class for analyzing ocean stratification.
 
     Parameters
     ----------
@@ -40,6 +41,7 @@ class Stratification(Diagnostic):
     ----------
     logger : logging.Logger
         Configured logger for the diagnostic.
+
     """
 
     MINIMUM_MONTHS_REQUIRED = 12
@@ -57,6 +59,32 @@ class Stratification(Diagnostic):
         vert_coord: str = DEFAULT_OCEAN_VERT_COORD,
         loglevel: str = "WARNING",
     ):
+        """Initialize the Stratification diagnostic.
+
+        Parameters
+        ----------
+        catalog : str, optional
+            Path to the data catalog.
+        model : str, optional
+            Name of the climate model to analyze.
+        exp : str, optional
+            Experiment name.
+        source : str, optional
+            Data source identifier.
+        regrid : str, optional
+            Regridding method or target grid.
+        startdate : str, optional
+            Start date of the analysis period (format: 'YYYY-MM-DD').
+        enddate : str, optional
+            End date of the analysis period (format: 'YYYY-MM-DD').
+        diagnostic_name : str, optional
+            Name of the diagnostic (default: "stratification").
+        vert_coord : str, optional
+            Vertical coordinate name (default: DEFAULT_OCEAN_VERT_COORD).
+        loglevel : str, optional
+            Logging level (default: "WARNING").
+
+        """
         super().__init__(
             catalog=catalog,
             model=model,
@@ -84,8 +112,7 @@ class Stratification(Diagnostic):
         reader_kwargs: dict = {},
         mld: bool = False,
     ):
-        """
-        Run the stratification diagnostic workflow.
+        """Run the stratification diagnostic workflow.
 
         This method orchestrates the complete diagnostic process:
         1. Reads the required variables from the input source.
@@ -117,6 +144,7 @@ class Stratification(Diagnostic):
         Returns
         -------
         None
+
         """
         self.climatology = climatology
         self.logger.info("Starting stratification diagnostic run.")
@@ -125,7 +153,7 @@ class Stratification(Diagnostic):
             self.data = self.data.rename({"lev": self.vert_coord})
         if self.data['level'].attrs['units'] == 'NEMO model layers':
             self.data['level'].attrs['units'] = 'm'
-            
+
         self.data.attrs["startdate"] = f"{self.data.time[0].values.astype('datetime64[D]')}"
         self.data.attrs["enddate"] = f"{self.data.time[-1].values.astype('datetime64[D]')}"
         self.logger.debug(f"Variables retrieved: {var}, region: {region}, dim_mean: {dim_mean}")
@@ -172,8 +200,7 @@ class Stratification(Diagnostic):
             self.logger.info("MLD diagnostic saved to netCDF file.")
 
     def compute_stratification(self):
-        """
-        Compute the stratification by calculating climatology and density.
+        """Compute the stratification by calculating climatology and density.
 
         This method first computes the climatology (default: seasonal) and then computes the potential density.
         Updates the internal dataset with the results.
@@ -181,14 +208,14 @@ class Stratification(Diagnostic):
         Returns
         -------
         None
+
         """
         self.logger.debug("Starting computation of climatology and density.")
         self.calculate_rho()
         self.logger.debug("Stratification computation completed successfully.")
 
     def compute_climatology(self, climatology: str = "season"):
-        """
-        Compute climatology for the dataset based on the specified period type.
+        """Compute climatology for the dataset based on the specified period type.
 
         Depending on the value of `self.climatology`, the method will:
         - Group and average the data along the corresponding time accessor if
@@ -209,6 +236,7 @@ class Stratification(Diagnostic):
         Returns
         -------
         None
+
         """
         self.logger.debug(f"Computing {self.climatology} climatology.")
         month_list = list(calendar.month_name)[1:]
@@ -235,14 +263,14 @@ class Stratification(Diagnostic):
         self.logger.debug(f"{self.climatology.upper()} climatology computed successfully.")
 
     def calculate_rho(self):
-        """
-        Convert variables to absolute salinity and conservative temperature, then compute potential density.
+        """Convert variables to absolute salinity and conservative temperature, then compute potential density.
 
         Updates the internal dataset with the computed potential density anomaly ('rho').
 
         Returns
         -------
         None
+
         """
         self.logger.debug("Converting variables to absolute salinity and conservative temperature.")
         # Convert practical salinity to absolute salinity
@@ -269,14 +297,14 @@ class Stratification(Diagnostic):
         self.logger.debug("Added 'rho' (potential density anomaly) to dataset.")
 
     def compute_mld(self):
-        """
-        Compute the mixed layer depth (MLD) from the density field.
+        """Compute the mixed layer depth (MLD) from the density field.
 
         Uses the potential density anomaly ('rho') in the dataset to compute MLD and adds it as 'mld'.
 
         Returns
         -------
         None
+
         """
         self.logger.debug("Computing mixed layer depth (MLD) from density.")
         mld = compute_mld_cont(self.data[["rho"]], vert_coord=self.vert_coord, loglevel=self.loglevel)
@@ -292,8 +320,7 @@ class Stratification(Diagnostic):
         outputdir: str = ".",
         rebuild: bool = True,
     ):
-        """
-        Save the diagnostic output to a NetCDF file.
+        """Save the diagnostic output to a NetCDF file.
 
         Parameters
         ----------
@@ -309,6 +336,7 @@ class Stratification(Diagnostic):
             Directory where the NetCDF file will be saved (default is current directory).
         rebuild : bool, optional
             If True, force rebuild of NetCDF file even if it exists (default is True).
+
         """
         self.logger.info(
             f"Saving results to netCDF: diagnostic={diagnostic}, product={diagnostic_product}, "
