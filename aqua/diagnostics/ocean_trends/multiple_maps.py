@@ -1,9 +1,10 @@
+"""Module for plotting multiple 2D trend maps in a grid layout."""
+
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 from matplotlib import ticker
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from aqua.core.graphics import ConfigStyle
 from aqua.core.graphics.single_map import plot_single_map
@@ -33,8 +34,7 @@ def plot_maps(
     nlevels: int = 12,
     **kwargs,
 ):
-    """
-    Plot multiple 2D maps (xarray DataArrays) in a grid layout.
+    """Plot multiple 2D maps (xarray DataArrays) in a grid layout.
 
     Parameters
     ----------
@@ -54,6 +54,12 @@ def plot_maps(
         Colormap name to use (default: "RdBu_r").
     cbar_labels : list[str], optional
         List of colorbar labels for each subplot.
+    sym : bool, optional
+        If True, use symmetric colorbar limits around zero (default: False).
+    col_vmin : list[float], optional
+        Per-column minimum colorbar values. Overrides automatic limits when provided.
+    col_vmax : list[float], optional
+        Per-column maximum colorbar values. Overrides automatic limits when provided.
     ytext : list[str], optional
         Text annotations to place on the y-axis of each subplot.
     nrows : int, optional
@@ -83,6 +89,7 @@ def plot_maps(
     This function provides a convenient way to visualize multiple geospatial fields
     using Cartopy. Handles projection setup, cyclic longitude wrapping, and optional
     labeling automatically.
+
     """
     logger = log_configure(loglevel, "plot_maps")
     ConfigStyle(style=style, loglevel=loglevel)
@@ -107,10 +114,10 @@ def plot_maps(
         except Exception as e:
             logger.warning(f"Could not add cyclic longitude to map {i}: {e}")
 
-        
+
         row = i // ncols
         col = i % ncols
-        
+
         if col_vmax and col_vmin:
             vmin, vmax = col_vmin[col], col_vmax[col]
             if sym:
@@ -118,7 +125,7 @@ def plot_maps(
         else:
             col_maps = [maps[j] for j in range(len(maps)) if j % ncols == col]
             vmin, vmax = evaluate_colorbar_limits(maps=col_maps, sym=sym)
-            
+
         ticks = np.linspace(vmin, vmax, int(nlevels / 2) + 1)
         if len(ticks) < 3:  # ensure at least 3 ticks for colorbar
             ticks = np.linspace(vmin, vmax, 3)
@@ -158,8 +165,8 @@ def plot_maps(
 
         gl.top_labels = False
         gl.right_labels = False
-        
-            
+
+
         if row == nrows - 1:
             gl.bottom_labels = True
         else:
@@ -189,7 +196,7 @@ def plot_maps(
             cax = fig.add_axes([pos.x0, pos.y0 - 0.05, pos.width, 0.02])
             cbar = fig.colorbar(mappable, cax=cax, orientation="horizontal")
             cbar.set_label(cbar_labels[i])
-            
+
             cbar_ticks = generate_colorbar_ticks(
                 vmin=vmin,
                 vmax=vmax,
