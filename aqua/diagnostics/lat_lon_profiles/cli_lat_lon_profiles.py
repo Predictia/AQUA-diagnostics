@@ -10,9 +10,8 @@ import argparse
 import sys
 
 from aqua.core.exceptions import NotEnoughDataError
-from aqua.diagnostics.base import DiagnosticCLI, template_parse_arguments
+from aqua.diagnostics.base import DiagnosticCLI, load_var_config, template_parse_arguments
 from aqua.diagnostics.lat_lon_profiles import LatLonProfiles, PlotLatLonProfiles
-from aqua.diagnostics.lat_lon_profiles.util_cli import load_var_config
 
 
 def parse_arguments(args):
