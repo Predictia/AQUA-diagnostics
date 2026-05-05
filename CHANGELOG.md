@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 Unreleased in the current development version (target v0.24.0):
 Complete list:
+- CLI `load_var_config` centralization (#246)
 - LatLonProfiles: major diagnostic refactor (#229)
 - GlobalBiases: improve descriptions (#191)
 - Tropical cyclones: simplification, reader kwargs, orography from catalogue (#184)
