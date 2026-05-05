@@ -108,6 +108,8 @@ def reader_data(
         except Exception as err:
             reader_logger.error("Error while regridding model %s: %s", model, err)
             return None
+    # if no regridding is needed, return the data as is
+    return xfield
 
 
 def data_check(data_atm, data_oce, logger=None):
@@ -324,7 +326,7 @@ def main(argv=None):
         # activate override from command line
         realization = get_arg(args, "realization", None)
         # This reader_kwargs will be used if the dataset corresponding value is None or not present
-        reader_kwargs = config_dict["datasets"][0].get("reader_kwargs") or {}
+        reader_kwargs = dataset.get("reader_kwargs") or {}
         if realization:
             reader_kwargs["realization"] = realization
 
@@ -358,6 +360,7 @@ def main(argv=None):
                 startdate=startdate,
                 enddate=enddate,
                 reader_kwargs=reader_kwargs,
+                loglevel=loglevel,
             )
 
             logger.info("Loading oceanic data from %s", model)
@@ -371,6 +374,7 @@ def main(argv=None):
                 startdate=startdate,
                 enddate=enddate,
                 reader_kwargs=reader_kwargs,
+                loglevel=loglevel,
             )
 
             # check the data
