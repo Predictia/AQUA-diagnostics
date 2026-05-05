@@ -100,7 +100,7 @@ def reader_data(
     except Exception as err:
         reader_logger.error("Error while reading model %s: %s", model, err)
         return None
-
+    
     # regrid after variable selection
     if regrid is not None:
         try:
@@ -155,13 +155,13 @@ def time_check(mydata, y1, y2, logger=None):
 
     # guessing years from the dataset
     if y1 is None:
-        y1 = int(mydata.time[0].values.astype("datetime64[Y]").astype(str))
+        y1 = int(mydata.time.dt.year.values[0])
         if logger is not None:
-            logger.info("Guessing starting year %s", y1)
+            logger.info("Guessing starting year: %s", y1)
     if y2 is None:
-        y2 = int(mydata.time[-1].values.astype("datetime64[Y]").astype(str))
+        y2 = int(mydata.time.dt.year.values[-1])
         if logger is not None:
-            logger.info("Guessing ending year %s", y2)
+            logger.info("Guessing ending year: %s", y2)
 
     # Warn if the data frequency is not monthly, since ECmean expects monthly data
     data_freq = xarray_to_pandas_freq(mydata)
@@ -274,7 +274,7 @@ def main(argv=None):
 
     # load the configuration files and override with command line arguments
     config_dict = load_diagnostic_config(
-        diagnostic="ecmean", config=args.config, default_config="config_ecmean_cli.yaml", loglevel=loglevel
+        diagnostic="climate_metrics", config=args.config, default_config="config-climate_metrics-ecmean.yaml", loglevel=loglevel
     )
     config_dict = merge_config_args(config_dict, args)
 
