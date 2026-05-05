@@ -100,7 +100,7 @@ def reader_data(
     except Exception as err:
         reader_logger.error("Error while reading model %s: %s", model, err)
         return None
-    
+
     # regrid after variable selection
     if regrid is not None:
         try:
@@ -276,7 +276,10 @@ def main(argv=None):
 
     # load the configuration files and override with command line arguments
     config_dict = load_diagnostic_config(
-        diagnostic="climate_metrics", config=args.config, default_config="config-climate_metrics-ecmean.yaml", loglevel=loglevel
+        diagnostic="climate_metrics",
+        config=args.config,
+        default_config="config-climate_metrics-ecmean.yaml",
+        loglevel=loglevel,
     )
     config_dict = merge_config_args(config_dict, args)
 
