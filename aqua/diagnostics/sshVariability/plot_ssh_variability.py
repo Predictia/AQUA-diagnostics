@@ -1,11 +1,12 @@
-import healpy as hp
 import numpy as np
 import xarray as xr
+from astropy_healpix import healpy as hp
 
 from aqua import Regridder
 from aqua.core.fldstat import AreaSelection
 from aqua.core.graphics import plot_single_map
 from aqua.core.util import get_projection, healpix_resample
+from aqua.core.util.graphics import isnpixok
 from aqua.diagnostics.base import SAVE_FORMAT, TitleBuilder
 
 # import matplotlib.pyplot as plt
@@ -155,7 +156,7 @@ class SshVariabilityPlot(PlotBaseMixin):
 
         # Check if the dataset is in HEALPix format
         npix = dataset_std.size  # Number of cells in the data
-        nside = hp.npix2nside(npix) if hp.isnpixok(npix) else None
+        nside = hp.npix2nside(npix) if isnpixok(npix) else None
 
         if nside is not None:
             self.logger.info(f"Input data is in HEALPix format with nside={nside}.")
@@ -362,7 +363,7 @@ class SshVariabilityPlot(PlotBaseMixin):
 
         # Check if the dataset is in HEALPix format
         npix = dataset_std.size  # Number of cells in the data
-        nside = hp.npix2nside(npix) if hp.isnpixok(npix) else None
+        nside = hp.npix2nside(npix) if isnpixok(npix) else None
 
         if nside is not None:
             self.logger.info(f"Input data is in HEALPix format with nside={nside}.")
@@ -371,7 +372,7 @@ class SshVariabilityPlot(PlotBaseMixin):
 
         # Check if the data is in HEALPix format
         npix_ref = dataset_std_ref.size  # Number of cells in the data
-        nside_ref = hp.npix2nside(npix_ref) if hp.isnpixok(npix_ref) else None
+        nside_ref = hp.npix2nside(npix_ref) if isnpixok(npix_ref) else None
 
         if nside_ref is not None:
             self.logger.info(f"Reference data is in HEALPix format with nside={nside_ref}.")
