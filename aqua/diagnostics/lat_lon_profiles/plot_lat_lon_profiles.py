@@ -352,7 +352,7 @@ class PlotLatLonProfiles:
         num_items = min(len(self.catalogs), len(self.models), len(self.exps)) if hasattr(self, "catalogs") else 0
 
         description += "for "
-        dataset_names = [f"{self.models[i]} {self.exps[i]}" for i in range(min(self.len_data, num_items))]
+        dataset_names = [f"{self.models[i]} {self.exps[i]}" for i in range(num_items)]
         description += strlist_to_phrase(items=dataset_names)
 
         # Extract data/ref/std items (architecture: dates live on DataArray attrs).
