@@ -175,6 +175,9 @@ def load_var_config(
 
     Returns:
         tuple: ``(var_config, regions)``; ``regions`` is always popped from ``var_config``.
+
+    Raises:
+        ValueError: if ``var`` is a string but the ``diagnostics.<diagnostic>`` block is missing or empty.
     """
     # Read the diagnostic-specific config block. Per-variable settings live
     # under params.<var_name>; shared defaults under params.default.
@@ -189,6 +192,10 @@ def load_var_config(
         var_specific = (params.get(var_name, {}) or {}) if var_name else {}
         var_config = {**default_params, **var_specific, **var}
     else:
+        if not diag_block:
+            raise ValueError(
+                f"Cannot resolve config for variable '{var}': section 'diagnostics.{diagnostic}' is missing or empty."
+            )
         var_name = var
         var_specific = params.get(var_name, {}) or {}
         var_config = {**default_params, **var_specific}

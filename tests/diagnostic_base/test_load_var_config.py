@@ -32,16 +32,14 @@ def test_merge_precedence_default_per_var_inline():
     assert "regions" not in var_config
 
 
-def test_fallback_when_nothing_configured():
-    """A string var with no params section returns name only and regions=[None]."""
-    var_config, regions = load_var_config(
-        {"diagnostics": {"lat_lon_profiles": {}}},
-        "missing_var",
-        diagnostic="lat_lon_profiles",
-    )
-
-    assert var_config == {"name": "missing_var"}
-    assert regions == [None]
+def test_string_var_with_empty_diagnostic_block_raises():
+    """A string var with an empty diagnostics.<name> block has nothing to merge -> error."""
+    with pytest.raises(ValueError, match="missing or empty"):
+        load_var_config(
+            {"diagnostics": {"lat_lon_profiles": {}}},
+            "missing_var",
+            diagnostic="lat_lon_profiles",
+        )
 
 
 def test_inline_dict_without_params_block():
