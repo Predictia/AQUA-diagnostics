@@ -221,15 +221,14 @@ class BaseMixin(Diagnostic):
         }
 
         data = self.std_data
+        data = self.reader.fldmean(data, box_brd=box_brd, lon_limits=self.lon_limits, lat_limits=self.lat_limits)
+        data = self.reader.timmean(data, freq=freq, exclude_incomplete=exclude_incomplete, center_time=center_time)
 
         # Check that after data reduction we still have data
         if data.time.size == 0:
             self.logger.warning(f"Not enough data to compute {str_freq} standard deviation")
             data = None
         else:
-            data = self.reader.fldmean(data, box_brd=box_brd, lon_limits=self.lon_limits, lat_limits=self.lat_limits)
-            data = self.reader.timmean(data, freq=freq, exclude_incomplete=exclude_incomplete, center_time=center_time)
-
             if freq_dict[str_freq]["groupdby"] is not None:
                 data = data.groupby(freq_dict[str_freq]["groupdby"]).std("time")
             else:  # For annual data, we compute the std over all years
