@@ -13,9 +13,10 @@ import sys
 
 import pandas as pd
 
-from aqua.diagnostics.base import DiagnosticCLI, round_enddate, round_startdate, template_parse_arguments
+from aqua.diagnostics.base import DiagnosticCLI, load_var_config, round_enddate, round_startdate, template_parse_arguments
 from aqua.diagnostics.timeseries import Gregory, PlotGregory, PlotSeasonalCycles, PlotTimeseries, SeasonalCycles, Timeseries
-from aqua.diagnostics.timeseries.util_cli import load_var_config
+
+_TIMESERIES_FREQ_KEYS = ("hourly", "daily", "monthly", "annual")
 
 
 def parse_arguments(args):
@@ -52,7 +53,13 @@ def main(argv=None):
             exclude_incomplete = cli.config_dict["diagnostics"]["timeseries"].get("exclude_incomplete", True)
 
             for var in cli.config_dict["diagnostics"]["timeseries"].get("variables", []):
-                var_config, regions = load_var_config(cli.config_dict, var)
+                var_config, regions = load_var_config(
+                    cli.config_dict,
+                    var,
+                    diagnostic="timeseries",
+                    prepend_global=True,
+                    collapse_freq_keys=_TIMESERIES_FREQ_KEYS,
+                )
                 cli.logger.info(
                     f"Running Timeseries diagnostic for variable {var} with config {var_config} "
                     f"in regions {[region if region else 'global' for region in regions]}"
@@ -156,7 +163,13 @@ def main(argv=None):
                         )
 
             for var in cli.config_dict["diagnostics"]["timeseries"].get("formulae", []):
-                var_config, regions = load_var_config(cli.config_dict, var)
+                var_config, regions = load_var_config(
+                    cli.config_dict,
+                    var,
+                    diagnostic="timeseries",
+                    prepend_global=True,
+                    collapse_freq_keys=_TIMESERIES_FREQ_KEYS,
+                )
                 cli.logger.info(f"Running Timeseries diagnostic for variable {var} with config {var_config}")
 
                 diagnostic_name = cli.config_dict["diagnostics"]["timeseries"].get("diagnostic_name", "timeseries")
@@ -269,7 +282,12 @@ def main(argv=None):
 
             for var in cli.config_dict["diagnostics"]["seasonalcycles"].get("variables", []):
                 try:
-                    var_config, regions = load_var_config(cli.config_dict, var, diagnostic="seasonalcycles")
+                    var_config, regions = load_var_config(
+                        cli.config_dict,
+                        var,
+                        diagnostic="seasonalcycles",
+                        prepend_global=True,
+                    )
                     cli.logger.info(f"Running SeasonalCycles diagnostic for variable {var} with config {var_config}")
 
                     for region in regions:
