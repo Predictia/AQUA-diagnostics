@@ -149,8 +149,8 @@ class PlotTimeseries(PlotBaseMixin):
 
         for std in [self.std_monthly_data, self.std_annual_data]:
             if std is not None:
-                self.std_startdate = std.AQUA_std_startdate if std.AQUA_std_startdate is not None else None
-                self.std_enddate = std.AQUA_std_enddate if std.AQUA_std_enddate is not None else None
+                self.std_startdate = getattr(std, "AQUA_std_startdate", None)
+                self.std_enddate = getattr(std, "AQUA_std_enddate", None)
                 self.logger.debug(f"Standard deviation dates: {self.std_startdate} - {self.std_enddate}")
                 break
 
