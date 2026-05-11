@@ -384,8 +384,8 @@ def main(argv=None):
                             )
 
                         # Reference datasets are evaluated on the maximum time range of the datasets
-                        startdate = pd.Timestamp(min(t.startdate for t in ts))
-                        enddate = pd.Timestamp(max(t.enddate for t in ts))
+                        startdate = pd.Timestamp(min(s.startdate for s in sc))
+                        enddate = pd.Timestamp(max(s.enddate for s in sc))
 
                         # Initialize a list of len from the number of references
                         if "references" in cli.config_dict:
