@@ -136,8 +136,7 @@ def main(argv=None):
                                 # We want to raise a warning only if reference were originally requested.
                                 if ts_ref and any(t is None for t in ts_ref):
                                     cli.logger.warning(
-                                        f"No reference datasetes were successfully run for variable {var} \
-                                            in region {region if region else 'global'}."
+                                        f"No reference datasetes were successfully run for variable {var} in region {region if region else 'global'}."  # noqa: E501
                                     )
                                 ref_monthly_data = None
                                 ref_annual_data = None
@@ -277,8 +276,7 @@ def main(argv=None):
                                 # We want to raise a warning only if reference were originally requested.
                                 if ts_ref and any(t is None for t in ts_ref):
                                     cli.logger.warning(
-                                        f"No reference datasetes were successfully run for variable {var} \
-                                            in region {region if region else 'global'}."
+                                        f"No reference datasetes were successfully run for variable {var} in region {region if region else 'global'}."  # noqa: E501
                                     )
                                 ref_monthly_data = None
                                 ref_annual_data = None

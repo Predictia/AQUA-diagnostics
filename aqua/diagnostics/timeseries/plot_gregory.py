@@ -181,8 +181,7 @@ class PlotGregory(PlotBaseMixin):
         # Description on the two panels depends if both are present, or only one of them.
         if self.has_monthly and self.has_annual:
             description += "On the left, monthly model data and climatological seasonal cycle for the reference data. "
-            description += "On the right, annual model data and the reference ±1σ uncertainty\
-                 bands around the climatological mean (shading)."
+            description += "On the right, annual model data and the reference ±1σ uncertainty bands around the climatological mean (shading)."  # noqa: E501
         elif self.has_monthly and not self.has_annual:
             description += "Monthly model data and climatological seasonal cycle for the reference data."
         elif not self.has_monthly and self.has_annual:
