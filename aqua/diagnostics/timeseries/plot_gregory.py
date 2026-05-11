@@ -83,15 +83,17 @@ class PlotGregory(PlotBaseMixin):
 
         self.logger.debug(f"Requested plot freq: {freq}, has_monthly: {self.has_monthly}, has_annual: {self.has_annual}")
 
-        if self.has_monthly and self.has_annual:
+        if (self.has_monthly and "monthly" in freq) and (self.has_annual and "annual" in freq):
             fig, (ax_monthly, ax_annual) = plt.subplots(1, 2, figsize=(12, 6))
             mon_label = data_labels
             ann_label = None
-        elif self.has_monthly and not self.has_annual:
+        # The exluding check is only on self and not the freq list,
+        # because we may have the user wanting a plot, but not having enough data to plot it.
+        elif self.has_monthly and "monthly" in freq and not self.has_annual:
             fig, ax_monthly = plt.subplots(1, 1, figsize=(6, 6))
             mon_label = data_labels
             ann_label = None
-        elif not self.has_monthly and self.has_annual:
+        elif not self.has_monthly and (self.has_annual and "annual" in freq):
             fig, ax_annual = plt.subplots(1, 1, figsize=(6, 6))
             mon_label = None
             ann_label = data_labels
