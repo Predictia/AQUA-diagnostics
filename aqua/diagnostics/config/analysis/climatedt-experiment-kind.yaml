@@ -1,7 +1,11 @@
 # Default date for jinja templates for reference datasets:
-# ref_startdate, ref_enddate: default reference
-# std_startdate, std_enddate: default standard deviation
-# std_startdate_ts, std_enddate_ts: default standard deviation for timeseries
+
+# default: default date range for all analyses
+# radiation: date range for radiation analyses
+# timeseries: date range for timeseries analyses
+
+# startdate, enddate: values for the date range for references to be used in the analysis
+# std_startdate, std_enddate: standard deviation for references to be used in the analysis
 
 default:
   default:
