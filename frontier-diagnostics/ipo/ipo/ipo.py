@@ -148,18 +148,40 @@ class IPO:
         else:
             self.reader_ref = None
 
+    def _retrieve_and_regrid(self, reader, var):
+        """Retrieve a variable and regrid to the target grid if configured.
+
+        Unstructured grids (e.g. HEALPix) require regridding to a regular
+        lat/lon grid before area-based operations like region selection can
+        be performed.  When the Reader was initialised with a target grid
+        (``regrid``), this method applies it transparently so that all
+        downstream code receives data on a regular grid.
+
+        Args:
+            reader (Reader): The AQUA Reader instance to use.
+            var (str): Variable name to retrieve.
+
+        Returns:
+            xr.Dataset: The retrieved (and optionally regridded) dataset.
+        """
+        data = reader.retrieve(var=var)
+        if reader.tgt_grid_name is not None:
+            self.logger.info("Regridding '%s' to target grid '%s'", var, reader.tgt_grid_name)
+            data = reader.regrid(data)
+        return data
+
     def retrieve(self):
         """Load field data (SST) and aggregate to monthly means."""
         field = self.field
         self.logger.info("Retrieving field '%s' for %s", field, self.data_label)
-        self.sst = self.reader.retrieve(var=field)[field]
+        self.sst = self._retrieve_and_regrid(self.reader, field)[field]
         self.sst = self.reader.timmean(self.sst, freq="MS")
         self.logger.info("Retrieved %s monthly points for %s", self.sst.sizes["time"], self.data_label)
 
         if self.reader_ref:
             label = self.data_ref_label
             self.logger.info("Retrieving field '%s' for %s", field, label)
-            self.sst_ref = self.reader_ref.retrieve(var=field)[field]
+            self.sst_ref = self._retrieve_and_regrid(self.reader_ref, field)[field]
             self.sst_ref = self.reader_ref.timmean(self.sst_ref, freq="MS")
             self.logger.info("Retrieved %s monthly points for %s", self.sst_ref.sizes["time"], label)
         else:
@@ -282,7 +304,7 @@ class IPO:
         if var == self.field:
             data = self.sst_ref if use_reference else self.sst
         else:
-            dataset = reader.retrieve(var=var)
+            dataset = self._retrieve_and_regrid(reader, var)
             data = dataset[var]
             data = reader.timmean(data, freq="MS")
 

@@ -92,7 +92,7 @@ class VerticalZonalMean:
                                       source=config_data_ref.get('source'),
                                       regrid=config_data_ref.get('regrid'),
                                       fix=config_data_ref.get('fix'),
-                                      areas=False,
+                                      areas=config_data_ref.get('areas', False),
                                       startdate=self.startdate,
                                       enddate=self.enddate,
                                       loglevel=self.loglevel)
@@ -103,7 +103,7 @@ class VerticalZonalMean:
                                   source=config_data.get('source'),
                                   regrid=config_data.get('regrid'),
                                   fix=config_data.get('fix'),
-                                  areas=False,
+                                  areas=config_data.get('areas', False),
                                   startdate=self.startdate,
                                   enddate=self.enddate,
                                   loglevel=self.loglevel)
