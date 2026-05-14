@@ -298,7 +298,7 @@ class PlotSeaIce:
         self.logger.info(f"Returning 'None' for key: {dkey}")
         return None
 
-    def _update_description(self, method, region, data_dict, region_idx):
+    def _update_description(self, method, region, data_dict):
         """
         Create the caption description from attributes returning the updated string
 
@@ -306,7 +306,6 @@ class PlotSeaIce:
             method (str): The method used to compute the data.
             region (str): The region to plot.
             data_dict (dict): The data dictionary.
-            region_idx (int): The index of the region.
         """
         # initialise string if _description doesn't exist
         if not hasattr(self, "_description"):
