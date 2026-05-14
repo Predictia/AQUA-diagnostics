@@ -69,6 +69,8 @@ class SeaIce(Diagnostic):
             catalog=catalog,
             startdate=startdate,
             enddate=enddate,
+            std_startdate=std_startdate,
+            std_enddate=std_enddate,
             loglevel=loglevel,
         )
         self.logger = log_configure(loglevel, "SeaIce")
@@ -185,6 +187,7 @@ class SeaIce(Diagnostic):
 
         # get the sea ice masked by method
         masked_data = self._mask_data_bymethod()
+        masked_std_data = self._mask_data_bymethod(data=self.std_data) if self.std_data is not None else None
 
         self.monthly = ts_monthly
         self.annual = ts_annual
@@ -215,12 +218,24 @@ class SeaIce(Diagnostic):
 
             # compute standard deviation if frequency is provided
             if calc_std_freq is not None:
-                seaice_std_result = self._calc_time_stat(original_si_result, stat="std", freq=calc_std_freq)
+                std_input = (
+                    self.integrate_seaice(masked_std_data, region) if masked_std_data is not None else original_si_result
+                )
+                seaice_std_result = self._calc_time_stat(std_input, stat="std", freq=calc_std_freq)
                 log_history(seaice_std_result, f"Method used for standard deviation seaice computation: {self.method}")
+
+                if masked_std_data is not None:
+                    std_period_start, std_period_end = self.std_startdate, self.std_enddate
+                else:
+                    std_period_start, std_period_end = self.startdate, self.enddate
 
                 # update attributes and history
                 seaice_std_result = self.add_seaice_attrs(
-                    seaice_std_result, region, self.startdate, self.enddate, std_flag=True
+                    seaice_std_result,
+                    region,
+                    std_period_start,
+                    std_period_end,
+                    std_flag=True,
                 )
                 self.logger.debug("Attributes updated")
 
@@ -279,7 +294,7 @@ class SeaIce(Diagnostic):
             else:
                 raise ValueError(f"Method '{self.method}' is not supported for 2D computation.")
 
-            seaice_result = self.add_seaice_attrs(seaice_2d_result, region, self.startdate, self.enddate)  # noqa: F841
+            seaice_2d_result = self.add_seaice_attrs(seaice_2d_result, region, self.startdate, self.enddate)
 
             regional_2d_results.append(seaice_2d_result)
 
@@ -293,7 +308,7 @@ class SeaIce(Diagnostic):
 
         return self.result
 
-    def _mask_data_bymethod(self):
+    def _mask_data_bymethod(self, data: xr.Dataset | None = None):
         """
         Mask the data based on the specified method.
 
@@ -303,20 +318,22 @@ class SeaIce(Diagnostic):
         Returns:
             method_masked_data (xr.DataArray): The masked data based on the specified method.
         """
-        if self.data is None:
+        target_data = self.data if data is None else data
+
+        if target_data is None:
             self.logger.error(f"Variable {self.var} not found in dataset {self.model}, {self.exp}, {self.source}")
             raise NoDataError("Variable not found in dataset")
 
         self.logger.debug(f"Masking data for {self.var} with method {self.method}")
 
         if self.method == "extent":
-            method_masked_data = self.data[self.var].where(
-                (self.data[self.var] > self.threshold) & (self.data[self.var] < 1.0)
+            method_masked_data = target_data[self.var].where(
+                (target_data[self.var] > self.threshold) & (target_data[self.var] < 1.0)
             )
         elif self.method == "volume":
-            method_masked_data = self.data[self.var].where((self.data[self.var] > 0) & (self.data[self.var] < 99.0))
+            method_masked_data = target_data[self.var].where((target_data[self.var] > 0) & (target_data[self.var] < 99.0))
         else:
-            method_masked_data = self.data[self.var].copy(deep=True)
+            method_masked_data = target_data[self.var].copy(deep=True)
 
         if method_masked_data is None:
             self.logger.error(
@@ -525,8 +542,8 @@ class SeaIce(Diagnostic):
             region (str): The geographical region over which sea ice data is computed.
             startdate (str, optional): The start date of the data (format "YYYY-MM-DD"). Default to None.
             enddate (str, optional): The end date of the data (format "YYYY-MM-DD"). Default to None.
-            std_flag (bool, optional): If True, add the metadata related to the computed standard deviation.
-                Defaults to False.
+            std_flag (bool, optional): If True, add the std computation as ``AQUA_std_startdate`` and
+                ``AQUA_std_enddate``. Defaults to False.
 
         Returns:
             xr.DataArray
@@ -549,10 +566,16 @@ class SeaIce(Diagnostic):
         da_seaice_computed.attrs["standard_name"] = f"{region}_{'std_' if std_flag else ''}sea_ice_{self.method}"
         da_seaice_computed.attrs["AQUA_method"] = f"{self.method}"
 
-        if startdate is not None:
-            da_seaice_computed.attrs["AQUA_startdate"] = f"{time_to_string(startdate, format='%Y-%m')}"
-        if enddate is not None:
-            da_seaice_computed.attrs["AQUA_enddate"] = f"{time_to_string(enddate, format='%Y-%m')}"
+        if std_flag:
+            if startdate is not None:
+                da_seaice_computed.attrs["AQUA_std_startdate"] = f"{time_to_string(startdate, format='%Y-%m')}"
+            if enddate is not None:
+                da_seaice_computed.attrs["AQUA_std_enddate"] = f"{time_to_string(enddate, format='%Y-%m')}"
+        else:
+            if startdate is not None:
+                da_seaice_computed.attrs["AQUA_startdate"] = f"{time_to_string(startdate, format='%Y-%m')}"
+            if enddate is not None:
+                da_seaice_computed.attrs["AQUA_enddate"] = f"{time_to_string(enddate, format='%Y-%m')}"
         da_seaice_computed.name = f"{'std_' if std_flag else ''}sea_ice_{self.method}_{region}"
 
         time_coord = da_seaice_computed.coords.get("time", None)

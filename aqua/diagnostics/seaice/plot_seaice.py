@@ -11,7 +11,7 @@ from aqua.core.logger import log_configure
 from aqua.core.util import get_realizations, strlist_to_phrase, to_list
 from aqua.diagnostics.base import SAVE_FORMAT, OutputSaver, TitleBuilder
 
-from .util import _check_list_regions_type, defaultdict_to_dict, extract_dates
+from .util import _check_list_regions_type, defaultdict_to_dict, extract_dates, extract_std_period_dates
 
 xr.set_options(keep_attrs=True)
 
@@ -381,7 +381,7 @@ class PlotSeaIce:
         # generate string for reference std data
         if hasattr(self, "std_label") and self.std_label:
             sdtdata = self._getdata_fromdict(data_dict, "monthly_std_ref")
-            std_sdate, std_edate = extract_dates(sdtdata[0])
+            std_sdate, std_edate = extract_std_period_dates(sdtdata[0])
             self.std_label_str = f" Shaded areas represent ±2σ uncertainty bands (from {std_sdate} to {std_edate})."
         else:
             self.std_label_str = ""
