@@ -473,7 +473,7 @@ class PlotSeaIce:
             else:
                 raise ValueError(f"Unknown plot_type function name: {self.plot_type}")
 
-            self._update_description(self.method, region, data_dict, region_idx)
+            self._update_description(self.method, region, data_dict)
 
             title = TitleBuilder(diagnostic=f"Sea ice {self.method}", regions=region).generate()
             ax.set_title(title)
