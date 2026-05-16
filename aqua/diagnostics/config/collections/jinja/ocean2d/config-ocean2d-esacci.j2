@@ -85,7 +85,7 @@ diagnostics:
       tos:
         regions: ['nh', 'sh']
 
- lat_lon_profiles:
+  lat_lon_profiles:
     run: true
     diagnostic_name: 'ocean2d'
     mean_type: 'zonal'
@@ -96,7 +96,7 @@ diagnostics:
     longterm: true
     params:
       default:
-        startdate: '{{ default.ref_startdate }}'}
+        startdate: '{{ default.ref_startdate }}'
         enddate: '{{ default.ref_enddate }}'
         std_startdate: '{{ default.std_startdate }}'
         std_enddate: '{{ default.std_enddate }}'
