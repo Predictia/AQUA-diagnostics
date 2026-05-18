@@ -235,7 +235,7 @@ class Hovmoller(Diagnostic):
                 lat_limits=self.lat_limits,
                 lon_limits=self.lon_limits,
             )
-            self.data.load() # Ensure data is loaded in memory after fldmean
+            self.data.load()  # Ensure data is loaded in memory after fldmean
 
         for standardise, anomaly_ref in product([False, True], anomaly_ref):
             if not (standardise is True and anomaly_ref is None):
