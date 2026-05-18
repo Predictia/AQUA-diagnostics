@@ -151,14 +151,14 @@ class Stratification(Diagnostic):
         super().retrieve(var=var, reader_kwargs=reader_kwargs, months_required=self.MINIMUM_MONTHS_REQUIRED)
         if "lev" in self.data.dims:
             self.data = self.data.rename({"lev": self.vert_coord})
-        if self.data["level"].attrs["units"] == "NEMO model layers":
-            self.data["level"].attrs["units"] = "m"
+        if self.data[self.vert_coord].attrs["units"] == "NEMO model layers":
+            self.data[self.vert_coord].attrs["units"] = "m"
+        super()._check_data(data=self.data[self.vert_coord], var=self.vert_coord, units="m")
 
         self.data.attrs["startdate"] = f"{self.data.time[0].values.astype('datetime64[D]')}"
         self.data.attrs["enddate"] = f"{self.data.time[-1].values.astype('datetime64[D]')}"
         self.logger.debug(f"Variables retrieved: {var}, region: {region}, dim_mean: {dim_mean}")
         self.logger.info("Computing stratification.")
-        self.compute_stratification()
         # If a region is specified, apply area selection to self.data
         if region:
             self.logger.info(f"Selecting region: {region} for diagnostic '{self.diagnostic_name}'.")
@@ -167,9 +167,11 @@ class Stratification(Diagnostic):
             self.lat_limits = res_dict["lat_limits"]
             self.lon_limits = res_dict["lon_limits"]
         else:
+            res_dict = super().select_region(data=self.data, region="global", diagnostic="ocean3d", drop=True)
             self.region = "global"
             self.lat_limits = None
             self.lon_limits = None
+        self.compute_stratification()
         self.data.attrs["AQUA_region"] = self.region
         if dim_mean:
             self.logger.debug(f"Computing fldmean over dimension: {dim_mean}")
@@ -241,8 +243,6 @@ class Stratification(Diagnostic):
         self.logger.debug(f"Computing {self.climatology} climatology.")
         month_list = list(calendar.month_name)[1:]
         season_list = ["DJF", "MAM", "JJA", "SON"]
-        month_season_list = month_list + season_list  # noqa: F841
-
         if self.climatology in month_list:
             self.clim_type = "month"
         elif self.climatology in season_list:
@@ -257,7 +257,8 @@ class Stratification(Diagnostic):
                 if self.clim_type == "month":
                     self.data = self.data.assign_coords(time=[calendar.month_name[m] for m in self.data["time"].values])
                 self.data = self.data.sel(time=self.climatology)
-        elif self.climatology == "Total":
+        else:
+            self.climatology = "total"
             self.data = self.data.mean("time", keep_attrs=True)
         self.data.attrs["AQUA_stratification_climatology"] = self.climatology
         self.logger.debug(f"{self.climatology.upper()} climatology computed successfully.")
@@ -345,7 +346,7 @@ class Stratification(Diagnostic):
         super().save_netcdf(
             data=data,
             diagnostic=self.diagnostic_name,
-            diagnostic_product=f"{diagnostic_product}",
+            diagnostic_product=diagnostic_product,
             outputdir=outputdir,
             rebuild=rebuild,
             extra_keys={"region": region},
