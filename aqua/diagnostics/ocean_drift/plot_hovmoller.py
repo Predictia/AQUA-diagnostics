@@ -219,7 +219,8 @@ class PlotHovmoller:
                 if j == 0:
                     units = self.data[j][var].attrs.get("units", "")
                     units_latex = unit_to_latex(units) if units else ""
-                    title = f"{var} ({units_latex})"
+                    long_name = self.data[j][var].attrs.get("long_name", var)
+                    title = f"{long_name} ({units_latex})"
                 else:
                     title = None
                 self.title_list.append(title)
