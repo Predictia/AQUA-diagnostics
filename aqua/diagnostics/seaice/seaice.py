@@ -540,8 +540,8 @@ class SeaIce(Diagnostic):
         Args:
             da_seaice_computed (xr.DataArray): The computed sea ice data to which attributes will be added.
             region (str): The geographical region over which sea ice data is computed.
-            startdate (str, optional): The start date of the data (format "YYYY-MM-DD"). Default to None.
-            enddate (str, optional): The end date of the data (format "YYYY-MM-DD"). Default to None.
+            startdate (str, optional): The start date of the data (format "%Y-%m"). Default to None.
+            enddate (str, optional): The end date of the data (format "%Y-%m"). Default to None.
             std_flag (bool, optional): If True, add the std computation as ``AQUA_std_startdate`` and
                 ``AQUA_std_enddate``. Defaults to False.
 
