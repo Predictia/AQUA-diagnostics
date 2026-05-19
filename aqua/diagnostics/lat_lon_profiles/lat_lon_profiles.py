@@ -1,6 +1,6 @@
 from aqua.core.fixer import EvaluateFormula
 from aqua.core.logger import log_configure
-from aqua.core.util import pandas_freq_to_string, time_to_string, to_list, xarray_to_pandas_freq
+from aqua.core.util import time_to_string, to_list
 from aqua.diagnostics.base import Diagnostic
 
 
@@ -205,8 +205,6 @@ class LatLonProfiles(Diagnostic):
         self.logger.debug("Loading monthly data in memory for std computation")
         monthly_data.load()
 
-        data_freq = pandas_freq_to_string(xarray_to_pandas_freq(self.data))
-
         if freq == "seasonal":
             # Group by season and compute std
             seasonal_std = monthly_data.groupby("time.season").std("time")
@@ -218,7 +216,6 @@ class LatLonProfiles(Diagnostic):
                 season_data = seasonal_std.sel(season=season)
                 season_data.attrs["AQUA_std_startdate"] = time_to_string(self.std_startdate)
                 season_data.attrs["AQUA_std_enddate"] = time_to_string(self.std_enddate)
-                season_data.attrs["AQUA_data_freq"] = data_freq
                 seasonal_std_list.append(season_data)
 
             self.std_seasonal = seasonal_std_list
@@ -231,7 +228,6 @@ class LatLonProfiles(Diagnostic):
             annual_std = annual_data.std("year")
             annual_std.attrs["AQUA_std_startdate"] = time_to_string(self.std_startdate)
             annual_std.attrs["AQUA_std_enddate"] = time_to_string(self.std_enddate)
-            annual_std.attrs["AQUA_data_freq"] = data_freq
             self.std_annual = annual_std
 
             self.std_annual.load()
@@ -349,7 +345,6 @@ class LatLonProfiles(Diagnostic):
             raise ValueError("Mean type %s not recognized", self.mean_type)
 
         self.logger.info("Computing %s mean", freq)
-        data_freq = pandas_freq_to_string(xarray_to_pandas_freq(self.data))
 
         if freq == "seasonal":
             data = self.reader.fldmean(
@@ -365,7 +360,6 @@ class LatLonProfiles(Diagnostic):
                 season_data.attrs["AQUA_mean_type"] = self.mean_type
                 season_data.attrs["AQUA_startdate"] = time_to_string(self.startdate)
                 season_data.attrs["AQUA_enddate"] = time_to_string(self.enddate)
-                season_data.attrs["AQUA_data_freq"] = data_freq
                 self.logger.debug("Loading data in memory")
                 season_data.load()
                 self.logger.debug("Loaded data in memory")
@@ -380,7 +374,6 @@ class LatLonProfiles(Diagnostic):
 
             data.attrs["AQUA_startdate"] = time_to_string(self.startdate)
             data.attrs["AQUA_enddate"] = time_to_string(self.enddate)
-            data.attrs["AQUA_data_freq"] = data_freq
 
             if self.region is not None:
                 data.attrs["AQUA_region"] = self.region
