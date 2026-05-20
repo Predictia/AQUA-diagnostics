@@ -25,7 +25,7 @@ dependencies:
   # various
   - pip
   - pip:
-    - -e ../AQUA
+    - -e ../AQUA[fdb]
     - -e ./frontier-diagnostics/tropical_cyclones/ # pip install -e of tropical cyclones
     - -e ./frontier-diagnostics/tropical_rainfall/ # pip install -e of tropical_rainfall
     # pip install -e of AQUA itself
