@@ -81,13 +81,13 @@ run:
 diagnostics:
   atmosphere2d:
     biases:
-      config: ["${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-berkeley.j2",
-               "${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-era5.j2"]
+      config: ["${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-berkeley.yaml",
+               "${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-era5.yaml"]
     timeseries:
-      config: ["${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-berkeley.j2",
-               "${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-era5.j2"]
+      config: ["${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-berkeley.yaml",
+               "${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-era5.yaml"]
     lat_lon_profiles:
-      config: "${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-berkeley.j2"
+      config: "${AQUA_CONFIG}/collections/legacy/atmosphere2d/config-atmosphere2d-berkeley.yaml"
 
   atmosphere3d:
     biases:
