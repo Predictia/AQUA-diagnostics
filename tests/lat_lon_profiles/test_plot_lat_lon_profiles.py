@@ -20,6 +20,8 @@ def sample_lat_lon_data():
         base_attrs = {
             "AQUA_mean_type": mean_type,
             "AQUA_region": "global",
+            "AQUA_startdate": "1990-01-01",
+            "AQUA_enddate": "1999-12-31",
             "short_name": "skt",
             "standard_name": "skin_temperature",
             "long_name": "Skin Temperature",
