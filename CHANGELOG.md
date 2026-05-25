@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 Unreleased in the current development version (target v0.24.0):
 Complete list:
+- Histogram: diagnostic updates (#255)
 - ECmean: prevent creation of default empty dirs (#263)
 - Remove `healpy` dependency (#248)
 - Timeseries: backporting of dashboard updates (#250)
