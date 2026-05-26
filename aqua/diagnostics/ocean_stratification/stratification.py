@@ -171,7 +171,6 @@ class Stratification(Diagnostic):
             self.region = "global"
             self.lat_limits = None
             self.lon_limits = None
-        self.compute_stratification()
         self.data.attrs["AQUA_region"] = self.region
         if dim_mean:
             self.logger.debug(f"Computing fldmean over dimension: {dim_mean}")
@@ -183,6 +182,7 @@ class Stratification(Diagnostic):
             )
         else:
             self.data = res_dict["data"]
+        self.compute_stratification()
         if mld:
             self.logger.info("Computing mixed layer depth (MLD).")
             self.compute_mld()
