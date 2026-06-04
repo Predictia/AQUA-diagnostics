@@ -113,10 +113,12 @@ def test_cluster(mock_cluster, mock_client):
 def test_load_diagnostic_config():
     """Test loading a real diagnostic configuration from the repository config path."""
 
-    default_config = REAL_CONFIG_DIR / "collections" / "jinja" / "climate_metrics" / "config-climate_metrics-gregory.j2"
+    default_config = os.path.join(
+        REAL_CONFIG_DIR, "collections", "jinja", "climate_metrics", "config-climate_metrics-gregory.j2"
+    )
     ts_dict = load_diagnostic_config(
         diagnostic="climate_metrics",
-        config=str(default_config),
+        config=default_config,
         loglevel=loglevel,
     )
 
