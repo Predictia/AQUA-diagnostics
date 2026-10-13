@@ -1,0 +1,21 @@
+regions:
+  global:
+    longname: Global
+    lat_limits: null
+    lon_limits: null
+  tropics:
+    longname: Tropics
+    lat_limits: [-20, 20]
+    lon_limits: null
+  north_atlantic:
+    longname: North Atlantic
+    lat_limits: [0, 70]
+    lon_limits: [-80, 20]
+  north_pacific:
+    longname: North Pacific
+    lat_limits: [20, 70]
+    lon_limits: [120, 240]
+  amo:
+    longname: AMO region
+    lat_limits: [25, 60]
+    lon_limits: [-75, -7]

@@ -5,8 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 
 ## [Unreleased]
 
-Unreleased in the current development version (target v0.24.0):
+Unreleased in the current development version (target v0.24.0 / `de393-v1.0`):
 
+- DE_393 D393.2.4.1: consolidate emulator diagnostics into `aqua.diagnostics.emulator`
+  (`EmulatorDiagnostic`, OutputSaver/DiagnosticCLI ports, new `ssim`, collection
+  configs for CESM2/UKESM1/IFS-NEMO). Remove standalone Private-licensed
+  frontier `pyproject.toml` files for the ported suite.
+- Fold frontier `global_biases_significance` into `StatGlobalBiases` with
+  selectable `welch_yearly` / `autocorr_effective` methods.
+- Add `scikit-image` dependency for SSIM; CI triggers on `devel/ml` and
+  `release/de393-v1.0`; pytest marker `emulator`.
 - ECmean: time selection is now allowed (#178)
 
 ## [v0.23.0]

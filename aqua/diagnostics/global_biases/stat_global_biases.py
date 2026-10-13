@@ -117,18 +117,105 @@ class StatGlobalBiases:
         _, p_value = stats.ttest_ind(model_clean, ref_clean, equal_var=False)
         return p_value
 
+    @staticmethod
+    def _lag1_autocorrelation(data_array: xr.DataArray) -> xr.DataArray:
+        """Compute lag-one temporal autocorrelation at every grid point."""
+        if 'time' not in data_array.dims:
+            raise ValueError("Input data must include a 'time' dimension.")
+        n_samples = data_array.sizes['time']
+        if n_samples < 2:
+            raise ValueError("At least two samples are required.")
+        first = data_array.isel(time=slice(0, -1)).assign_coords(
+            time=np.arange(n_samples - 1)
+        )
+        second = data_array.isel(time=slice(1, None)).assign_coords(
+            time=np.arange(n_samples - 1)
+        )
+        first = first - first.mean('time')
+        second = second - second.mean('time')
+        correlation = (first * second).mean('time') / (
+            first.std('time') * second.std('time')
+        )
+        return correlation.clip(min=-0.99, max=0.99)
+
+    @staticmethod
+    def _effective_sample_size(r1: xr.DataArray, n_samples: int) -> xr.DataArray:
+        """Estimate effective sample size using the lag-one AR(1) correction."""
+        effective = n_samples * (1.0 - r1) / (1.0 + r1)
+        effective = effective.where(np.isfinite(effective), 2.0)
+        return effective.clip(min=2.0, max=float(n_samples))
+
+    def _compute_autocorr_effective_significance(
+            self, data: xr.Dataset, data_ref: xr.Dataset, var: str,
+            alpha: float, min_samples: int) -> xr.DataArray:
+        """Test the mean bias using autocorrelation-adjusted sample sizes.
+
+        This method uses the full aligned time series, estimates an AR(1)
+        effective sample size independently for model and reference, and
+        compares the mean difference against a two-sided Student-t threshold.
+        """
+        model, reference = xr.align(data[var], data_ref[var], join='inner')
+        n_samples = int(model.sizes.get('time', 0))
+        if n_samples < min_samples:
+            self.logger.warning(
+                'Insufficient samples for autocorrelation-aware significance '
+                '(available=%s, minimum=%s). Returning all False.',
+                n_samples, min_samples
+            )
+            return xr.zeros_like(model.isel(time=0, drop=True), dtype=bool)
+
+        sigma_model = model.std('time', ddof=1)
+        sigma_reference = reference.std('time', ddof=1)
+        r1_model = self._lag1_autocorrelation(model)
+        r1_reference = self._lag1_autocorrelation(reference)
+        n_eff_model = self._effective_sample_size(r1_model, n_samples)
+        n_eff_reference = self._effective_sample_size(r1_reference, n_samples)
+        standard_error = np.sqrt(
+            sigma_model ** 2 / n_eff_model
+            + sigma_reference ** 2 / n_eff_reference
+        )
+        t_stat = (model.mean('time') - reference.mean('time')) / standard_error
+        degrees_freedom = (n_eff_model + n_eff_reference - 2.0).clip(min=1.0)
+        critical = xr.apply_ufunc(
+            lambda value: stats.t.ppf(1.0 - alpha / 2.0, value),
+            degrees_freedom,
+            dask='allowed',
+            vectorize=True,
+            output_dtypes=[float],
+        )
+        significant = xr.where(
+            np.isfinite(t_stat), np.abs(t_stat) > critical, False
+        ).astype(bool)
+        significant.attrs.update({
+            'long_name': 'Autocorrelation-aware statistical significance of bias',
+            'description': (
+                'Two-sided t-test using lag-1 AR(1) effective sample sizes'
+            ),
+            'method': 'autocorr_effective',
+            'alpha': alpha,
+            'n_samples_model': n_samples,
+            'n_samples_reference': n_samples,
+            'mean_effective_samples_model': float(n_eff_model.mean().values),
+            'mean_effective_samples_reference': float(
+                n_eff_reference.mean().values
+            ),
+        })
+        return significant
+
 
     def compute_significance_ttest(self,
                                    data: xr.Dataset,
                                    data_ref: xr.Dataset,
                                    var: str,
                                    alpha: float = 0.05,
-                                   min_samples: int = 3) -> xr.DataArray:
+                                   min_samples: int = 3,
+                                   method: str = 'welch_yearly') -> xr.DataArray:
         """
         Compute statistical significance of bias using two-sample t-test.
         
-        Performs a two-sided t-test at each grid point to determine if the difference
-        between model and reference data is statistically significant.
+        ``welch_yearly`` performs the established two-sided Welch test on
+        yearly means. ``autocorr_effective`` uses the full series with lag-one
+        autocorrelation-adjusted effective sample sizes.
 
         Args:
             data (xr.Dataset): Model dataset with time dimension.
@@ -136,12 +223,25 @@ class StatGlobalBiases:
             var (str): Variable name.
             alpha (float): Significance level (default: 0.05 for 95% confidence).
             min_samples (int): Minimum number of samples required to perform test. Default is 3.
+            method (str): ``'welch_yearly'`` or ``'autocorr_effective'``.
 
         Returns:
             xr.DataArray: Boolean array where True indicates statistically significant differences.
                          Same spatial dimensions as input data.
         """
-        self.logger.info(f'Computing statistical significance using t-test (alpha={alpha}).')
+        if method not in {'welch_yearly', 'autocorr_effective'}:
+            raise ValueError(
+                "method must be 'welch_yearly' or 'autocorr_effective'"
+            )
+        self.logger.info(
+            'Computing statistical significance using %s (alpha=%s).',
+            method, alpha
+        )
+        if method == 'autocorr_effective':
+            return self._compute_autocorr_effective_significance(
+                data=data, data_ref=data_ref, var=var,
+                alpha=alpha, min_samples=min_samples
+            )
 
         # Get temporal means
         data_temporal = self.compute_yearly_temporal_means(data, var)
@@ -220,6 +320,7 @@ class StatGlobalBiases:
         is_significant.attrs.update({
             'long_name': 'Statistical significance of bias',
             'description': f'Two-sample t-test with alpha={alpha}',
+            'method': 'welch_yearly',
             'alpha': alpha,
             'n_samples_model': n_samples,
             'n_samples_reference': n_samples_ref,

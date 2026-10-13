@@ -1,11 +1,13 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 from tropical_cyclones.tools.tempest_utils import getTrajectories
 
     
-def plot_hist_cat(trajfile1, trajfile2, trajfile3, ibtracs_file=None):
+def plot_hist_cat(trajfile1, trajfile2, trajfile3, ibtracs_file=None,
+                  output_path="hist_wind_all_fullres.pdf"):
     # tempest settings
     nVars = 10
     headerStr = 'start'
@@ -75,13 +77,16 @@ def plot_hist_cat(trajfile1, trajfile2, trajfile3, ibtracs_file=None):
     plt.ylabel("Frequency (Normalized)")
     
     # save figure
-    plt.savefig('/home/b/b382216/work/tc/PDF/hist_wind_all_fullres.pdf', bbox_inches="tight")
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, bbox_inches="tight")
     
     #show
     plt.show()
 
 
-def plot_press_wind(trajfile1, trajfile2, trajfile3, ibtracs_file, dot_dim):
+def plot_press_wind(trajfile1, trajfile2, trajfile3, ibtracs_file, dot_dim,
+                    output_path="slp_vs_wind_all_fullres.pdf"):
     # tempest settings
     nVars = 10
     headerStr = 'start'
@@ -140,6 +145,8 @@ def plot_press_wind(trajfile1, trajfile2, trajfile3, ibtracs_file, dot_dim):
     ax.legend()
 
     # save figure
-    plt.savefig('/home/b/b382216/work/tc/PDFslp_vs_wind_all_fullres.pdf', format='pdf')
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_path, format='pdf')
     plt.show()
 

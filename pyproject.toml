@@ -37,7 +37,8 @@ classifiers = [
 ]
 dependencies = [
     "ECmean4<=0.1.16", 
-    "cartopy<=0.24.1"
+    "cartopy<=0.24.1",
+    "scikit-image"
 ]
 
 [project.optional-dependencies]
@@ -88,6 +89,7 @@ include = ["aqua*"]
 [tool.setuptools.package-data]
 "aqua" = [
     "diagnostics/config/**/*",
+    "diagnostics/emulator/config/**/*",
     "diagnostics/templates/**/*"
 ]
 
@@ -107,6 +109,7 @@ markers = [
     #"graphics: tests which deal with graphics",
     #"gsv: mark test that requires ECMWF FDB libraries",
     "diagnostics: single marker for all diagnostics",
+    "emulator: synthetic and integration tests for emulator diagnostics",
     #"catgen: mark test for catalog generator",
     "ensemble: pytest for ensemble diagnostic",
     "frontier: pytest for frontier diagnostics"
@@ -122,8 +125,13 @@ branch = true
 command_line = '-m pytest tests'
 source = ["aqua/diagnostics"]
 omit = [
-    "tests/*", 
+    "tests/*",
     "**/__init__.py",
     "aqua/diagnostics/dummy"
-    ]
+]
+
+# KPI #9 gate for the new emulator package. Run:
+#   pytest -m emulator --cov=aqua.diagnostics.emulator --cov-fail-under=70
+[tool.coverage.report]
+show_missing = true
 

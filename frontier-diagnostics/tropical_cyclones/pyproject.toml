@@ -12,7 +12,7 @@ authors = [
 description = "tropical_cyclones zoom in diagnostic"
 readme = "README.md"
 keywords = ["tropical cyclones", "detection", "tracking", "zoom in"]
-license = {text = "Private"}
+license = {text = "Apache-2.0"}
 classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",

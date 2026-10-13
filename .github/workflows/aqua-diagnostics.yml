@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - main
+      - devel/ml
+      - release/de393-v1.0
   pull_request:
   workflow_dispatch:
   schedule:
@@ -38,7 +40,10 @@ jobs:
              [[ "${{ github.actor }}" == "dependabot[bot]" ]] || \
              [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || \
              [[ "${{ github.event_name }}" == "schedule" ]] || \
-             [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
+             [[ "${{ github.event_name }}" == "push" && ( \
+                "${{ github.ref }}" == "refs/heads/main" || \
+                "${{ github.ref }}" == "refs/heads/devel/ml" || \
+                "${{ github.ref }}" == "refs/heads/release/de393-v1.0" ) ]]; then
             SHOULD_RUN="true"
           fi
           
@@ -51,7 +56,7 @@ jobs:
     uses: ./.github/workflows/aqua-diagnostics-test-reusable.yml
     with:
       python-versions: '["3.12"]'
-      pytest-markers: 'diagnostics'
+      pytest-markers: 'diagnostics or emulator'
       enable-parallel: true
       enable-coverage: true
       fail-fast: false

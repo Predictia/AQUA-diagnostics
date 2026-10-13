@@ -17,6 +17,16 @@ from .sshVariability import sshVariabilityCompute, sshVariabilityPlot
 from .ocean_drift import Hovmoller, PlotHovmoller
 from .ocean_stratification import Stratification, PlotStratification, PlotMLD
 from .ocean_trends import Trends, PlotTrends
+from .emulator import (
+    EmulatorDiagnostic, EmulatorPlotMixin,
+    RMSE, PlotRMSE, SSIM, PlotSSIM, ACC, PlotACC, COV, PlotCOV,
+    PSD, PlotPSD, Rollout, PlotRollout,
+    SpatiotemporalRollout, PlotSpatiotemporalRollout,
+    Variability, PlotVariability, SpatialAgg, PlotSpatialAgg,
+    SeasonalCycle, PlotSeasonalCycle, IPO, PlotIPO, AMO, PlotAMO,
+    VerticalZonalMean, PlotVerticalZonalMean,
+    ZonalMeanProfile, PlotZonalMeanProfile,
+)
 
 
 DIAGNOSTIC_CONFIG_DIRECTORIES = ["analysis", "tools", "collections"]
@@ -38,4 +48,15 @@ __all__ = ["NAO", "ENSO", "MJO",
            "Boxplots", "PlotBoxplots", "extract_realizations",
            "Hovmoller", "PlotHovmoller", "Stratification", "PlotStratification", "PlotMLD",
            "Trends", "PlotTrends",
+           "EmulatorDiagnostic", "EmulatorPlotMixin",
+           "RMSE", "PlotRMSE", "SSIM", "PlotSSIM",
+           "ACC", "PlotACC", "COV", "PlotCOV", "PSD", "PlotPSD",
+           "Rollout", "PlotRollout",
+           "SpatiotemporalRollout", "PlotSpatiotemporalRollout",
+           "Variability", "PlotVariability",
+           "SpatialAgg", "PlotSpatialAgg",
+           "SeasonalCycle", "PlotSeasonalCycle",
+           "IPO", "PlotIPO", "AMO", "PlotAMO",
+           "VerticalZonalMean", "PlotVerticalZonalMean",
+           "ZonalMeanProfile", "PlotZonalMeanProfile",
            "DIAGNOSTIC_CONFIG_DIRECTORIES", "DIAGNOSTIC_TEMPLATE_DIRECTORIES"]
