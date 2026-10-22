@@ -223,6 +223,7 @@ class EmulatorDiagnostic(Diagnostic):
             raise TypeError("data must be an xarray Dataset or DataArray")
         if isinstance(data, xr.DataArray):
             data = data.to_dataset(name=data.name or diagnostic_product)
+        data = data.unify_chunks()
         rebuild = kwargs.pop("rebuild", self.rebuild)
         return self.outputsaver.save_netcdf(
             dataset=data,

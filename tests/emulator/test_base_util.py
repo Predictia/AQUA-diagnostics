@@ -76,6 +76,38 @@ def test_horizontal_dims_and_as_dataarray():
     assert as_dataarray(ds, "2t").name == "2t"
 
 
+def test_save_pair_netcdf_unifies_time_chunks(tmp_path):
+    time = np.arange(6)
+    prediction = xr.DataArray(
+        np.arange(6), dims="time", coords={"time": time}, name="prediction"
+    ).chunk({"time": 2})
+    reference = xr.DataArray(
+        np.arange(6) + 1, dims="time", coords={"time": time}, name="reference"
+    ).chunk({"time": 3})
+    data = xr.Dataset({"prediction": prediction, "reference": reference})
+    with pytest.raises(ValueError, match="inconsistent chunks"):
+        data.chunks
+
+    diagnostic = EmulatorDiagnostic(
+        model="IFS-NEMO",
+        exp="predictions",
+        source="run",
+        catalog="auto_emulator_output",
+        ref_model="IFS-NEMO",
+        ref_exp="ssp370",
+        ref_catalog="IFS-NEMO",
+        diagnostic_name="amo",
+        outputdir=str(tmp_path),
+    )
+    path = diagnostic.save_pair_netcdf(data, diagnostic_product="index")
+    saved = xr.open_dataset(path)
+    try:
+        assert saved["prediction"].values.tolist() == list(range(6))
+        assert saved["reference"].values.tolist() == list(range(1, 7))
+    finally:
+        saved.close()
+
+
 def test_normalize_regions():
     regions = normalize_regions(
         [{"name": "tropics", "lat": [-20, 20]}, {"name": "global"}]
