@@ -60,7 +60,7 @@ class AMO(EmulatorDiagnostic):
         detrend=True,
         name="amo",
     ):
-        """Apply the unchanged regional anomaly minus global anomaly core."""
+        """Compute the regional anomaly minus the global anomaly."""
         anomalies = cls.anomalies(data)
         index = cls._region_mean(anomalies, region, reader)
         if detrend:
@@ -75,8 +75,6 @@ class AMO(EmulatorDiagnostic):
         return index.rolling(
             time=width, center=True, min_periods=max(1, width // 2)
         ).mean().rename(f"{index.name}_filtered")
-
-    _apply_filter = apply_filter
 
     @staticmethod
     def stat_maps(data, index):
@@ -158,6 +156,3 @@ class AMO(EmulatorDiagnostic):
                 result, "index", extra_keys={"var": self.field}
             )
         return result
-
-    retrieve = run
-    compute_index = evaluate

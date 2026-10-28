@@ -19,7 +19,7 @@ class SpatialAgg(EmulatorDiagnostic):
 
     @staticmethod
     def compute(pred, ref):
-        """Compute the frontier whole-period temporal climatologies."""
+        """Compute whole-period temporal means."""
         pred, ref = EmulatorDiagnostic.align(pred, ref)
         pred_mean = pred.mean("time") if "time" in pred.dims else pred
         ref_mean = ref.mean("time") if "time" in ref.dims else ref
@@ -59,5 +59,3 @@ class SpatialAgg(EmulatorDiagnostic):
                     extra_keys={"var": var, "level": level},
                 )
         return self.climatologies
-
-    compute_climatology = run

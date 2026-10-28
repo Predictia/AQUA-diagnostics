@@ -1,4 +1,4 @@
-"""Pairwise correlation diagnostic retained under the historic COV name."""
+"""Pairwise correlation diagnostic."""
 
 from __future__ import annotations
 
@@ -9,12 +9,7 @@ from ..util import as_dataarray
 
 
 class COV(EmulatorDiagnostic):
-    """Compare Pearson correlation maps for configured variable pairs.
-
-    Despite the compatibility name ``COV``, the frontier diagnostic computes
-    normalized covariance (Pearson correlation), not raw covariance.  This port
-    intentionally preserves that numerical definition.
-    """
+    """Compare Pearson correlation maps for configured variable pairs."""
 
     def __init__(self, *args, variable_pairs=None, **kwargs):
         kwargs.setdefault("diagnostic_name", "cov")
@@ -24,7 +19,7 @@ class COV(EmulatorDiagnostic):
 
     @staticmethod
     def correlation(da1, da2, reader=None):
-        """Compute the frontier Pearson-correlation formulation over time."""
+        """Compute the Pearson correlation over time."""
         da1, da2 = EmulatorDiagnostic.align(da1, da2)
         if reader is None:
             mean1, mean2 = da1.mean("time"), da2.mean("time")
@@ -35,9 +30,6 @@ class COV(EmulatorDiagnostic):
             std1, std2 = reader.timstd(da1), reader.timstd(da2)
             numerator = reader.timmean((da1 - mean1) * (da2 - mean2))
         return (numerator / (std1 * std2)).rename("correlation")
-
-    # Frontier compatibility.
-    _calculate_correlation = correlation
 
     @staticmethod
     def _var_info(info):
@@ -97,5 +89,3 @@ class COV(EmulatorDiagnostic):
                     result, "correlation", extra_keys={"pair": pair_name}
                 )
         return self.correlations
-
-    compute_and_plot = run

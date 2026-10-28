@@ -89,7 +89,6 @@ include = ["aqua*"]
 [tool.setuptools.package-data]
 "aqua" = [
     "diagnostics/config/**/*",
-    "diagnostics/emulator/config/**/*",
     "diagnostics/templates/**/*"
 ]
 
@@ -130,8 +129,6 @@ omit = [
     "aqua/diagnostics/dummy"
 ]
 
-# KPI #9 gate for the new emulator package. Run:
-#   pytest -m emulator --cov=aqua.diagnostics.emulator --cov-fail-under=70
 [tool.coverage.report]
 show_missing = true
 

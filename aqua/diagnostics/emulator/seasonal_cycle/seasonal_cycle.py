@@ -21,7 +21,7 @@ class SeasonalCycle(EmulatorDiagnostic):
 
     @staticmethod
     def cycle(pred_series, ref_series):
-        """Compute the unchanged monthly-climatology/anomaly core."""
+        """Compute the monthly climatology and its anomaly."""
         pred_series, ref_series = EmulatorDiagnostic.align(pred_series, ref_series)
         pred_monthly = pred_series.resample(time="MS").mean(skipna=True)
         ref_monthly = ref_series.resample(time="MS").mean(skipna=True)
@@ -90,5 +90,3 @@ class SeasonalCycle(EmulatorDiagnostic):
                         },
                     )
         return self.seasonal_cycles
-
-    compute = run

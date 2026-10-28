@@ -59,5 +59,3 @@ class Variability(EmulatorDiagnostic):
                     extra_keys={"var": var, "level": level},
                 )
         return self.variability
-
-    compute_variability = run

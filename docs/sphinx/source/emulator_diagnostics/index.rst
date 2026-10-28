@@ -3,7 +3,7 @@ Emulator diagnostics
 
 These diagnostics compare one emulator prediction dataset with one reference
 dataset through AQUA Readers and OutputSaver. Collection templates are shipped
-under ``aqua/diagnostics/emulator/config``.
+under ``aqua/diagnostics/config/collections/emulator``.
 
 .. toctree::
    :maxdepth: 1

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import Any
 
 import numpy as np
 import xarray as xr
@@ -14,13 +13,7 @@ from aqua.diagnostics.base import Diagnostic, OutputSaver
 
 
 class EmulatorDiagnostic(Diagnostic):
-    """Base class for diagnostics operating on a prediction/reference pair.
-
-    The primary dataset arguments are the standard :class:`Diagnostic`
-    arguments.  Reference metadata uses the ``ref_*`` arguments.  Both
-    datasets are retrieved through :meth:`Diagnostic._retrieve`, so AQUA's
-    normal selection, fixer and regridding behaviour is preserved.
-    """
+    """Base class for diagnostics operating on a prediction/reference pair."""
 
     def __init__(
         self,

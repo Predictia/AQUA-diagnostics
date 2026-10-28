@@ -1,4 +1,4 @@
-"""Synthetic numerical tests for RMSE and SSIM (KPI #9)."""
+"""Synthetic numerical tests for RMSE and SSIM."""
 
 from __future__ import annotations
 

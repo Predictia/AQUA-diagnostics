@@ -109,7 +109,7 @@ def as_dataarray(data, var=None):
 
 
 def temporal_stat(data, stat="mean", percentile=99.9):
-    """Apply the aggregation used by the frontier profile diagnostics."""
+    """Aggregate a field over time."""
     if "time" not in data.dims:
         return data
     if stat == "percentile":

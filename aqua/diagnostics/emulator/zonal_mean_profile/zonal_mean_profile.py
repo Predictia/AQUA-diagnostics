@@ -37,7 +37,7 @@ class ZonalMeanProfile(EmulatorDiagnostic):
 
     @staticmethod
     def zonal_mean(data, stat="mean", percentile=99.9):
-        """Apply the frontier temporal statistic then average longitude."""
+        """Apply the temporal statistic, then average longitude."""
         aggregated = temporal_stat(data, stat, percentile)
         lon = next(
             (dim for dim in aggregated.dims if "lon" in dim.lower()), None
@@ -45,8 +45,6 @@ class ZonalMeanProfile(EmulatorDiagnostic):
         if lon is None:
             raise ValueError("unable to determine longitude dimension")
         return aggregated.mean(lon).squeeze()
-
-    compute_zonal_mean = zonal_mean
 
     def compute(self, pred, ref):
         pred, ref = self.align(pred, ref)
@@ -121,5 +119,3 @@ class ZonalMeanProfile(EmulatorDiagnostic):
                     extra_keys={"var": var, "stat": self.aggregation_stat},
                 )
         return self.profiles
-
-    compute_profile = run

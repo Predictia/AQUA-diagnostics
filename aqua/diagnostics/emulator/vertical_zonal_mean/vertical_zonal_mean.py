@@ -49,8 +49,6 @@ class VerticalZonalMean(EmulatorDiagnostic):
                 return name
         return None
 
-    _find_level_coord = level_coord
-
     @classmethod
     def common_levels(cls, pred, ref):
         pred_coord, ref_coord = cls.level_coord(pred), cls.level_coord(ref)
@@ -75,8 +73,6 @@ class VerticalZonalMean(EmulatorDiagnostic):
             raise ValueError("unable to determine longitude dimension")
         return data.mean(lon)
 
-    _compute_zonal_mean = zonal_mean
-
     @staticmethod
     def bin_latitude(data, bins):
         lat = next((dim for dim in data.dims if "lat" in dim.lower()), None)
@@ -88,8 +84,6 @@ class VerticalZonalMean(EmulatorDiagnostic):
             {f"{lat}_bins": lat}
         )
 
-    _bin_latitude = bin_latitude
-
     @staticmethod
     def _welch(model, reference, min_samples=3):
         model = model[np.isfinite(model)]
@@ -100,7 +94,7 @@ class VerticalZonalMean(EmulatorDiagnostic):
 
     @classmethod
     def significance_mask(cls, pred, ref, alpha=0.05):
-        """Welch t-test on yearly zonal means, matching the frontier core."""
+        """Welch t-test on yearly zonal means."""
         pred = cls.zonal_mean(pred).resample(time="YS").mean(skipna=True)
         ref = cls.zonal_mean(ref).resample(time="YS").mean(skipna=True)
         pred = pred.rename(time="time_prediction").chunk(
@@ -183,5 +177,3 @@ class VerticalZonalMean(EmulatorDiagnostic):
                     extra_keys={"var": var, "stat": self.aggregation_stat},
                 )
         return self.vertical_profiles
-
-    compute_vertical_profile = run

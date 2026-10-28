@@ -35,7 +35,7 @@ class PSD(EmulatorDiagnostic):
 
     @staticmethod
     def radial_average(power_2d):
-        """Calculate the frontier radial average of a 2-D power spectrum."""
+        """Radially average a 2-D power spectrum."""
         y_center, x_center = np.array(power_2d.shape) // 2
         y, x = np.indices(power_2d.shape)
         radius = np.sqrt((x - x_center) ** 2 + (y - y_center) ** 2).astype(
@@ -49,8 +49,6 @@ class PSD(EmulatorDiagnostic):
             out=np.zeros_like(total, dtype=float),
             where=count != 0,
         )
-
-    _radial_average = radial_average
 
     @staticmethod
     def _healpix_dim(data):
@@ -79,7 +77,7 @@ class PSD(EmulatorDiagnostic):
 
     @classmethod
     def fft_spectrum(cls, data, *, average_time=True):
-        """Apply the unchanged frontier FFT/radial-average numerical core."""
+        """Compute an FFT power spectrum and its radial average."""
         values = np.nan_to_num(np.asarray(data), nan=0.0)
         if average_time:
             if values.ndim == 2:
@@ -172,5 +170,3 @@ class PSD(EmulatorDiagnostic):
                         extra_keys={"var": var, "level": level},
                     )
         return self.results
-
-    calculate_and_plot_psd = run

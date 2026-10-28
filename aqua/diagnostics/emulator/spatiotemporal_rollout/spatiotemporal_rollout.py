@@ -60,5 +60,3 @@ class SpatiotemporalRollout(EmulatorDiagnostic):
                     extra_keys={"var": var, "level": level},
                 )
         return self.rollouts
-
-    generate_videos = run

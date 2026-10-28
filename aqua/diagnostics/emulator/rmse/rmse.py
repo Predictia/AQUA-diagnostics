@@ -66,10 +66,6 @@ class RMSE(EmulatorDiagnostic):
         self.temporal_rmse[key] = result
         return result
 
-    # Frontier-compatible names.
-    spatial_rmse_for_pair = evaluate_spatial
-    temporal_rmse_for_pair = evaluate_temporal
-
     def run(
         self,
         variables=None,

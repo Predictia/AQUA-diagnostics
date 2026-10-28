@@ -1,4 +1,4 @@
-"""Pearson correlation diagnostic under the historic COV name."""
+"""Pairwise correlation diagnostic."""
 
 from .cov import COV
 from .plot_cov import PlotCOV

@@ -59,7 +59,7 @@ class IPO(EmulatorDiagnostic):
 
     @classmethod
     def tripole_index(cls, data, regions, reader=None, name="tpi"):
-        """Apply the frontier tripole numerical definition."""
+        """Compute the tripole index from three regional means."""
         anomalies = cls.anomalies(data)
         southwest = cls._region_mean(anomalies, regions["southwest"], reader)
         equatorial = cls._region_mean(anomalies, regions["equatorial"], reader)
@@ -90,11 +90,9 @@ class IPO(EmulatorDiagnostic):
             name=f"{index.name}_filtered",
         )
 
-    _apply_filter = apply_filter
-
     @staticmethod
     def stat_maps(data, index):
-        """Return frontier regression and Pearson-correlation maps."""
+        """Return regression and Pearson-correlation maps."""
         data, index = xr.align(data, index, join="inner")
         data_anom = IPO.anomalies(data)
         regression = xr.cov(index, data_anom, dim="time") / index.var(
@@ -143,6 +141,3 @@ class IPO(EmulatorDiagnostic):
                 result, "index", extra_keys={"var": self.field}
             )
         return result
-
-    retrieve = run
-    compute_index = evaluate

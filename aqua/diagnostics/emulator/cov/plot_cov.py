@@ -1,4 +1,4 @@
-"""Plotting for the compatibility COV correlation diagnostic."""
+"""Plot pairwise correlation maps."""
 
 from .._plot import MapSeriesPlotter
 

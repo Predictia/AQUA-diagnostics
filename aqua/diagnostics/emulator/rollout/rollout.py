@@ -72,5 +72,3 @@ class Rollout(EmulatorDiagnostic):
                             extra_keys={"var": var, "level": level},
                         )
         return self.rollouts
-
-    compute_rollout = run
